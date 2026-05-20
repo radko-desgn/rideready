@@ -1,0 +1,2098 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MTB Suspension Pressure Calculator</title>
+  <link rel="icon" type="image/png" href="logo.png" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      /* Brand colours — never change */
+      --orange:    #e8a84a;
+      --orange-dk: #c8881e;
+      --radius:    20px;
+      --radius-sm: 12px;
+
+      /* ── Dark theme (default) ── */
+      --bg:              #0d1a0f;
+      --surface:         #1c1c1c;
+      --surface2:        #242424;
+      --surface3:        #2e2e2e;
+      --border:          rgba(255,255,255,0.08);
+      --border-strong:   rgba(255,255,255,0.14);
+
+      --text:            #f0ede6;
+      --text-secondary:  rgba(255,255,255,0.55);
+      --text-muted:      rgba(255,255,255,0.35);
+      --text-faint:      rgba(255,255,255,0.22);
+
+      --fork-accent:     #e8a84a;
+      --shock-accent:    #6ee87a;
+      --fork-accent-dk:  #5b9cf6;
+      --shock-accent-dk: #a87ef7;
+
+      --chip-bg:         rgba(255,255,255,0.07);
+      --chip-text:       var(--text);
+      --toggle-bg:       rgba(255,255,255,0.07);
+      --toggle-active:   rgba(255,255,255,0.14);
+      --notes-bg:        rgba(255,255,255,0.04);
+      --damp-row-bg:     #1e1e1e;
+      --damp-style-bg:   rgba(255,255,255,0.05);
+      --damp-bar-bg:     rgba(255,255,255,0.06);
+      --damp-lever-bg:   rgba(255,255,255,0.05);
+      --damp-lever-act:  rgba(255,255,255,0.14);
+      --damp-info-bg:    rgba(255,255,255,0.03);
+      --saved-card-bg:   #1a1a1a;
+      --sc-box-bg:       #1c1c1c;
+      --input-bg:        #1c1c1c;
+      --range-bar-bg:    rgba(255,255,255,0.09);
+      --dot-border:      #1c1c1c;
+    }
+
+    /* ── Light theme ── */
+    body.light-theme {
+      --bg:              #f0ede8;
+      --surface:         #ffffff;
+      --surface2:        #f5f3ef;
+      --surface3:        #eceae5;
+      --border:          rgba(0,0,0,0.09);
+      --border-strong:   rgba(0,0,0,0.16);
+
+      --text:            #111111;
+      --text-secondary:  rgba(0,0,0,0.6);
+      --text-muted:      rgba(0,0,0,0.45);
+      --text-faint:      rgba(0,0,0,0.28);
+
+      --fork-accent:     #c87a00;
+      --shock-accent:    #1e7a28;
+      --fork-accent-dk:  #1a52b8;
+      --shock-accent-dk: #5e23aa;
+
+      --chip-bg:         rgba(0,0,0,0.05);
+      --chip-text:       #111111;
+      --toggle-bg:       rgba(0,0,0,0.06);
+      --toggle-active:   rgba(0,0,0,0.12);
+      --notes-bg:        rgba(0,0,0,0.03);
+      --damp-row-bg:     #f5f3ef;
+      --damp-style-bg:   rgba(0,0,0,0.04);
+      --damp-bar-bg:     rgba(0,0,0,0.07);
+      --damp-lever-bg:   rgba(0,0,0,0.05);
+      --damp-lever-act:  rgba(0,0,0,0.12);
+      --damp-info-bg:    rgba(0,0,0,0.025);
+      --saved-card-bg:   #ffffff;
+      --sc-box-bg:       #f0ede8;
+      --input-bg:        #f5f3ef;
+      --range-bar-bg:    rgba(0,0,0,0.09);
+      --dot-border:      #ffffff;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      transition: background 0.25s, color 0.25s;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 32px 16px 56px;
+    }
+
+    .container { width: 100%; max-width: 560px; }
+
+    /* ── Header ── */
+    header { margin-bottom: 28px; padding: 0 4px; }
+    header h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.03em;
+      margin-bottom: 4px;
+    }
+    header p {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+    }
+
+    /* ── Input panel (orange) ── */
+    .input-panel {
+      background: var(--orange);
+      border-radius: var(--radius);
+      padding: 24px 20px 20px;
+      margin-bottom: 16px;
+    }
+
+    .panel-row-label {
+      font-size: 0.74rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: rgba(0,0,0,0.8);
+      margin-bottom: 10px;
+    }
+
+    /* Selector boxes */
+    .selectors-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    @media (max-width: 460px) { .selectors-grid { grid-template-columns: 1fr; } }
+
+    .selector-box {
+      background: rgba(0,0,0,0.75);
+      border: 1.5px solid rgba(0,0,0,0.35);
+      border-radius: var(--radius-sm);
+      padding: 14px 14px 12px;
+      transition: border-color 0.15s;
+    }
+    .selector-box:has(.cs-wrap.open) { border-color: rgba(255,255,255,0.5); }
+    .selector-box .box-label {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: rgba(255,255,255,0.55);
+      margin-bottom: 7px;
+    }
+    /* ── Custom dropdown ── */
+    .cs-wrap { position: relative; }
+
+    .cs-trigger {
+      width: 100%;
+      background: transparent;
+      border: none;
+      outline: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      cursor: pointer;
+      padding: 0;
+      color: #fff;
+      text-align: left;
+    }
+    .cs-value {
+      font-size: 0.92rem;
+      font-weight: 600;
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #fff;
+    }
+    .cs-value.placeholder { color: rgba(255,255,255,0.42); }
+    .cs-chevron {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s;
+      color: rgba(255,255,255,0.6);
+    }
+    .cs-wrap.open .cs-chevron { transform: rotate(180deg); }
+
+    .cs-panel {
+      display: none;
+      position: absolute;
+      top: calc(100% + 10px);
+      left: -14px;
+      right: -14px;
+      background: #1e1e1e;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      overflow: hidden;
+      overflow-y: auto;
+      max-height: 300px;
+      z-index: 999;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+    }
+    .cs-wrap.open .cs-panel { display: block; }
+
+    .cs-group-label {
+      font-size: 0.62rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.3);
+      padding: 12px 16px 5px;
+    }
+    .cs-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 16px;
+      cursor: pointer;
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: rgba(255,255,255,0.75);
+      transition: background 0.1s, color 0.1s;
+      border-radius: 0;
+    }
+    .cs-option:hover { background: rgba(255,255,255,0.07); color: #fff; }
+    .cs-option.selected {
+      background: rgba(232,168,74,0.15);
+      color: var(--orange);
+      font-weight: 700;
+    }
+    .cs-option .cs-opt-series {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.3);
+      margin-left: auto;
+      white-space: nowrap;
+    }
+    .cs-option.selected .cs-opt-series { color: rgba(232,168,74,0.5); }
+
+    /* Weight input row */
+    .weight-section { }
+    .weight-inner {
+      background: rgba(0,0,0,0.75);
+      border: 1.5px solid rgba(0,0,0,0.35);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+      transition: border-color 0.15s;
+    }
+    .weight-inner:focus-within { border-color: rgba(255,255,255,0.5); }
+    .weight-inner input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #fff;
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      width: 0; /* flex will size it */
+    }
+    .weight-inner input::placeholder { color: rgba(255,255,255,0.38); }
+    .weight-inner .kg-badge {
+      background: rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.75);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 5px 10px;
+      border-radius: 8px;
+      white-space: nowrap;
+    }
+
+    /* Calculate button */
+    .calc-btn {
+      width: 100%;
+      padding: 15px;
+      border-radius: var(--radius-sm);
+      border: none;
+      background: #111;
+      color: #fff;
+      font-size: 0.9rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+    .calc-btn:hover  { background: #000; }
+    .calc-btn:active { transform: scale(0.98); }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .btn-row .calc-btn { flex: 1; }
+
+    .reset-btn {
+      padding: 13px 20px;
+      border-radius: 10px;
+      border: 2px solid #000;
+      background: #000;
+      color: #fff;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s;
+      letter-spacing: 0.03em;
+    }
+    .reset-btn:hover {
+      background: #1a1a1a;
+      border-color: #1a1a1a;
+    }
+
+    /* ── Results ── */
+    .results-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .result-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 26px 22px;
+      display: none;
+    }
+    .result-card.visible { display: block; }
+
+    /* Top row of result card */
+    .rc-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .rc-model {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .rc-icon {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .rc-icon.fork-icon  { background: var(--orange); color: var(--text-dk); }
+    .rc-icon.shock-icon { background: var(--green);  color: var(--text-dk); }
+    .rc-model-name {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.2;
+    }
+    .rc-model-sub {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+    .rc-type-tag {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-muted);
+    }
+
+    /* PSI number */
+    .rc-psi {
+      margin: 18px 0 6px;
+    }
+    .rc-psi .psi-num {
+      font-size: 3.6rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1;
+    }
+    .fork-color  { color: var(--fork-accent); }
+    .shock-color { color: var(--shock-accent); }
+    .rc-psi .psi-unit {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-left: 4px;
+    }
+    .rc-psi .psi-sub {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-top: 5px;
+    }
+
+    /* Range bar */
+    .range-bar-wrap { margin: 20px 0 20px; }
+    .range-bar-wrap .range-ends {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+    }
+    .range-bar {
+      height: 5px;
+      background: var(--range-bar-bg);
+      border-radius: 99px;
+      position: relative;
+      overflow: visible;
+    }
+    .range-bar-fill {
+      height: 100%;
+      border-radius: 99px;
+      transition: width 0.45s ease;
+    }
+    .fork-fill  { background: var(--fork-accent); }
+    .shock-fill { background: var(--shock-accent); }
+    .range-bar-dot {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 11px; height: 11px;
+      border-radius: 50%;
+      border: 2px solid var(--dot-border);
+      transition: left 0.45s ease;
+    }
+    .fork-dot  { background: var(--fork-accent); }
+    .shock-dot { background: var(--shock-accent); }
+
+    /* Meta chips */
+    .meta-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .chip {
+      background: var(--chip-bg);
+      border-radius: 8px;
+      padding: 7px 11px;
+    }
+    .chip .chip-label { font-size: 0.72rem; color: var(--text-muted); margin-bottom: 2px; font-weight: 600; }
+    .chip .chip-val   { font-size: 0.88rem; font-weight: 700; color: var(--text); }
+
+    /* Unit toggle */
+    .unit-toggle {
+      display: inline-flex;
+      background: var(--toggle-bg);
+      border-radius: 8px;
+      padding: 3px;
+      gap: 2px;
+      margin-bottom: 10px;
+    }
+    .unit-toggle button {
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+      letter-spacing: 0.05em;
+    }
+    .unit-toggle button.active {
+      background: var(--toggle-active);
+      color: var(--text);
+    }
+
+    /* Notes */
+    .notes-box {
+      background: var(--notes-bg);
+      border-radius: 10px;
+      padding: 14px 16px;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      border-left: 3px solid var(--border-strong);
+    }
+    .fork-notes  { border-color: var(--fork-accent); }
+    .shock-notes { border-color: var(--shock-accent); }
+
+    /* Formula pill */
+    .formula-pill {
+      display: inline-block;
+      background: rgba(91,191,96,0.15);
+      color: var(--shock-accent);
+      border-radius: 6px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      margin-bottom: 8px;
+      letter-spacing: 0.04em;
+    }
+
+    /* Coil notice */
+    .coil-notice {
+      padding: 16px 0 8px;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      text-align: center;
+    }
+    .coil-notice strong { color: var(--text); }
+
+    /* Error */
+    .error-card {
+      display: none;
+      background: rgba(224,85,85,0.1);
+      border: 1px solid rgba(224,85,85,0.3);
+      border-radius: var(--radius-sm);
+      padding: 13px 16px;
+      color: #f08080;
+      font-size: 0.86rem;
+      margin-bottom: 14px;
+    }
+    .error-card.visible { display: block; }
+
+    footer {
+      text-align: center;
+      margin-top: 24px;
+      font-size: 0.78rem;
+      color: var(--text-faint);
+      line-height: 1.7;
+    }
+    footer .signature {
+      display: block;
+      margin-top: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.02em;
+    }
+
+
+    /* ── Saved weight pin ── */
+    .weight-pin-wrap {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: -6px;
+      margin-bottom: 14px;
+    }
+    .weight-pin-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      border: 1.5px solid rgba(0,0,0,0.18);
+      border-radius: 8px;
+      background: rgba(0,0,0,0.08);
+      color: rgba(0,0,0,0.6);
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      user-select: none;
+      min-height: 36px;
+      transition: all 0.15s;
+    }
+    .weight-pin-btn:hover { background: rgba(0,0,0,0.14); border-color: rgba(0,0,0,0.28); }
+    .weight-pin-btn:active { transform: scale(0.96); }
+    .weight-pin-btn.pinned {
+      background: #111;
+      border-color: #111;
+      color: #fff;
+    }
+    .weight-pin-btn .pin-dot { display: none; }
+
+    /* ── Save strip ── */
+    .save-strip {
+      display: none;
+      margin-top: 16px;
+    }
+    .save-strip.visible { display: block; }
+
+    .save-trigger-btn {
+      width: 100%;
+      padding: 13px;
+      border-radius: var(--radius-sm);
+      border: 1.5px dashed rgba(232,168,74,0.4);
+      background: rgba(232,168,74,0.06);
+      color: var(--orange);
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .save-trigger-btn:hover {
+      background: rgba(232,168,74,0.12);
+      border-color: rgba(232,168,74,0.7);
+    }
+    .save-trigger-btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .save-name-row {
+      display: none;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .save-name-row.visible { display: flex; }
+    .save-name-input {
+      flex: 1;
+      background: var(--surface);
+      border: 1.5px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 11px 14px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .save-name-input:focus { border-color: var(--orange); }
+    .save-name-input::placeholder { color: var(--text-faint); }
+    .save-confirm-btn {
+      padding: 11px 18px;
+      border-radius: var(--radius-sm);
+      border: none;
+      background: var(--orange);
+      color: #111;
+      font-size: 0.85rem;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: opacity 0.15s;
+    }
+    .save-confirm-btn:hover { opacity: 0.88; }
+    .save-cancel-btn {
+      padding: 11px 14px;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid var(--border-strong);
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .save-cancel-btn:hover { color: var(--text); border-color: var(--border-strong); }
+
+    /* ── Saved cards section ── */
+    .saved-section { margin-top: 24px; }
+    .saved-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      padding: 0 2px;
+    }
+    .saved-section-title {
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+    }
+    .saved-count-badge {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: rgba(232,168,74,0.7);
+      background: rgba(232,168,74,0.1);
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
+
+    .saved-card {
+      background: var(--saved-card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 18px 14px;
+      margin-bottom: 12px;
+      transition: border-color 0.15s;
+    }
+    .saved-card:hover { border-color: var(--border-strong); }
+
+    .saved-card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .saved-card-name-wrap { flex: 1; min-width: 0; }
+    .saved-card-name {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .saved-card-name-edit {
+      display: none;
+      width: 100%;
+      background: var(--surface2);
+      border: 1.5px solid var(--orange);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 0.9rem;
+      font-weight: 700;
+      padding: 6px 10px;
+      outline: none;
+    }
+    .saved-card-weight {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+
+    .saved-card-actions {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .sc-action-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s;
+      padding: 0;
+    }
+    .sc-action-btn:hover { background: var(--chip-bg); color: var(--text); }
+    .sc-action-btn.edit-btn:hover { border-color: var(--orange); color: var(--orange); }
+    .sc-action-btn.delete-btn:hover { border-color: #e05555; color: #e05555; }
+    .sc-action-btn.save-edit-btn {
+      width: auto;
+      padding: 0 12px;
+      background: var(--orange);
+      border-color: var(--orange);
+      color: #111;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .saved-card-results {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .sc-result-box {
+      background: var(--sc-box-bg);
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+    .sc-result-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .sc-result-model {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .sc-result-psi {
+      font-size: 1.6rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+    .sc-result-psi .sc-unit {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-left: 2px;
+    }
+    .sc-result-box.fork-box .sc-result-psi { color: var(--fork-accent-dk); }
+    .sc-result-box.shock-box .sc-result-psi { color: var(--shock-accent-dk); }
+    .sc-result-box.coil-box .sc-result-psi { font-size: 0.82rem; color: var(--text-muted); }
+
+    .sc-result-bar {
+      height: 3px;
+      background: var(--range-bar-bg);
+      border-radius: 99px;
+      margin-top: 8px;
+      overflow: hidden;
+    }
+    .sc-result-bar-fill {
+      height: 100%;
+      border-radius: 99px;
+    }
+    .fork-box .sc-result-bar-fill { background: var(--fork-accent-dk); }
+    .shock-box .sc-result-bar-fill { background: var(--shock-accent-dk); }
+
+    .saved-empty {
+      text-align: center;
+      padding: 20px 0;
+      font-size: 0.82rem;
+      color: var(--text-faint);
+    }
+
+
+    /* ── Theme toggle ── */
+    .theme-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 0;
+      width: 60px;
+      height: 30px;
+      border-radius: 99px;
+      border: none;
+      background: #333;
+      cursor: pointer;
+      flex-shrink: 0;
+      position: relative;
+      transition: background 0.25s;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      margin-top: 8px;
+      padding: 0;
+    }
+    .theme-toggle:active { transform: scale(0.95); }
+    body.light-theme .theme-toggle { background: #e0ddd8; }
+    .theme-toggle-knob {
+      position: absolute;
+      left: 4px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+      transition: left 0.25s, background 0.25s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      line-height: 1;
+    }
+    body.light-theme .theme-toggle-knob { left: 34px; background: #fff; }
+    .theme-toggle-icon { display: none; }
+
+
+    /* ── Edit mode banner ── */
+    .edit-banner {
+      margin-bottom: 20px;
+    }
+    .edit-banner-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: rgba(232,168,74,0.12);
+      border: 1.5px solid rgba(232,168,74,0.4);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+    }
+    .edit-banner-label {
+      font-size: 0.7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--orange);
+      margin-bottom: 2px;
+    }
+    .edit-banner-name {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .edit-banner-cancel {
+      padding: 7px 14px;
+      border-radius: 8px;
+      border: 1.5px solid var(--border-strong);
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s;
+      flex-shrink: 0;
+    }
+    .edit-banner-cancel:hover { color: var(--text); border-color: var(--orange); }
+
+    /* ── Saved card damping summary ── */
+    .sc-damping-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+    }
+    .sc-damp-chip {
+      display: flex;
+      flex-direction: column;
+      background: var(--sc-box-bg);
+      border-radius: 8px;
+      padding: 6px 10px;
+      min-width: 52px;
+    }
+    .sc-damp-chip-label {
+      font-size: 0.6rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-faint);
+      margin-bottom: 2px;
+    }
+    .sc-damp-chip-val {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1;
+    }
+    .sc-damp-chip-unit {
+      font-size: 0.6rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-left: 2px;
+    }
+    .sc-damp-style-tag {
+      display: flex;
+      align-items: center;
+      padding: 6px 10px;
+      background: rgba(232,168,74,0.1);
+      border-radius: 8px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--orange-dk);
+      white-space: nowrap;
+      align-self: center;
+    }
+    body.light-theme .sc-damp-style-tag { color: var(--orange-dk); }
+
+    /* Save strip update mode */
+    .save-trigger-btn.update-mode {
+      border-color: rgba(232,168,74,0.7);
+      background: rgba(232,168,74,0.14);
+    }
+
+    /* ── Ride style selector ── */
+    .ride-style-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+    .rs-btn {
+      padding: 10px 6px;
+      border-radius: 10px;
+      border: 2px solid rgba(0,0,0,0.2);
+      background: rgba(0,0,0,0.1);
+      color: rgba(0,0,0,0.65);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.15s;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      line-height: 1.3;
+    }
+    .rs-btn:active { transform: scale(0.96); }
+    .rs-btn.active {
+      background: #000;
+      border-color: #000;
+      color: #fff;
+    }
+    .rs-btn .rs-icon {
+      display: block;
+      font-size: 1.1rem;
+      margin-bottom: 3px;
+    }
+
+    /* ── Damping section in result card ── */
+    .damping-section {
+      margin-top: 28px;
+      border-top: 1px solid var(--border);
+      padding-top: 24px;
+    }
+
+    /* Header row */
+    .damping-header {
+      margin-bottom: 18px;
+    }
+    .damping-header-top {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .damping-heading {
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-secondary);
+    }
+    .damping-damper-name {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-align: right;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 55%;
+    }
+    .damping-style-note {
+      background: var(--damp-style-bg);
+      border-radius: 8px;
+      padding: 10px 13px;
+      font-size: 0.84rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* Click rows — one per damping param */
+    .damp-rows { display: flex; flex-direction: column; gap: 8px; }
+
+    .damp-row {
+      background: var(--damp-row-bg);
+      border-radius: 12px;
+      padding: 16px 18px;
+    }
+    .damp-row-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .damp-row-left { flex: 1; min-width: 0; }
+    .damp-row-label {
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .damp-row-note {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+    .damp-row-right {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+    .damp-clicks {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--text-lt);
+      line-height: 1;
+    }
+    .damp-clicks-unit {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+    .damp-delta-badge {
+      font-size: 0.62rem;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 5px;
+      margin-left: 6px;
+      align-self: center;
+    }
+    .damp-delta-badge.pos { background: rgba(168,126,247,0.18); color: #a87ef7; }
+    .damp-delta-badge.neg { background: rgba(91,156,246,0.18);  color: #5b9cf6; }
+
+    /* Progress bar */
+    .damp-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .damp-bar {
+      flex: 1;
+      height: 5px;
+      background: var(--damp-bar-bg);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .damp-bar-fill {
+      height: 100%;
+      border-radius: 99px;
+      transition: width 0.4s ease;
+    }
+    .fork-damp .damp-bar-fill { background: var(--fork-accent-dk); }
+    .shock-damp .damp-bar-fill { background: var(--shock-accent-dk); }
+    .damp-bar-meta {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* Lever / mode box */
+    .damp-row-lever .damp-row-top { margin-bottom: 8px; }
+    .damp-lever-pills {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .damp-lever-pill {
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      background: var(--damp-lever-bg);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+    .damp-lever-pill.active-lever {
+      background: var(--toggle-active);
+      color: var(--text);
+      border-color: rgba(255,255,255,0.15);
+    }
+
+    /* Info-only row (notes, OTT etc.) */
+    .damp-row-info {
+      background: var(--damp-info-bg);
+      border: 1px solid var(--border);
+    }
+    .damp-row-info .damp-row-note { color: var(--text-secondary); }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+      <div>
+        <h1>Suspension Setup</h1>
+        <p>Air pressure guide based on rider weight</p>
+      </div>
+      <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Switch theme">
+        <span class="theme-toggle-knob" id="theme-icon">🌙</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Edit mode banner -->
+  <div class="edit-banner" id="edit-banner" style="display:none">
+    <div class="edit-banner-inner">
+      <div>
+        <div class="edit-banner-label">Editing setup</div>
+        <div class="edit-banner-name" id="edit-banner-name"></div>
+      </div>
+      <button class="edit-banner-cancel" onclick="cancelEdit()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Orange input panel -->
+  <div class="input-panel">
+    <div class="panel-row-label">Select Models</div>
+    <div class="selectors-grid">
+      <div class="selector-box">
+        <div class="box-label">Fork</div>
+        <div class="cs-wrap" id="fork-wrap">
+          <button class="cs-trigger" onclick="toggleDropdown('fork', event)">
+            <span class="cs-value placeholder" id="fork-value">Select fork model…</span>
+            <span class="cs-chevron">
+              <svg width="11" height="7" viewBox="0 0 11 7" fill="none"><path d="M1 1l4.5 4.5L10 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </span>
+          </button>
+          <div class="cs-panel" id="fork-panel"></div>
+        </div>
+      </div>
+      <div class="selector-box">
+        <div class="box-label">Rear Shock</div>
+        <div class="cs-wrap" id="shock-wrap">
+          <button class="cs-trigger" onclick="toggleDropdown('shock', event)">
+            <span class="cs-value placeholder" id="shock-value">Select shock model…</span>
+            <span class="cs-chevron">
+              <svg width="11" height="7" viewBox="0 0 11 7" fill="none"><path d="M1 1l4.5 4.5L10 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </span>
+          </button>
+          <div class="cs-panel" id="shock-panel"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-row-label">Ride Style</div>
+    <div class="ride-style-row">
+      <button class="rs-btn" id="rs-xc" onclick="setRideStyle('xc_trail')">
+        <span class="rs-icon">🚀</span>XC / Trail
+      </button>
+      <button class="rs-btn active" id="rs-am" onclick="setRideStyle('all_mountain')">
+        <span class="rs-icon">⛰️</span>All Mountain
+      </button>
+      <button class="rs-btn" id="rs-ed" onclick="setRideStyle('enduro_dh')">
+        <span class="rs-icon">🤘</span>Enduro / DH
+      </button>
+    </div>
+
+    <div class="weight-section">
+      <div class="panel-row-label">Rider Weight</div>
+      <div class="weight-inner">
+        <input type="number" id="weight-input" placeholder="75" min="20" max="200" step="0.5"
+          oninput="onWeightInput()" />
+        <span class="kg-badge">KG</span>
+      </div>
+      <div class="weight-pin-wrap">
+        <button class="weight-pin-btn" id="weight-pin-btn" onclick="toggleSavedWeight()">
+          <span class="pin-dot"></span>
+          <span id="weight-pin-label">Remember my weight</span>
+        </button>
+      </div>
+      <div class="btn-row">
+        <button class="calc-btn" onclick="calculate()">Calculate Pressure</button>
+        <button class="reset-btn" id="reset-btn" onclick="resetAll()" style="display:none">Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error -->
+  <div class="error-card" id="error-card"></div>
+
+  <!-- Results side by side -->
+  <div class="results-grid">
+    <div class="result-card" id="fork-result"></div>
+    <div class="result-card" id="shock-result"></div>
+  </div>
+
+  <!-- Save strip -->
+  <div class="save-strip" id="save-strip">
+    <button class="save-trigger-btn" id="save-trigger-btn" onclick="openSaveNameRow()">+ Save this calculation</button>
+    <div class="save-name-row" id="save-name-row">
+      <input class="save-name-input" id="save-name-input" type="text" placeholder="Name this setup… e.g. Trail build" maxlength="40" />
+      <button class="save-confirm-btn" onclick="confirmSave()">Save</button>
+      <button class="save-cancel-btn" onclick="closeSaveNameRow()">✕</button>
+    </div>
+  </div>
+
+  <!-- Saved calculations -->
+  <div class="saved-section" id="saved-section" style="display:none">
+    <div class="saved-section-header">
+      <span class="saved-section-title">Saved Setups</span>
+      <span class="saved-count-badge" id="saved-count-badge">0 / 3</span>
+    </div>
+    <div id="saved-list"></div>
+  </div>
+
+  <footer>
+    Based on RockShox, Fox, DVO, Öhlins &amp; Manitou manufacturer guidelines.<br>
+    Always verify sag with rider seated in normal riding position.<br><br>
+    <span class="signature">From biker for bikers — Radostin Armenov</span>
+  </footer>
+
+</div>
+
+<script>
+const suspensionData = {"version":"2.0","description":"MTB suspension air pressure reference data for RockShox, Fox, DVO, and \u00d6hlins forks and rear shocks. Pressure charts are based on manufacturer guidelines and community-verified data. All weights are in kg, pressures in PSI.","usage_notes":["pressure_chart entries define inclusive weight ranges and the corresponding PSI range","Interpolate linearly within a weight range for a more precise value","If formula_psi is present, use it as the primary starting pressure instead of the chart","Always cycle suspension 5-10 times after pressurising to equalise positive/negative chambers","Add ~5-10 PSI per volume spacer/token added (reduces available air volume)","Measure sag with rider seated in normal riding position, wearing full gear","secondary_chamber field (\u00d6hlins, DVO Topaz): some models require a second valve to be pressurised separately \u2014 see that field's notes","\u00d6hlins RXF forks use a 3-chamber system: main + negative + ramp-up. Ramp-up runs ~1.5\u20132\u00d7 main pressure and controls mid-stroke and bottom-out support","DVO forks use OTT (Off-The-Top) external preload to tune small-bump sensitivity independently from air pressure"],"brands":{"rockshox":{"forks":[{"model":"SID","series":"XC","travel_mm":[100,120],"air_spring":"DebonAir+","sag_percent":{"min":20,"max":30},"max_pressure_psi":200,"volume_spacers_supported":true,"pressure_chart":[{"min_kg":40,"max_kg":50,"min_psi":55,"max_psi":65},{"min_kg":50,"max_kg":60,"min_psi":65,"max_psi":75},{"min_kg":60,"max_kg":70,"min_psi":75,"max_psi":85},{"min_kg":70,"max_kg":80,"min_psi":85,"max_psi":95},{"min_kg":80,"max_kg":90,"min_psi":95,"max_psi":105},{"min_kg":90,"max_kg":100,"min_psi":105,"max_psi":115},{"min_kg":100,"max_kg":120,"min_psi":115,"max_psi":130}],"setup_notes":"Dual Air system: set negative chamber 5-15 PSI below positive. Pump positive first, then negative.","damping":{"damper":"Charger 3","rebound":{"total_clicks":18,"count_from":"fully_closed","note":"Turn red knob clockwise (in) to slow rebound. XC fork \u2014 run faster than trail equivalents.","starting_clicks":[{"min_kg":40,"max_kg":60,"clicks":5},{"min_kg":60,"max_kg":75,"clicks":7},{"min_kg":75,"max_kg":90,"clicks":9},{"min_kg":90,"max_kg":115,"clicks":11}]},"lsc":{"total_clicks":15,"count_from":"fully_open","note":"Clockwise = more low-speed compression damping.","starting_clicks":[{"min_kg":40,"max_kg":60,"clicks":4},{"min_kg":60,"max_kg":75,"clicks":5},{"min_kg":75,"max_kg":90,"clicks":7},{"min_kg":90,"max_kg":115,"clicks":8}]},"hsc":{"total_clicks":5,"count_from":"fully_open","note":"Clockwise = more high-speed compression damping.","starting_clicks":[{"min_kg":40,"max_kg":75,"clicks":1},{"min_kg":75,"max_kg":115,"clicks":2}]},"ride_style_adjust":{"xc_trail":{"rebound":-2,"lsc":-1,"hsc":-1,"note":"Faster rebound, less compression \u2014 efficient on smoother terrain"},"all_mountain":{"rebound":0,"lsc":0,"hsc":0,"note":"Balanced baseline \u2014 good starting point for mixed terrain"},"enduro_dh":{"rebound":2,"lsc":1,"hsc":1,"note":"Slower rebound, more compression control \u2014 for aggressive/rough terrain"}}}},{"model":"Reba","series":"XC/Trail","travel_mm":[80,100],"air_spring":"Solo Air","sag_percent":{"min":20,"max":25},"max_pressure_psi":195,"volume_spacers_supported":false,"pressure_chart":[{"min_kg":40,"max_kg":55,"min_psi":55,"max_psi":70},{"min_kg":55,"max_kg":63,"min_psi":70,"max_psi":80},{"min_kg":63,"max_kg":72,"min_psi":80,"max_psi":90},{"min_kg":72,"max_kg":81,"min_psi":90,"max_psi":105},{"min_kg":81,"max_kg":90,"min_psi":105,"max_psi":120},{"min_kg":90,"max_kg":110,"min_psi":120,"max_psi":135}],"setup_notes":"Solo Air spring: single valve pressurises both chambers simultaneously.","damping":{"damper":"Motion Control","rebound":{"total_clicks":6,"count_from":"fully_closed","note":"6-click rebound dial. Counter-clockwise = faster rebound.","starting_clicks":[{"min_kg":40,"max_kg":60,"clicks":2},{"min_kg":60,"max_kg":75,"clicks":2},{"min_kg":75,"max_kg":90,"clicks":3},{"min_kg":90,"max_kg":115,"clicks":4}]},"compression":{"total_positions":3,"type":"lever","label":"Open / Trail / Climb","note":"3-position platform lever. Open = plush. Trail = pedalling support. Climb = firm lockout."},"ride_style_adjust":{"xc_trail":{"rebound":-2,"lsc":-1,"hsc":-1,"note":"Faster rebound, less compression \u2014 efficient on smoother terrain"},"all_mountain":{"rebound":0,"lsc":0,"hsc":0,"note":"Balanced baseline \u2014 good starting point for mixed terrain"},"enduro_dh":{"rebound":2,"lsc":1,"hsc":1,"note":"Slower rebound, more compression control \u2014 for aggressive/rough terrain"}}}},{"model":"Judy","series":"XC/Entry","travel_mm":[80,100],"air_spring":"Solo Air","sag_percent":{"min":20,"max":25},"max_pressure_psi":260,"volume_spacers_supported":false,"pressure_chart":[{"min_kg":40,"max_kg":55,"min_psi":50,"max_psi":65},{"min_kg":55,"max_kg":63,"min_psi":65,"max_psi":75},{"min_kg":63,"max_kg":72,"min_psi":75,"max_psi":88},{"min_kg":72,"max_kg":81,"min_psi":88,"max_psi":100},{"min_kg":81,"max_kg":90,"min_psi":100,"max_psi":115},{"min_kg":90,"max_kg":110,"min_psi":115,"max_psi":130},{"min_kg":110,"max_kg":145,"min_psi":130,"max_psi":170}],"setup_notes":"Entry-level fork. Silver TK variant is coil-only, no air spring.","damping":{"damper":"Motion Control Silver/Gold","rebound":{"total_clicks":6,"count_from":"fully_closed","note":"6-click rebound dial. Counter-clockwise = faster.","starting_clicks":[{"min_kg":40,"max_kg":60,"clicks":2},{"min_kg":60,"max_kg":75,"clicks":2},{"min_kg":75,"max_kg":90,"clicks":3},{"min_kg":90,"max_kg":115,"clicks":4}]},"lsc":{"total_clicks":7,"count_from":"fully_open","note":"7-click compression adjuster on Gold/Silver variants.","starting_clicks":[{"min_kg":40,"max_kg":60,"clicks":2},{"min_kg":60,"max_kg":75,"clicks":3},{"min_kg":75,"max_kg":90,"clicks":4},{"min_kg":90,"max_kg":115,"clicks":5}]},"ride_style_adjust":{"xc_trail":{"rebound":-2,"lsc":-1,"hsc":-1,"note":"Faster rebound, less compression \u2014 efficient on smoother terrain"},"all_mountain":{"rebound":0,"lsc":0,"hsc":0,"note":"Balanced baseline \u2014 good starting point for mixed terrain"},"enduro_dh":{"rebound":2,"lsc":1,"hsc":1,"note":"Slower rebound, more compression control \u2014 for aggressive/rough terrain"}}}},{"model":"Revelation","series":"Trail","travel_mm":[100,120],"air_spring":"Solo Air","sag_percent":{"min":25,"max":30},"max_pressure_psi":260,"volume_spacers_supported":true,"pressure_chart":[{"min_kg":40,"max_kg":55,"min_psi":60,"max_psi":75},{"min_kg":55,"max_kg":63,"min_psi":75,"max_psi":90},{"min_kg":63,"max_kg":72,"min_psi":85,"max_psi":100},{"min_kg":72,"max_kg":81,"min_psi":95,"max_psi":115},{"min_kg":81,"max_kg":90,"min_psi":110,"max_psi":125},{"min_kg":90,"max_kg":110,"min_psi":120,"max_psi":140}],"setup_notes":"Older models used Dual Air; post-2015 are Solo Air (DebonAir or standard).","damping":{"damper":"Charger 2 / 2.1","rebound":{"total_clicks":18,"count_from":"fully_closed","note":"18-click rebound. Clockwise = slower. Start near middle and adjust 2 clicks at a time.","starting_clicks":[{"min_kg":45,"max_kg":60,"clicks":5},{"min_kg":60,"max_kg":75,"clicks":8},{"min_kg":75,"max_kg":90,"clicks":9},{"min_kg":90,"max_kg":115,"clicks":11}]},"compression":{"total_positions":3,"type":"lever","label":"Open / Trail / Climb","note":"Charger 2 base: 3-position platform only. Charger 2.1 RC adds external LSC dial."},"lsc_note":"External LSC only on Charger 2.1 RC variant (not standard Revelation).","ride_style_adjust":{"xc_trail":{"rebound":-2,"lsc":-1,"hsc":-1,"note":"Faster rebound, less compression \u2014 efficient on smoother terrain"},"all_mountain":{"rebound":0,"lsc":0,"hsc":0,"note":"Balanced baseline \u2014 good starting point for mixed terrain"},"enduro_dh":{"rebound":2,"lsc":1,"hsc":1,"note":"Slower rebound, more compression control \u2014 for aggressive/rough terrain"}}}},{"model":"Pike","series":"Trail/Enduro","travel_mm":[120,130,140],"air_spring":"DebonAir","sag_percent":{"min":25,"max":30},"max_pressure_psi":260,"volume_spacers_supported":true,"pressure_chart":[{"min_kg":40,"max_kg":55,"min_psi":55,"max_psi":75},{"min_kg":55,"max_kg":63,"min_psi":75,"max_psi":85},{"min_kg":63,"max_kg":72,"min_psi":85,"max_psi":95},{"min_kg":72,"max_kg":81,"min_psi":95,"max_psi":105},{"min_kg":81,"max_kg":90,"min_psi":105,"max_psi":115},{"min_kg":90,"max_kg":99,"min_psi":115,"max_psi":125},{"min_kg":99,"max_kg":120,"min_psi":125,"max_psi":145}],"setup_notes":"DebonAir uses 25% sag target; Solo Air (older) uses 25-30%. Adjust tokens for more support.","damping":{"damper":"Charger 3","rebound":{"total_clicks":18,"count_from":"fully_closed","note":"Turn clockwise to slow rebound. Counter-clockwise = faster.","starting_clicks":[{"min_kg":45,"max_kg":60,"clicks":5},{"min_kg":60,"max_kg":75,"clicks":8},{"min_kg":75,"max_kg":90,"clicks":9},{"min_kg":90,"max_kg":115,"clicks":11}]},"lsc":{"total_clicks":15,"count_from":"fully_open","note":"Clockwise = more low-speed compression damping.","starting_clicks":[{"min_kg":45,"max_kg":60,"clicks":4},{"min_kg":60,"max_kg":75,"clicks":6},{"min_kg":75,"max_kg":90,"clicks":8},{"min_kg":90,"max_kg":115,"clicks":9}]},"hsc":{"total_clicks":5,"count_from":"fully_open","note":"High Speed Compression. 3 clicks open for most riders, add 1 for heavy/aggressive.","starting_clicks":[{"min_kg":45,"max_kg":80,"clicks":2},{"min_kg":80,"max_kg":120,"clicks":2}]},"ride_style_adjust":{"xc_trail":{"rebound":-2,"lsc":-1,"hsc":-1,"note":"Faster rebound, less compression \u2014 efficient on smoother terrain"},"all_mountain":{"rebound":0,"lsc":0,"hsc":0,"note":"Balanced baseline \u2014 good starting point for mixed terrain"},"enduro_dh":{"rebound":2,"lsc":1,"hsc":1,"note":"Slower rebound, more compression control \u2014 for aggressive/rough terrain"}}}},{"model":"Lyrik","series":"Enduro","travel_mm":[140,150,160],"air_spring":"DebonAir","sag_percent":{"min":25,"max":30},"max_pressure_psi":260,"volume_spacers_supported":true,"pressure_chart":[{"min_kg":40,"max_kg":55,"min_psi":50,"max_psi":65},{"min_kg":55,"max_kg":63,"min_psi":65,"max_psi":78},{"min_kg":63,"max_kg":72,"min_psi":75,"max_psi":88},{"min_kg":72,"max_kg":81,"min_psi":85,"max_psi":100},{"min_kg":81,"max_kg":90,"min_psi":98,"max_psi":112},{"min_kg":90,"max_kg":99,"min_psi":110,"max_psi":125},{"min_kg":99,"max_kg":120,"min_psi":122,"max_psi":145}],"setup_notes":"Real-world: 70 kg rider ~70-75 PSI at 150mm. Each token adds ~5-10 PSI equivalent support.","damping":{"damper":"Charger 3","rebound":{"total_clicks":18,"count_from":"fully_closed","note":"Turn clockwise to slow rebound. Counter-clockwise = faster.","starting_clicks":[{"min_kg":45,"max_kg":60,"clicks":5},{"min_kg":60,"max_kg":75,"clicks":8},{"min_kg":75,"max_kg":90,"clicks":9},{"min_kg":90,"max_kg":115,"clicks":11}]},"lsc":{"total_clicks":15,"count_from":"fully_open","note":"Clockwise = more low-speed compression damping.","starting_clicks":[{"min_kg":45,"max_kg":60,"clicks":4},{"min_kg":60,"max_kg":75,"clicks":6},{"min_kg":75,"max_kg":90,"clicks":8},{"min_kg":90,"max_kg":115,"clicks":9}]},"hsc":{"total_clicks":5,"count_from":"fully_open","note":"High Speed Compression. 3 clicks open for most riders, add 1 for heavy/aggressive.","starting_clicks":[{"min_kg":45,"max_kg":80,"clicks":2},{"min_kg":80,"max_kg":120,"clicks":2}]},"ride_style_adjust":{"xc_trail":{"rebound":-2,"lsc":-1,"hsc":-1,"note":"Faster rebound, less compression \u2014 efficient on smoother terrain"},"all_mountain":{"rebound":0,"lsc":0,"hsc":0,"note":"Balanced baseline \u2014 good starting point for mixed terrain"},"enduro_dh":{"rebound":2,"lsc":1,"hsc":1,"note":"Slower rebound, more compression control \u2014 for aggressive/rough terrain"}}}},{"model":"Zeb","series":"Enduro/DH","travel_mm":[160,170,180],"air_spring":"DebonAir","sag_percent":{"min":25,"max":30},"max_pressure_psi":260,"volume_spacers_supported":true,"pressure_chart":[{"min_kg":50,"max_kg":60,"min_psi":34,"max_psi":50},{"min_kg":60,"max_kg":70,"min_psi":48,"max_psi":62},{"min_kg":70,"max_kg":80,"min_psi":60,"max_psi":75},{"min_kg":80,"max_kg":90,"min_psi":72,"max_psi":88},{"min_kg":90,"max_kg":100,"min_psi":84,"max_psi":95},{"min_kg":100,"max_kg":120,"min_psi":92,"max_psi":115}],"setup_notes":"Large chassis fork with larger air spring volume \u2014 lower PSI than smaller forks for same sag. Wide PSI range (34-95 PSI observed in practice).","damping":{"damper":"Charger 3","rebound":{"total_clicks":18,"count_from":"fully_closed","note":"18-click rebound. Larger chassis \u2014 heavier riders may need more clicks than lighter trail forks.","starting_clicks":[{"min_kg":50,"max_kg":65,"clicks":6},{"min_kg":65,"max_kg":80,"clicks":8},{"min_kg":80,"max_kg":95,"clicks":10},{"min_kg":95,"max_kg":120,"clicks":12}]},"lsc":{"total_clicks":15,"count_from":"fully_open","note":"Clockwise = more low-speed compression damping.","starting_clicks":[{"min_kg":50,"max_kg":65,"clicks":5},{"min_kg":65,"max_kg":80,"clicks":7},{"min_kg":80,"max_kg":95,"clicks":8},{"min_kg":95,"max_kg":120,"clicks":10}]},"hsc":{"total_clicks":5,"count_from":"fully_open","note":"Clockwise = more high-speed compression damping.","starting_clicks":[{"min_kg":50,"max_kg":80,"clicks":2},{"min_kg":80,"max_kg":120,"clicks":2}]},"ride_style_adjust":{"xc_trail":{"rebound":-2,"lsc":-1,"hsc":-1,"note":"Faster rebound, less compression \u2014 efficient on smoother terrain"},"all_mountain":{"rebound":0,"lsc":0,"hsc":0,"note":"Balanced baseline \u2014 good starting point for mixed terrain"},"enduro_dh":{"rebound":2,"lsc":1,"hsc":1,"note":"Slower rebound, more compression control \u2014 for aggressive/rough terrain"}}}}],"shocks":[{"model":"Monarch","series":"Trail","sag_percent":{"min":25,"max":30},"max_pressure_psi":300,"volume_spacers_supported":true,"formula_psi":"weight_lbs","pressure_chart":[{"min_kg":40,"max_kg":50,"min_psi":88,"max_psi":110},{"min_kg":50,"max_kg":60,"min_psi":110,"max_psi":132},{"min_kg":60,"max_kg":70,"min_psi":132,"max_psi":154},{"min_kg":70,"max_kg":80,"min_psi":154,"max_psi":176},{"min_kg":80,"max_kg":90,"min_psi":176,"max_psi":198},{"min_kg":90,"max_kg":100,"min_psi":198,"max_psi":220},{"min_kg":100,"max_kg":120,"min_psi":220,"max_psi":264}],"setup_notes":"Starting point: rider weight in lbs \u2248 PSI. Final pressure is highly frame-dependent (leverage ratio). DebonAir (post-2015) requires higher pressures than older models for same sag.","damping":{"damper":"RCT3","rebound":{"total_clicks":15,"count_from":"fully_closed","note":"15-click rebound. Clockwise (in) = slower rebound. Red knob.","starting_clicks":[{"min_kg":40,"max_kg":55,"clicks":4},{"min_kg":55,"max_kg":70,"clicks":6},{"min_kg":70,"max_kg":85,"clicks":8},{"min_kg":85,"max_kg":105,"clicks":9},{"min_kg":105,"max_kg":130,"clicks":10}]},"compression":{"total_positions":3,"type":"lever","label":"Open / Trail / Climb","note":"RCT3 platform lever. Open = full travel. Trail = pedalling support. Climb = firm."},"ride_style_adjust":{"xc_trail":{"rebound":-2,"lsc":-1,"hsc":-1,"note":"Faster rebound, less compression \u2014 efficient on smoother terrain"},"all_mountain":{"rebound":0,"lsc":0,"hsc":0,"note":"Balanced baseline \u2014 good starting point for mixed terrain"},"enduro_dh":{"rebound":2,"lsc":1,"hsc":1,"note":"Slower rebound, more compression control \u2014 for aggressive/rough terrain"}}}},{"model":"Deluxe","series":"Trail/Enduro","sag_percent":{"min":25,"max":30},"max_pressure_psi":300,"volume_spacers_supported":true,"formula_psi":"weight_lbs","pressure_chart":[{"min_kg":40,"max_kg":50,"min_psi":88,"max_psi":110},{"min_kg":50,"max_kg":60,"min_psi":110,"max_psi":132},{"min_kg":60,"max_kg":70,"min_psi":132,"max_psi":154},{"min_kg":70,"max_kg":80,"min_psi":154,"max_psi":176},{"min_kg":80,"max_kg":90,"min_psi":176,"max_psi":198},{"min_kg":90,"max_kg":100,"min_psi":198,"max_psi":220},{"min_kg":100,"max_kg":120,"min_psi":220,"max_psi":264}],"setup_notes":"Start at 100 PSI, cycle shock 5 times, then inflate to target. DebonAir variant: use 30% sag target.","damping":{"damper":"Thru Shaft","rebound":{"total_clicks":15,"count_from":"fully_closed","note":"Turn clockwise to slow rebound. Counter-clockwise = faster.","starting_clicks":[{"min_kg":40,"max_kg":55,"clicks":4},{"min_kg":55,"max_kg":70,"clicks":6},{"min_kg":70,"max_kg":85,"clicks":8},{"min_kg":85,"max_kg":105,"clicks":9},{"min_kg":105,"max_kg":130,"clicks":10}]},"lsc":{"total_clicks":5,"count_from":"fully_open","note":"5-position compression adjuster.","starting_clicks":[{"min_kg":40,"max_kg":60,"clicks":2},{"min_kg":60,"max_kg":75,"clicks":2},{"min_kg":75,"max_kg":90,"clicks":3},{"min_kg":90,"max_kg":115,"clicks":3},{"min_kg":115,"max_kg":130,"clicks":4}]},"hsc":{"total_clicks":5,"count_from":"fully_open","note":"Clockwise = more high-speed compression damping.","starting_clicks":[{"min_kg":40,"max_kg":70,"clicks":2},{"min_kg":70,"max_kg":100,"clicks":2},{"min_kg":100,"max_kg":130,"clicks":3}]},"ride_style_adjust":{"xc_trail":{"rebound":-2,"lsc":-1,"hsc":-1,"note":"Faster rebound, less compression \u2014 efficient on smoother terrain"},"all_mountain":{"rebound":0,"lsc":0,"hsc":0,"note":"Balanced baseline \u2014 good starting point for mixed terrain"},"enduro_dh":{"rebound":2,"lsc":1,"hsc":1,"note":"Slower rebound, more compression control \u2014 for aggressive/rough terrain"}}}},{"model":"Super Deluxe","series":"Enduro/DH","sag_percent":{"min":28,"max":32},"max_pressure_psi":400,"volume_spacers_supported":true,"formula_psi":"weight_lbs","pressure_chart":[{"min_kg":40,"max_kg":45,"min_psi":88,"max_psi":110},{"min_kg":45,"max_kg":54,"min_psi":100,"max_psi":130},{"min_kg":54,"max_kg":63,"min_psi":130,"max_psi":150},{"min_kg":63,"max_kg":72,"min_psi":150,"max_psi":170},{"min_kg":72,"max_kg":81,"min_psi":170,"max_psi":190},{"min_kg":81,"max_kg":90,"min_psi":190,"max_psi":210},{"min_kg":90,"max_kg":99,"min_psi":210,"max_psi":230},{"min_kg":99,"max_kg":120,"min_psi":230,"max_psi":265}],"setup_notes":"Cycle shock 5 times after reaching 100 PSI initial, then inflate to final target. Comes in RCT3, Coil, and Ultimate variants \u2014 all air versions use same pressure approach.","damping":{"damper":"Thru Shaft / RCT3","rebound":{"total_clicks":15,"count_from":"fully_closed","note":"Turn clockwise to slow rebound. Counter-clockwise = faster.","starting_clicks":[{"min_kg":40,"max_kg":55,"clicks":4},{"min_kg":55,"max_kg":70,"clicks":6},{"min_kg":70,"max_kg":85,"clicks":8},{"min_kg":85,"max_kg":105,"clicks":9},{"min_kg":105,"max_kg":130,"clicks":10}]},"lsc":{"total_clicks":5,"count_from":"fully_open","note":"Clockwise = more low-speed compression damping.","starting_clicks":[{"min_kg":40,"max_kg":60,"clicks":2},{"min_kg":60,"max_kg":75,"clicks":2},{"min_kg":75,"max_kg":90,"clicks":3},{"min_kg":90,"max_kg":115,"clicks":3},{"min_kg":115,"max_kg":130,"clicks":4}]},"hsc":{"total_clicks":5,"count_from":"fully_open","note":"Clockwise = more high-speed compression damping.","starting_clicks":[{"min_kg":40,"max_kg":70,"clicks":2},{"min_kg":70,"max_kg":100,"clicks":2},{"min_kg":100,"max_kg":130,"clicks":3}]},"ride_style_adjust":{"xc_trail":{"rebound":-2,"lsc":-1,"hsc":-1,"note":"Faster rebound, less compression \u2014 efficient on smoother terrain"},"all_mountain":{"rebound":0,"lsc":0,"hsc":0,"note":"Balanced baseline \u2014 good starting point for mixed terrain"},"enduro_dh":{"rebound":2,"lsc":1,"hsc":1,"note":"Slower rebound, more compression control \u2014 for aggressive/rough terrain"}}}},{"model":"Super Deluxe Coil","series":"Enduro/DH","sag_percent":{"min":28,"max":32},"max_pressure_psi":null,"volume_spacers_supported":false,"formula_psi":null,"pressure_chart":null,"setup_notes":"Coil shock \u2014 no air pressure. Spring rate selection based on rider weight. Typically 400-600 lb/in (70-105 N/mm) for average adult riders. See manufacturer spring rate chart.","damping":{"damper":"Coil \u2014 no air damping adjustments","note":"Coil shock. Rebound and compression adjusters present but settings are spring-rate-dependent. Consult RockShox coil setup guide."}}]},"fox":{"forks":[{"model":"Fox 32","series":"XC","travel_mm":[100,120],"air_spring":"FLOAT","sag_percent":{"min":15,"max":20},"max_pressure_psi":150,"volume_spacers_supported":true,"pressure_chart":[{"min_kg":54,"max_kg":59,"min_psi":57,"max_psi":61},{"min_kg":59,"max_kg":63,"min_psi":61,"max_psi":66},{"min_kg":63,"max_kg":68,"min_psi":66,"max_psi":71},{"min_kg":68,"max_kg":72,"min_psi":71,"max_psi":76},{"min_kg":72,"max_kg":77,"min_psi":76,"max_psi":82},{"min_kg":77,"max_kg":81,"min_psi":82,"max_psi":87},{"min_kg":81,"max_kg":86,"min_psi":87,"max_psi":92},{"min_kg":86,"max_kg":90,"min_psi":92,"max_psi":98},{"min_kg":90,"max_kg":95,"min_psi":98,"max_psi":103},{"min_kg":95,"max_kg":100,"min_psi":103,"max_psi":108}],"setup_notes":"XC-focused fork with lower sag target (15-20%) for efficiency. FLOAT air spring. Max 140 PSI (Float/Rhythm), 150 PSI (FLOAT Factory).","damping":{"damper":"GRIP (Rhythm/Performance) or FIT4 (Factory)","rebound":{"total_clicks":16,"count_from":"fully_closed","note":"16-click LSR. XC fork \u2014 run faster rebound for efficiency.","starting_clicks":[{"min_kg":40,"max_kg":60,"clicks":4},{"min_kg":60,"max_kg":75,"clicks":6},{"min_kg":75,"max_kg":90,"clicks":8},{"min_kg":90,"max_kg":115,"clicks":10}]},"lsc":{"total_clicks":11,"count_from":"fully_open","note":"11-click LSC. GRIP damper. FIT4 (Factory) uses 3-position lever instead.","starting_clicks":[{"min_kg":40,"max_kg":60,"clicks":3},{"min_kg":60,"max_kg":75,"clicks":4},{"min_kg":75,"max_kg":90,"clicks":6},{"min_kg":90,"max_kg":115,"clicks":7}]},"hsc_note":"No external HSC on GRIP. FIT4 (Factory): 3-position switch (Open/Medium/Firm).","ride_style_adjust":{"xc_trail":{"rebound":-2,"lsc":-1,"hsc":-1,"note":"Faster rebound, less compression \u2014 efficient on smoother terrain"},"all_mountain":{"rebound":0,"lsc":0,"hsc":0,"note":"Balanced baseline \u2014 good starting point for mixed terrain"},"enduro_dh":{"rebound":2,"lsc":1,"hsc":1,"note":"Slower rebound, more compression control \u2014 for aggressive/rough terrain"}}}},{"model":"Fox 34","series":"Trail","travel_mm":[120,130,140],"air_spring":"FLOAT","sag_percent":{"min":15,"max":20},"max_pressure_psi":120,"volume_spacers_supported":true,"pressure_chart":[{"min_kg":54,"max_kg":59,"min_psi":45,"max_psi":48},{"min_kg":59,"max_kg":63,"min_psi":48,"max_psi":51},{"min_kg":63,"max_kg":68,"min_psi":51,"max_psi":53},{"min_kg":68,"max_kg":72,"min_psi":53,"max_psi":56},{"min_kg":72,"max_kg":77,"min_psi":56,"max_psi":58},{"min_kg":77,"max_kg":81,"min_psi":58,"max_psi":63},{"min_kg":81,"max_kg":86,"min_psi":63,"max_psi":68},{"min_kg":86,"max_kg":90,"min_psi":68,"max_psi":72},{"min_kg":90,"max_kg":95,"min_psi":72,"max_psi":77},{"min_kg":95,"max_kg":100,"min_psi":77,"max_psi":82}],"setup_notes":"One of the most popular trail forks. Grip 2 damper (Factory) vs GRIP damper (Rhythm/Performance). Add volume spacers to ramp up end-stroke support.","damping":{"damper":"GRIP2 (Factory/Performance Elite) or GRIP (Rhythm)","rebound_lsr":{"total_clicks":16,"count_from":"fully_closed","note":"LSR (Low Speed Rebound). Turn red dial clockwise = slower rebound.","starting_clicks":[{"min_kg":45,"max_kg":60,"clicks":5},{"min_kg":60,"max_kg":75,"clicks":7},{"min_kg":75,"max_kg":90,"clicks":8},{"min_kg":90,"max_kg":115,"clicks":10}]},"rebound_hsr":{"total_clicks":8,"count_from":"fully_closed","note":"HSR (High Speed Rebound). Controls rebound on fast hits. Start at 3 clicks; adjust \u00b11.","starting_clicks":[{"min_kg":45,"max_kg":80,"clicks":2},{"min_kg":80,"max_kg":120,"clicks":4}]},"lsc":{"total_clicks":15,"count_from":"fully_open","note":"LSC (Low Speed Compression). Blue dial. Clockwise = more damping.","starting_clicks":[{"min_kg":45,"max_kg":60,"clicks":4},{"min_kg":60,"max_kg":75,"clicks":6},{"min_kg":75,"max_kg":90,"clicks":8},{"min_kg":90,"max_kg":115,"clicks":9}]},"hsc":{"total_clicks":5,"count_from":"fully_open","note":"HSC (High Speed Compression). Controls harsh hits/drops. Start at 2\u20133 clicks.","starting_clicks":[{"min_kg":45,"max_kg":80,"clicks":2},{"min_kg":80,"max_kg":120,"clicks":2}]},"grip_note":"Rhythm variant has GRIP damper: 16 LSR clicks + 11 LSC clicks only (no HSR/HSC).","ride_style_adjust":{"xc_trail":{"rebound":-2,"lsc":-1,"hsc":-1,"note":"Faster rebound, less compression \u2014 efficient on smoother terrain"},"all_mountain":{"rebound":0,"lsc":0,"hsc":0,"note":"Balanced baseline \u2014 good starting point for mixed terrain"},"enduro_dh":{"rebound":2,"lsc":1,"hsc":1,"note":"Slower rebound, more compression control \u2014 for aggressive/rough terrain"}}}},{"model":"Fox 36","series":"Trail/Enduro","travel_mm":[140,150,160],"air_spring":"FLOAT","sag_percent":{"min":15,"max":20},"max_pressure_psi":120,"volume_spacers_supported":true,"pressure_chart":[{"min_kg":54,"max_kg":59,"min_psi":40,"max_psi":41},{"min_kg":59,"max_kg":63,"min_psi":41,"max_psi":43},{"min_kg":63,"max_kg":68,"min_psi":43,"max_psi":46},{"min_kg":68,"max_kg":72,"min_psi":46,"max_psi":51},{"min_kg":72,"max_kg":77,"min_psi":51,"max_psi":55},{"min_kg":77,"max_kg":81,"min_psi":55,"max_psi":59},{"min_kg":81,"max_kg":86,"min_psi":59,"max_psi":63},{"min_kg":86,"max_kg":90,"min_psi":63,"max_psi":67},{"min_kg":90,"max_kg":95,"min_psi":67,"max_psi":71},{"min_kg":95,"max_kg":100,"min_psi":71,"max_psi":76}],"setup_notes":"Larger chassis than 34 \u2014 noticeably lower PSI for same sag. Popular for aggressive trail and enduro riding.","damping":{"damper":"GRIP2 (Factory/Performance Elite) or GRIP (Rhythm)","rebound_lsr":{"total_clicks":16,"count_from":"fully_closed","note":"LSR (Low Speed Rebound). Turn red dial clockwise = slower rebound.","starting_clicks":[{"min_kg":45,"max_kg":60,"clicks":5},{"min_kg":60,"max_kg":75,"clicks":7},{"min_kg":75,"max_kg":90,"clicks":8},{"min_kg":90,"max_kg":115,"clicks":10}]},"rebound_hsr":{"total_clicks":8,"count_from":"fully_closed","note":"HSR (High Speed Rebound). Controls rebound on fast hits. Start at 3 clicks; adjust \u00b11.","starting_clicks":[{"min_kg":45,"max_kg":80,"clicks":2},{"min_kg":80,"max_kg":120,"clicks":4}]},"lsc":{"total_clicks":15,"count_from":"fully_open","note":"LSC (Low Speed Compression). Blue dial. Clockwise = more damping.","starting_clicks":[{"min_kg":45,"max_kg":60,"clicks":4},{"min_kg":60,"max_kg":75,"clicks":6},{"min_kg":75,"max_kg":90,"clicks":8},{"min_kg":90,"max_kg":115,"clicks":9}]},"hsc":{"total_clicks":5,"count_from":"fully_open","note":"HSC (High Speed Compression). Controls harsh hits/drops. Start at 2\u20133 clicks.","starting_clicks":[{"min_kg":45,"max_kg":80,"clicks":2},{"min_kg":80,"max_kg":120,"clicks":2}]},"grip_note":"Rhythm variant: GRIP damper \u2014 16 LSR + 11 LSC only.","ride_style_adjust":{"xc_trail":{"rebound":-2,"lsc":-1,"hsc":-1,"note":"Faster rebound, less compression \u2014 efficient on smoother terrain"},"all_mountain":{"rebound":0,"lsc":0,"hsc":0,"note":"Balanced baseline \u2014 good starting point for mixed terrain"},"enduro_dh":{"rebound":2,"lsc":1,"hsc":1,"note":"Slower rebound, more compression control \u2014 for aggressive/rough terrain"}}}},{"model":"Fox 38","series":"Enduro","travel_mm":[160,170,180],"air_spring":"FLOAT","sag_percent":{"min":15,"max":20},"max_pressure_psi":140,"volume_spacers_supported":true,"pressure_chart":[{"min_kg":54,"max_kg":63,"min_psi":55,"max_psi":70},{"min_kg":63,"max_kg":72,"min_psi":70,"max_psi":85},{"min_kg":72,"max_kg":81,"min_psi":85,"max_psi":98},{"min_kg":81,"max_kg":86,"min_psi":95,"max_psi":105},{"min_kg":86,"max_kg":90,"min_psi":100,"max_psi":110},{"min_kg":90,"max_kg":100,"min_psi":108,"max_psi":118},{"min_kg":100,"max_kg":120,"min_psi":115,"max_psi":135}],"setup_notes":"Real-world: 97 kg (215 lb) rider runs ~114 PSI with 2 spacers; 86 kg (190 lb) ~105 PSI. 2025 Rhythm variant has 120 PSI max; Factory/Performance Elite 140 PSI max.","damping":{"damper":"GRIP2","rebound_lsr":{"total_clicks":16,"count_from":"fully_closed","note":"LSR. 16 clicks. Run slightly slower than Fox 36 due to longer travel.","starting_clicks":[{"min_kg":50,"max_kg":65,"clicks":5},{"min_kg":65,"max_kg":80,"clicks":7},{"min_kg":80,"max_kg":95,"clicks":9},{"min_kg":95,"max_kg":120,"clicks":10}]},"rebound_hsr":{"total_clicks":8,"count_from":"fully_closed","note":"HSR (High Speed Rebound). Controls rebound on fast hits. Start at 3 clicks; adjust \u00b11.","starting_clicks":[{"min_kg":45,"max_kg":80,"clicks":2},{"min_kg":80,"max_kg":120,"clicks":4}]},"lsc":{"total_clicks":15,"count_from":"fully_open","note":"Clockwise = more low-speed compression damping.","starting_clicks":[{"min_kg":50,"max_kg":65,"clicks":5},{"min_kg":65,"max_kg":80,"clicks":7},{"min_kg":80,"max_kg":95,"clicks":8},{"min_kg":95,"max_kg":120,"clicks":10}]},"hsc":{"total_clicks":5,"count_from":"fully_open","note":"Clockwise = more high-speed compression damping.","starting_clicks":[{"min_kg":50,"max_kg":80,"clicks":2},{"min_kg":80,"max_kg":120,"clicks":3}]},"ride_style_adjust":{"xc_trail":{"rebound":-2,"lsc":-1,"hsc":-1,"note":"Faster rebound, less compression \u2014 efficient on smoother terrain"},"all_mountain":{"rebound":0,"lsc":0,"hsc":0,"note":"Balanced baseline \u2014 good starting point for mixed terrain"},"enduro_dh":{"rebound":2,"lsc":1,"hsc":1,"note":"Slower rebound, more compression control \u2014 for aggressive/rough terrain"}}}},{"model":"Fox 40","series":"DH","travel_mm":[180,200],"air_spring":"FLOAT","sag_percent":{"min":20,"max":25},"max_pressure_psi":160,"volume_spacers_supported":true,"pressure_chart":[{"min_kg":54,"max_kg":65,"min_psi":50,"max_psi":70},{"min_kg":65,"max_kg":75,"min_psi":68,"max_psi":85},{"min_kg":75,"max_kg":85,"min_psi":82,"max_psi":98},{"min_kg":85,"max_kg":95,"min_psi":95,"max_psi":112},{"min_kg":95,"max_kg":110,"min_psi":108,"max_psi":128},{"min_kg":110,"max_kg":130,"min_psi":124,"max_psi":150}],"setup_notes":"DH specific \u2014 pressure chart often printed on fork legs. Specific charts vary by model year. Check the sticker on the lower leg for year-specific guidance.","damping":{"damper":"DHX / VAN RC","rebound":{"total_clicks":16,"count_from":"fully_closed","note":"16-click rebound. DH-specific. Heavier riders and bigger hits need more damping.","starting_clicks":[{"min_kg":55,"max_kg":70,"clicks":5},{"min_kg":70,"max_kg":85,"clicks":7},{"min_kg":85,"max_kg":100,"clicks":9},{"min_kg":100,"max_kg":125,"clicks":11}]},"lsc":{"total_clicks":16,"count_from":"fully_open","note":"16-click LSC.","starting_clicks":[{"min_kg":55,"max_kg":70,"clicks":5},{"min_kg":70,"max_kg":85,"clicks":7},{"min_kg":85,"max_kg":100,"clicks":9},{"min_kg":100,"max_kg":125,"clicks":11}]},"hsc":{"total_clicks":5,"count_from":"fully_open","note":"Clockwise = more high-speed compression damping.","starting_clicks":[{"min_kg":55,"max_kg":80,"clicks":2},{"min_kg":80,"max_kg":120,"clicks":3}]},"ride_style_adjust":{"xc_trail":{"rebound":-2,"lsc":-1,"hsc":-1,"note":"Faster rebound, less compression \u2014 efficient on smoother terrain"},"all_mountain":{"rebound":0,"lsc":0,"hsc":0,"note":"Balanced baseline \u2014 good starting point for mixed terrain"},"enduro_dh":{"rebound":2,"lsc":1,"hsc":1,"note":"Slower rebound, more compression control \u2014 for aggressive/rough terrain"}}}}],"shocks":[{"model":"Float DPS","series":"XC/Trail","sag_percent":{"min":25,"max":30},"max_pressure_psi":300,"volume_spacers_supported":true,"formula_psi":"weight_lbs","pressure_chart":[{"min_kg":40,"max_kg":50,"min_psi":88,"max_psi":110},{"min_kg":50,"max_kg":60,"min_psi":110,"max_psi":132},{"min_kg":60,"max_kg":70,"min_psi":132,"max_psi":154},{"min_kg":70,"max_kg":80,"min_psi":154,"max_psi":176},{"min_kg":80,"max_kg":90,"min_psi":176,"max_psi":198},{"min_kg":90,"max_kg":100,"min_psi":198,"max_psi":220},{"min_kg":100,"max_kg":120,"min_psi":220,"max_psi":264}],"setup_notes":"Starting point: rider weight in lbs \u2248 PSI (e.g. 80 kg = 176 lbs \u2192 ~176 PSI). Cycle shock 10 times through 25% travel after pressurising to equalise EVOL chambers.","damping":{"damper":"FLOAT DPS","rebound":{"total_clicks":16,"count_from":"fully_closed","note":"Turn clockwise to slow rebound. Counter-clockwise = faster.","starting_clicks":[{"min_kg":40,"max_kg":55,"clicks":5},{"min_kg":55,"max_kg":70,"clicks":7},{"min_kg":70,"max_kg":85,"clicks":8},{"min_kg":85,"max_kg":105,"clicks":10},{"min_kg":105,"max_kg":130,"clicks":11}]},"lsc":{"total_clicks":11,"count_from":"fully_open","note":"Clockwise = more low-speed compression damping.","starting_clicks":[{"min_kg":40,"max_kg":55,"clicks":3},{"min_kg":55,"max_kg":70,"clicks":4},{"min_kg":70,"max_kg":85,"clicks":6},{"min_kg":85,"max_kg":105,"clicks":7},{"min_kg":105,"max_kg":130,"clicks":8}]},"climb_switch":"3-position Climb Switch (Open / Pedal / Firm). Use Pedal for climbs, Open for descents.","ride_style_adjust":{"xc_trail":{"rebound":-2,"lsc":-1,"hsc":-1,"note":"Faster rebound, less compression \u2014 efficient on smoother terrain"},"all_mountain":{"rebound":0,"lsc":0,"hsc":0,"note":"Balanced baseline \u2014 good starting point for mixed terrain"},"enduro_dh":{"rebound":2,"lsc":1,"hsc":1,"note":"Slower rebound, more compression control \u2014 for aggressive/rough terrain"}}}},{"model":"Float X","series":"Trail/Enduro","sag_percent":{"min":25,"max":30},"max_pressure_psi":300,"volume_spacers_supported":true,"formula_psi":"weight_lbs","pressure_chart":[{"min_kg":40,"max_kg":50,"min_psi":88,"max_psi":110},{"min_kg":50,"max_kg":60,"min_psi":110,"max_psi":132},{"min_kg":60,"max_kg":70,"min_psi":132,"max_psi":154},{"min_kg":70,"max_kg":80,"min_psi":154,"max_psi":176},{"min_kg":80,"max_kg":90,"min_psi":176,"max_psi":198},{"min_kg":90,"max_kg":100,"min_psi":198,"max_psi":220},{"min_kg":100,"max_kg":120,"min_psi":220,"max_psi":264}],"setup_notes":"EVOL air sleeve standard. Cycle shock 10 times after pressurising. Final pressure is highly frame-leverage-dependent \u2014 always verify with sag measurement.","damping":{"damper":"FLOAT X","rebound":{"total_clicks":16,"count_from":"fully_closed","note":"Turn clockwise to slow rebound. Counter-clockwise = faster.","starting_clicks":[{"min_kg":40,"max_kg":55,"clicks":5},{"min_kg":55,"max_kg":70,"clicks":7},{"min_kg":70,"max_kg":85,"clicks":8},{"min_kg":85,"max_kg":105,"clicks":10},{"min_kg":105,"max_kg":130,"clicks":11}]},"lsc":{"total_clicks":11,"count_from":"fully_open","note":"Clockwise = more low-speed compression damping.","starting_clicks":[{"min_kg":40,"max_kg":55,"clicks":3},{"min_kg":55,"max_kg":70,"clicks":4},{"min_kg":70,"max_kg":85,"clicks":6},{"min_kg":85,"max_kg":105,"clicks":7},{"min_kg":105,"max_kg":130,"clicks":8}]},"hsc_note":"No external HSC on Float X. Use LSC + rebound adjustment only.","ride_style_adjust":{"xc_trail":{"rebound":-2,"lsc":-1,"hsc":-1,"note":"Faster rebound, less compression \u2014 efficient on smoother terrain"},"all_mountain":{"rebound":0,"lsc":0,"hsc":0,"note":"Balanced baseline \u2014 good starting point for mixed terrain"},"enduro_dh":{"rebound":2,"lsc":1,"hsc":1,"note":"Slower rebound, more compression control \u2014 for aggressive/rough terrain"}}}},{"model":"Float X2","series":"Enduro","sag_percent":{"min":28,"max":32},"max_pressure_psi":300,"volume_spacers_supported":true,"formula_psi":"weight_lbs","pressure_chart":[{"min_kg":40,"max_kg":45,"min_psi":88,"max_psi":110},{"min_kg":45,"max_kg":54,"min_psi":110,"max_psi":132},{"min_kg":54,"max_kg":63,"min_psi":132,"max_psi":154},{"min_kg":63,"max_kg":72,"min_psi":154,"max_psi":176},{"min_kg":72,"max_kg":81,"min_psi":176,"max_psi":198},{"min_kg":81,"max_kg":90,"min_psi":198,"max_psi":220},{"min_kg":90,"max_kg":99,"min_psi":220,"max_psi":242},{"min_kg":99,"max_kg":120,"min_psi":242,"max_psi":275}],"setup_notes":"EVOL standard. Dual-piston shock with separate high/low-speed compression. Cycle 10 times through 25% travel after pressurising. Note: real-world pressures vary a lot by frame (Santa Cruz 5010 example: 45 kg \u2192 140 PSI, 90 kg \u2192 240 PSI).","damping":{"damper":"FLOAT X2","rebound_lsr":{"total_clicks":16,"count_from":"fully_closed","note":"LSR (Low Speed Rebound). Red dial. 16 clicks.","starting_clicks":[{"min_kg":40,"max_kg":55,"clicks":5},{"min_kg":55,"max_kg":70,"clicks":7},{"min_kg":70,"max_kg":85,"clicks":8},{"min_kg":85,"max_kg":105,"clicks":10},{"min_kg":105,"max_kg":130,"clicks":11}]},"rebound_hsr":{"total_clicks":8,"count_from":"fully_closed","note":"HSR (High Speed Rebound). Separate red knob. 8 clicks. Controls rebound on big hits.","starting_clicks":[{"min_kg":40,"max_kg":65,"clicks":2},{"min_kg":65,"max_kg":85,"clicks":3},{"min_kg":85,"max_kg":105,"clicks":4},{"min_kg":105,"max_kg":130,"clicks":5}]},"lsc":{"total_clicks":16,"count_from":"fully_open","note":"LSC. 16 clicks. Blue dial. Controls pedalling feel and mid-speed compression.","starting_clicks":[{"min_kg":40,"max_kg":55,"clicks":4},{"min_kg":55,"max_kg":70,"clicks":6},{"min_kg":70,"max_kg":85,"clicks":8},{"min_kg":85,"max_kg":105,"clicks":10},{"min_kg":105,"max_kg":130,"clicks":12}]},"hsc":{"total_clicks":8,"count_from":"fully_open","note":"HSC. 8 clicks. Blue knob. Controls harsh bottom-out and big hit response.","starting_clicks":[{"min_kg":40,"max_kg":65,"clicks":2},{"min_kg":65,"max_kg":85,"clicks":3},{"min_kg":85,"max_kg":105,"clicks":4},{"min_kg":105,"max_kg":130,"clicks":5}]},"ride_style_adjust":{"xc_trail":{"rebound":-2,"lsc":-1,"hsc":-1,"note":"Faster rebound, less compression \u2014 efficient on smoother terrain"},"all_mountain":{"rebound":0,"lsc":0,"hsc":0,"note":"Balanced baseline \u2014 good starting point for mixed terrain"},"enduro_dh":{"rebound":2,"lsc":1,"hsc":1,"note":"Slower rebound, more compression control \u2014 for aggressive/rough terrain"}}}},{"model":"Float DHX","series":"Enduro/DH","sag_percent":{"min":28,"max":32},"max_pressure_psi":300,"volume_spacers_supported":true,"formula_psi":"weight_lbs","pressure_chart":[{"min_kg":40,"max_kg":50,"min_psi":88,"max_psi":110},{"min_kg":50,"max_kg":60,"min_psi":110,"max_psi":132},{"min_kg":60,"max_kg":70,"min_psi":132,"max_psi":154},{"min_kg":70,"max_kg":80,"min_psi":154,"max_psi":176},{"min_kg":80,"max_kg":90,"min_psi":176,"max_psi":198},{"min_kg":90,"max_kg":100,"min_psi":198,"max_psi":220},{"min_kg":100,"max_kg":120,"min_psi":220,"max_psi":264}],"setup_notes":"Air version only (coil DHX also exists). High-volume EVOL chamber. Same pressurising procedure as Float X2.","damping":{"damper":"FLOAT DHX Air","rebound_lsr":{"total_clicks":16,"count_from":"fully_closed","note":"Turn clockwise to slow rebound. Counter-clockwise = faster.","starting_clicks":[{"min_kg":40,"max_kg":55,"clicks":5},{"min_kg":55,"max_kg":70,"clicks":7},{"min_kg":70,"max_kg":85,"clicks":8},{"min_kg":85,"max_kg":105,"clicks":10},{"min_kg":105,"max_kg":130,"clicks":11}]},"rebound_hsr":{"total_clicks":8,"count_from":"fully_closed","note":"Turn clockwise to slow rebound. Counter-clockwise = faster.","starting_clicks":[{"min_kg":40,"max_kg":65,"clicks":2},{"min_kg":65,"max_kg":85,"clicks":3},{"min_kg":85,"max_kg":105,"clicks":4},{"min_kg":105,"max_kg":130,"clicks":5}]},"lsc":{"total_clicks":16,"count_from":"fully_open","note":"Clockwise = more low-speed compression damping.","starting_clicks":[{"min_kg":40,"max_kg":55,"clicks":4},{"min_kg":55,"max_kg":70,"clicks":6},{"min_kg":70,"max_kg":85,"clicks":8},{"min_kg":85,"max_kg":105,"clicks":10},{"min_kg":105,"max_kg":130,"clicks":12}]},"hsc":{"total_clicks":8,"count_from":"fully_open","note":"Clockwise = more high-speed compression damping.","starting_clicks":[{"min_kg":40,"max_kg":65,"clicks":2},{"min_kg":65,"max_kg":85,"clicks":3},{"min_kg":85,"max_kg":105,"clicks":4},{"min_kg":105,"max_kg":130,"clicks":5}]},"ride_style_adjust":{"xc_trail":{"rebound":-2,"lsc":-1,"hsc":-1,"note":"Faster rebound, less compression \u2014 efficient on smoother terrain"},"all_mountain":{"rebound":0,"lsc":0,"hsc":0,"note":"Balanced baseline \u2014 good starting point for mixed terrain"},"enduro_dh":{"rebound":2,"lsc":1,"hsc":1,"note":"Slower rebound, more compression control \u2014 for aggressive/rough terrain"}}}}]},"dvo":{"brand_notes":"DVO Suspension uses an air positive spring paired with a steel coil negative spring on all forks. This means lower air pressures than most competitors. The OTT (Off-The-Top) external adjuster tunes small-bump sensitivity independently from air pressure. DVO shocks feature a bladder IFP design that separates oil from air for improved small-bump compliance.","forks":[{"model":"Sapphire","series":"Trail/All-Mountain","travel_mm":[120,130,140,150],"air_spring":"Positive air + steel coil negative spring","sag_percent":{"min":15,"max":20},"max_pressure_psi":150,"volume_spacers_supported":false,"oil_volume_tuning":true,"ott_adjuster":true,"formula_psi":null,"pressure_chart":[{"min_kg":40,"max_kg":55,"min_psi":40,"max_psi":58},{"min_kg":55,"max_kg":63,"min_psi":55,"max_psi":72},{"min_kg":63,"max_kg":72,"min_psi":72,"max_psi":90},{"min_kg":72,"max_kg":82,"min_psi":88,"max_psi":108},{"min_kg":82,"max_kg":95,"min_psi":105,"max_psi":128},{"min_kg":95,"max_kg":120,"min_psi":125,"max_psi":150}],"setup_notes":"Positive air + steel coil negative spring. No volume spacers \u2014 tune progression via oil volume above air piston (requires service). OTT external adjuster (14 rotations total, 6 clicks per rotation) tunes first ~30mm of travel independently. Known pressure points: 54 kg \u2192 55 PSI, 68 kg \u2192 85 PSI, 81.6 kg \u2192 105 PSI, 95 kg \u2192 125 PSI, 108 kg \u2192 135 PSI.","damping":{"damper":"D1 / D1 SL","rebound":{"total_clicks":20,"count_from":"fully_closed","note":"20-click rebound adjuster. Fully closed (all in) = slowest. Back out for faster rebound.","starting_clicks":[{"min_kg":45,"max_kg":60,"clicks":6},{"min_kg":60,"max_kg":75,"clicks":8},{"min_kg":75,"max_kg":90,"clicks":10},{"min_kg":90,"max_kg":115,"clicks":12}]},"hsc":{"total_clicks":29,"count_from":"fully_open","note":"29-position HSC (counted in half-turns). Main compression adjuster on DVO forks. Clockwise = more damping.","starting_clicks":[{"min_kg":45,"max_kg":60,"clicks":9},{"min_kg":60,"max_kg":75,"clicks":12},{"min_kg":75,"max_kg":90,"clicks":15},{"min_kg":90,"max_kg":115,"clicks":18}]},"lsc":{"total_clicks":6,"count_from":"fully_open","note":"6-position LSC dial (D1 SL only). Base D1 has no external LSC.","starting_clicks":[{"min_kg":40,"max_kg":60,"clicks":2},{"min_kg":60,"max_kg":75,"clicks":3},{"min_kg":75,"max_kg":90,"clicks":3},{"min_kg":90,"max_kg":115,"clicks":4}]},"ott":{"total_rotations":14,"clicks_per_rotation":6,"total_positions":84,"note":"OTT (Off-The-Top) external coil preload. Adjusts negative spring independently \u2014 does NOT change air pressure. More preload = more initial resistance / less sag in first ~30mm. Start at 3\u20135 rotations from fully unwound. Fine-tune in 1-rotation increments."},"ride_style_adjust":{"xc_trail":{"rebound":-2,"lsc":-1,"hsc":-1,"note":"Faster rebound, less compression \u2014 efficient on smoother terrain"},"all_mountain":{"rebound":0,"lsc":0,"hsc":0,"note":"Balanced baseline \u2014 good starting point for mixed terrain"},"enduro_dh":{"rebound":2,"lsc":1,"hsc":1,"note":"Slower rebound, more compression control \u2014 for aggressive/rough terrain"}}}},{"model":"Diamond","series":"Trail/Enduro","travel_mm":[140,150,160],"air_spring":"Positive air + steel coil negative spring","sag_percent":{"min":15,"max":20},"max_pressure_psi":130,"volume_spacers_supported":false,"oil_volume_tuning":true,"ott_adjuster":true,"formula_psi":null,"pressure_chart":[{"min_kg":40,"max_kg":55,"min_psi":38,"max_psi":52},{"min_kg":55,"max_kg":63,"min_psi":50,"max_psi":65},{"min_kg":63,"max_kg":72,"min_psi":62,"max_psi":78},{"min_kg":72,"max_kg":82,"min_psi":75,"max_psi":95},{"min_kg":82,"max_kg":95,"min_psi":92,"max_psi":112},{"min_kg":95,"max_kg":120,"min_psi":108,"max_psi":130}],"setup_notes":"36mm stanchion trail/enduro fork. Positive air + coil negative spring system \u2014 runs lower PSI than most competitors at same sag. OTT (Off-The-Top): 6 clicks = 1 rotation, 14 total rotations of preload. D1 SL variant adds high/low-speed compression and rebound damping controls. No traditional volume spacers; progression tuned by oil volume inside the air piston cavity (service required).","damping":{"damper":"D1 / D1 SL","rebound":{"total_clicks":20,"count_from":"fully_closed","note":"20-click rebound. Same damper as Sapphire. Back out from fully closed for faster rebound.","starting_clicks":[{"min_kg":45,"max_kg":60,"clicks":6},{"min_kg":60,"max_kg":75,"clicks":8},{"min_kg":75,"max_kg":90,"clicks":10},{"min_kg":90,"max_kg":115,"clicks":12}]},"hsc":{"total_clicks":29,"count_from":"fully_open","note":"29-position HSC (half-turns). Primary compression adjuster. Start near middle of range.","starting_clicks":[{"min_kg":45,"max_kg":60,"clicks":9},{"min_kg":60,"max_kg":75,"clicks":12},{"min_kg":75,"max_kg":90,"clicks":15},{"min_kg":90,"max_kg":115,"clicks":18}]},"lsc":{"total_clicks":6,"count_from":"fully_open","note":"6-position LSC (D1 SL variant only).","starting_clicks":[{"min_kg":40,"max_kg":60,"clicks":2},{"min_kg":60,"max_kg":75,"clicks":3},{"min_kg":75,"max_kg":90,"clicks":3},{"min_kg":90,"max_kg":115,"clicks":4}]},"ott":{"total_rotations":14,"clicks_per_rotation":6,"total_positions":84,"note":"OTT preload adjuster. Tunes small-bump sensitivity in first 30mm of travel independently from air pressure. 14 rotations total. Start at 3\u20135 rotations from fully unwound and adjust to preference."},"ride_style_adjust":{"xc_trail":{"rebound":-2,"lsc":-1,"hsc":-1,"note":"Faster rebound, less compression \u2014 efficient on smoother terrain"},"all_mountain":{"rebound":0,"lsc":0,"hsc":0,"note":"Balanced baseline \u2014 good starting point for mixed terrain"},"enduro_dh":{"rebound":2,"lsc":1,"hsc":1,"note":"Slower rebound, more compression control \u2014 for aggressive/rough terrain"}}}},{"model":"Onyx","series":"Enduro","travel_mm":[160,170,180],"air_spring":"Positive air + steel coil negative spring","sag_percent":{"min":15,"max":20},"max_pressure_psi":130,"volume_spacers_supported":false,"oil_volume_tuning":true,"ott_adjuster":true,"formula_psi":null,"pressure_chart":[{"min_kg":50,"max_kg":60,"min_psi":35,"max_psi":50},{"min_kg":60,"max_kg":70,"min_psi":48,"max_psi":62},{"min_kg":70,"max_kg":80,"min_psi":58,"max_psi":75},{"min_kg":80,"max_kg":90,"min_psi":72,"max_psi":90},{"min_kg":90,"max_kg":100,"min_psi":86,"max_psi":105},{"min_kg":100,"max_kg":120,"min_psi":100,"max_psi":128}],"setup_notes":"38mm stanchion enduro fork. Same air + coil negative spring architecture as Diamond. OTT external adjuster for independent small-bump tuning. D1 SL variant includes high/low-speed compression and rebound. Travel adjustable 160\u2013180mm via air spring shaft swap (service required).","damping":{"damper":"D1 / D1 SL (38mm)","rebound":{"total_clicks":25,"count_from":"fully_closed","note":"25-click rebound. Larger stanchion \u2014 heavier damping range. Start near middle.","starting_clicks":[{"min_kg":50,"max_kg":65,"clicks":8},{"min_kg":65,"max_kg":80,"clicks":11},{"min_kg":80,"max_kg":95,"clicks":14},{"min_kg":95,"max_kg":120,"clicks":16}]},"hsc":{"total_half_turns":10,"count_from":"fully_open","note":"HSC adjusted in half-turn increments (~10 half-turns total). Clockwise = more compression.","starting_half_turns":[{"min_kg":50,"max_kg":65,"clicks":3},{"min_kg":65,"max_kg":80,"clicks":4},{"min_kg":80,"max_kg":95,"clicks":5},{"min_kg":95,"max_kg":120,"clicks":6}]},"lsc":{"total_clicks":5,"count_from":"fully_open","note":"5-position LSC (D1 SL only).","starting_clicks":[{"min_kg":50,"max_kg":65,"clicks":2},{"min_kg":65,"max_kg":80,"clicks":2},{"min_kg":80,"max_kg":95,"clicks":3},{"min_kg":95,"max_kg":120,"clicks":3}]},"ott":{"total_rotations":14,"clicks_per_rotation":6,"total_positions":84,"note":"OTT preload. Same setup as Diamond/Sapphire. Start 3\u20135 rotations from fully unwound."},"ride_style_adjust":{"xc_trail":{"rebound":-2,"lsc":-1,"hsc":-1,"note":"Faster rebound, less compression \u2014 efficient on smoother terrain"},"all_mountain":{"rebound":0,"lsc":0,"hsc":0,"note":"Balanced baseline \u2014 good starting point for mixed terrain"},"enduro_dh":{"rebound":2,"lsc":1,"hsc":1,"note":"Slower rebound, more compression control \u2014 for aggressive/rough terrain"}}}},{"model":"Emerald","series":"DH/Downhill","travel_mm":[203],"air_spring":"Positive air + steel coil negative spring","sag_percent":{"min":20,"max":30},"max_pressure_psi":100,"volume_spacers_supported":false,"oil_volume_tuning":true,"ott_adjuster":true,"formula_psi":null,"pressure_chart":[{"min_kg":55,"max_kg":65,"min_psi":40,"max_psi":55},{"min_kg":65,"max_kg":75,"min_psi":52,"max_psi":68},{"min_kg":75,"max_kg":85,"min_psi":62,"max_psi":78},{"min_kg":85,"max_kg":95,"min_psi":72,"max_psi":88},{"min_kg":95,"max_kg":110,"min_psi":82,"max_psi":100},{"min_kg":110,"max_kg":130,"min_psi":92,"max_psi":100}],"setup_notes":"DH-specific fork with twin-tube open-bath damping. OTT tunes first 70mm of travel (15 total rotations, 6 clicks per rotation). Adjusts high/low-speed compression, rebound, air and OTT independently. Air pressure range is 60\u2013100 PSI \u2014 much lower than most DH forks.","damping":{"damper":"D1 SL (DH)","rebound":{"total_clicks":40,"count_from":"fully_closed","note":"40-click rebound adjuster. DH fork \u2014 wide range for big-hit control. Start near 30\u201340% of range.","starting_clicks":[{"min_kg":55,"max_kg":70,"clicks":12},{"min_kg":70,"max_kg":85,"clicks":17},{"min_kg":85,"max_kg":100,"clicks":22},{"min_kg":100,"max_kg":125,"clicks":26}]},"hsc":{"total_clicks":33,"count_from":"fully_open","note":"33-click HSC. Start near middle; adjust based on harshness on large impacts.","starting_clicks":[{"min_kg":55,"max_kg":70,"clicks":10},{"min_kg":70,"max_kg":85,"clicks":14},{"min_kg":85,"max_kg":100,"clicks":18},{"min_kg":100,"max_kg":125,"clicks":22}]},"lsc":{"total_clicks":27,"count_from":"fully_open","note":"27-click LSC. Controls pedal platform feel and mid-speed hits.","starting_clicks":[{"min_kg":55,"max_kg":70,"clicks":8},{"min_kg":70,"max_kg":85,"clicks":11},{"min_kg":85,"max_kg":100,"clicks":15},{"min_kg":100,"max_kg":125,"clicks":18}]},"ott":{"total_rotations":15,"clicks_per_rotation":6,"total_positions":90,"note":"OTT preload. 15 rotations on Emerald DH. Tunes first 70mm of travel independently. Start at 4\u20136 rotations from fully unwound."},"ride_style_adjust":{"xc_trail":{"rebound":-2,"lsc":-1,"hsc":-1,"note":"Faster rebound, less compression \u2014 efficient on smoother terrain"},"all_mountain":{"rebound":0,"lsc":0,"hsc":0,"note":"Balanced baseline \u2014 good starting point for mixed terrain"},"enduro_dh":{"rebound":2,"lsc":1,"hsc":1,"note":"Slower rebound, more compression control \u2014 for aggressive/rough terrain"}}}}],"shocks":[{"model":"Topaz","series":"Trail/Enduro","sag_percent":{"min":25,"max":30},"max_pressure_psi":300,"volume_spacers_supported":true,"volume_spacer_note":"Quick-clip spacers for positive AND negative chambers independently. Up to 2 spacers in each chamber.","formula_psi":"weight_lbs","secondary_chamber":{"name":"Bladder","min_psi":140,"max_psi":180,"note":"Set bladder pressure to 140\u2013180 PSI separately from main air spring. Bladder separates oil from air for better small-bump sensitivity. Check with separate shock pump before each ride."},"pressure_chart":[{"min_kg":40,"max_kg":50,"min_psi":88,"max_psi":110},{"min_kg":50,"max_kg":60,"min_psi":110,"max_psi":132},{"min_kg":60,"max_kg":70,"min_psi":132,"max_psi":154},{"min_kg":70,"max_kg":80,"min_psi":154,"max_psi":176},{"min_kg":80,"max_kg":90,"min_psi":176,"max_psi":198},{"min_kg":90,"max_kg":100,"min_psi":198,"max_psi":220},{"min_kg":100,"max_kg":120,"min_psi":220,"max_psi":264}],"setup_notes":"Dual-chamber design with bladder IFP. Main spring: starting point is rider weight in lbs \u2248 PSI. Bladder MUST be set separately to 140\u2013180 PSI. T3 compression adjustment (3 quick positions). 9-click rebound. Add positive chamber spacers if bottoming out; add negative chamber spacers to raise BB height without losing mid-stroke feel.","damping":{"damper":"T3","rebound":{"total_clicks":9,"count_from":"fully_closed","note":"9-click rebound adjuster. Compact shock \u2014 each click is significant. Start at 4\u20135 clicks.","starting_clicks":[{"min_kg":40,"max_kg":55,"clicks":3},{"min_kg":55,"max_kg":70,"clicks":4},{"min_kg":70,"max_kg":85,"clicks":5},{"min_kg":85,"max_kg":105,"clicks":6},{"min_kg":105,"max_kg":130,"clicks":6}]},"compression":{"total_positions":3,"type":"lever","label":"Open / Trail / Firm","note":"T3 3-position compression lever. Open = most travel/plush. Trail = pedalling support. Firm = near-lockout."},"ride_style_adjust":{"xc_trail":{"rebound":-2,"lsc":-1,"hsc":-1,"note":"Faster rebound, less compression \u2014 efficient on smoother terrain"},"all_mountain":{"rebound":0,"lsc":0,"hsc":0,"note":"Balanced baseline \u2014 good starting point for mixed terrain"},"enduro_dh":{"rebound":2,"lsc":1,"hsc":1,"note":"Slower rebound, more compression control \u2014 for aggressive/rough terrain"}}}},{"model":"Jade","series":"XC/Trail","sag_percent":{"min":25,"max":30},"max_pressure_psi":300,"volume_spacers_supported":true,"formula_psi":"weight_lbs","secondary_chamber":{"name":"Bladder","min_psi":170,"max_psi":200,"note":"Maintain bladder pressure at 170\u2013200 PSI for best performance and durability. Set separately from main air spring."},"pressure_chart":[{"min_kg":40,"max_kg":50,"min_psi":88,"max_psi":110},{"min_kg":50,"max_kg":60,"min_psi":110,"max_psi":132},{"min_kg":60,"max_kg":70,"min_psi":132,"max_psi":154},{"min_kg":70,"max_kg":80,"min_psi":154,"max_psi":176},{"min_kg":80,"max_kg":90,"min_psi":176,"max_psi":198},{"min_kg":90,"max_kg":100,"min_psi":198,"max_psi":220},{"min_kg":100,"max_kg":120,"min_psi":220,"max_psi":264}],"setup_notes":"Lightweight XC/trail shock. Main air: rider weight lbs \u2248 PSI starting point. Bladder must be maintained at 170\u2013200 PSI separately. Jade X variant adds T3 compression. Also available as Jade Coil (separate model with coil spring, no air).","damping":{"damper":"Jade X / Standard","rebound":{"total_clicks":9,"count_from":"fully_closed","note":"9-click rebound. Start near middle (4\u20135 clicks). Adjust 1 click at a time.","starting_clicks":[{"min_kg":40,"max_kg":55,"clicks":3},{"min_kg":55,"max_kg":70,"clicks":4},{"min_kg":70,"max_kg":85,"clicks":5},{"min_kg":85,"max_kg":105,"clicks":6},{"min_kg":105,"max_kg":130,"clicks":6}]},"compression":{"total_positions":3,"type":"lever","label":"Open / Trail / Firm","note":"T3 3-position compression lever on Jade X variant. Standard Jade: single compression adjuster."},"ride_style_adjust":{"xc_trail":{"rebound":-2,"lsc":-1,"hsc":-1,"note":"Faster rebound, less compression \u2014 efficient on smoother terrain"},"all_mountain":{"rebound":0,"lsc":0,"hsc":0,"note":"Balanced baseline \u2014 good starting point for mixed terrain"},"enduro_dh":{"rebound":2,"lsc":1,"hsc":1,"note":"Slower rebound, more compression control \u2014 for aggressive/rough terrain"}}}},{"model":"Jade Coil","series":"XC/Trail","sag_percent":{"min":25,"max":30},"max_pressure_psi":null,"volume_spacers_supported":false,"formula_psi":null,"pressure_chart":null,"setup_notes":"Coil shock version of the Jade \u2014 no air pressure. Select spring rate by rider weight. Bladder IFP still present for oil/gas separation in damper. Consult DVO spring rate chart for correct spring selection.","damping":{"damper":"Coil \u2014 no air damping","note":"Coil shock. Rebound dial present (continuous sweep, not click-based). Adjust until rebound feels controlled without harsh kickback."}}]},"ohlins":{"brand_notes":"\u00d6hlins MTB forks use a patented three-chamber air spring system: a main chamber (controls spring rate / sag), a negative chamber (auto-equalised on each stroke), and a ramp-up chamber (controls mid-stroke support and bottom-out resistance, set separately at ~1.5\u20132\u00d7 main pressure). This makes setup slightly more involved than single-chamber forks but allows very precise tuning. \u00d6hlins shocks use the TTX twin-tube damper technology. All pressures shown are for the main chamber unless noted.","forks":[{"model":"RXF 34","series":"XC/Trail","travel_mm":[100,110,120,130,140],"air_spring":"Three-chamber (main + negative + ramp-up)","sag_percent":{"min":10,"max":15},"max_pressure_psi":250,"volume_spacers_supported":true,"token_system":true,"formula_psi":null,"secondary_chamber":{"name":"Ramp-up","factor":1.7,"note":"Set ramp-up chamber to approximately 1.5\u20132\u00d7 main pressure. For 90 PSI main \u2192 set ramp-up to ~150\u2013170 PSI. Ramp-up controls mid-stroke support and bottom-out resistance. Adjust separately via ramp-up valve (smaller Schrader valve, usually gold cap)."},"pressure_chart":[{"min_kg":45,"max_kg":55,"min_psi":65,"max_psi":80},{"min_kg":55,"max_kg":63,"min_psi":78,"max_psi":90},{"min_kg":63,"max_kg":72,"min_psi":88,"max_psi":100},{"min_kg":72,"max_kg":82,"min_psi":98,"max_psi":112},{"min_kg":82,"max_kg":90,"min_psi":108,"max_psi":120},{"min_kg":90,"max_kg":100,"min_psi":115,"max_psi":130},{"min_kg":100,"max_kg":120,"min_psi":125,"max_psi":148}],"setup_notes":"Sag target is lower than most brands (10\u201315%) due to XC focus. Main chamber controls sag; ramp-up controls progression (set to 1.5\u20132\u00d7 main). Token system (m.2 version) adjusts volume in main chamber. Known data: 60 kg \u2192 90 PSI main / 170 PSI ramp-up; 70 kg \u2192 100 PSI main / 180 PSI ramp-up; 88 kg \u2192 90\u2013100 PSI main. Pressure chart often printed on lower leg sticker.","damping":{"damper":"\u00d6hlins 36mm TTX Air Cartridge","rebound":{"total_clicks":15,"count_from":"fully_closed","note":"15-click rebound. Count from fully closed. Start near middle (6\u20138 clicks). Turn clockwise = slower.","starting_clicks":[{"min_kg":45,"max_kg":60,"clicks":4},{"min_kg":60,"max_kg":75,"clicks":6},{"min_kg":75,"max_kg":90,"clicks":8},{"min_kg":90,"max_kg":115,"clicks":9}]},"lsc":{"total_clicks":15,"count_from":"fully_open","note":"15-click LSC. Controls mid-speed compression. Start near middle. Clockwise = more damping.","starting_clicks":[{"min_kg":45,"max_kg":60,"clicks":4},{"min_kg":60,"max_kg":75,"clicks":6},{"min_kg":75,"max_kg":90,"clicks":8},{"min_kg":90,"max_kg":115,"clicks":9}]},"hsc":{"total_positions":4,"type":"lever","label":"Open / Position 1 / Position 2 / Climb","note":"4-position compression lever (3 riding positions + climb/lockout). Start at Position 1 for most riders. Move to Position 2 for more compression on technical/rough terrain."},"ride_style_adjust":{"xc_trail":{"rebound":-2,"lsc":-1,"hsc":-1,"note":"Faster rebound, less compression \u2014 efficient on smoother terrain"},"all_mountain":{"rebound":0,"lsc":0,"hsc":0,"note":"Balanced baseline \u2014 good starting point for mixed terrain"},"enduro_dh":{"rebound":2,"lsc":1,"hsc":1,"note":"Slower rebound, more compression control \u2014 for aggressive/rough terrain"}}}},{"model":"RXF 36","series":"Trail/Enduro","travel_mm":[140,150,160,170],"air_spring":"Three-chamber (main + negative + ramp-up)","sag_percent":{"min":20,"max":25},"max_pressure_psi":250,"volume_spacers_supported":true,"token_system":true,"formula_psi":null,"secondary_chamber":{"name":"Ramp-up","factor":1.55,"note":"Set ramp-up chamber to approximately 1.4\u20131.7\u00d7 main pressure. For 100 PSI main \u2192 set ramp-up to ~140\u2013160 PSI. Ramp-up valve has a gold dust cap on most versions. Adjust to prevent harsh bottom-out without losing supple feel."},"pressure_chart":[{"min_kg":50,"max_kg":60,"min_psi":60,"max_psi":75},{"min_kg":60,"max_kg":70,"min_psi":72,"max_psi":88},{"min_kg":70,"max_kg":78,"min_psi":82,"max_psi":98},{"min_kg":78,"max_kg":88,"min_psi":95,"max_psi":118},{"min_kg":88,"max_kg":98,"min_psi":112,"max_psi":130},{"min_kg":98,"max_kg":115,"min_psi":125,"max_psi":148}],"setup_notes":"36mm stanchion for trail/enduro use. Three-chamber system: set main for sag, then set ramp-up to ~1.5\u00d7 main. Known data: 71 kg \u2192 85 PSI main / 140 PSI ramp-up; 85\u201386 kg \u2192 115 PSI main / 160 PSI ramp-up. Token system for adding progression. Negative chamber equalises automatically each stroke. Pressure chart printed on lower leg.","damping":{"damper":"\u00d6hlins TTX Air Cartridge","rebound":{"total_clicks":15,"count_from":"fully_closed","note":"15-click rebound. Start at 6\u20138 clicks for most riders. Adjust 1\u20132 clicks at a time.","starting_clicks":[{"min_kg":45,"max_kg":60,"clicks":4},{"min_kg":60,"max_kg":75,"clicks":6},{"min_kg":75,"max_kg":90,"clicks":8},{"min_kg":90,"max_kg":115,"clicks":9}]},"lsc":{"total_clicks":15,"count_from":"fully_open","note":"15-click LSC. Clockwise = more compression. Run near middle of range for trail use.","starting_clicks":[{"min_kg":45,"max_kg":60,"clicks":4},{"min_kg":60,"max_kg":75,"clicks":6},{"min_kg":75,"max_kg":90,"clicks":8},{"min_kg":90,"max_kg":115,"clicks":9}]},"hsc":{"total_positions":4,"type":"lever","label":"Open / Position 1 / Position 2 / Climb","note":"4-position compression lever (3 riding positions + climb/lockout). Start at Position 1 for most riders. Move to Position 2 for more compression on technical/rough terrain."},"ride_style_adjust":{"xc_trail":{"rebound":-2,"lsc":-1,"hsc":-1,"note":"Faster rebound, less compression \u2014 efficient on smoother terrain"},"all_mountain":{"rebound":0,"lsc":0,"hsc":0,"note":"Balanced baseline \u2014 good starting point for mixed terrain"},"enduro_dh":{"rebound":2,"lsc":1,"hsc":1,"note":"Slower rebound, more compression control \u2014 for aggressive/rough terrain"}}}},{"model":"RXF 38","series":"Enduro","travel_mm":[160,170,180],"air_spring":"Three-chamber (main + negative + ramp-up)","sag_percent":{"min":25,"max":30},"max_pressure_psi":250,"volume_spacers_supported":true,"token_system":true,"formula_psi":null,"secondary_chamber":{"name":"Ramp-up","factor":1.75,"note":"Set ramp-up chamber to approximately 1.6\u20131.9\u00d7 main pressure. For 120 PSI main \u2192 set ramp-up to ~190\u2013215 PSI. Higher ramp-up factor than RXF 36 due to longer travel. Known baseline: 120 PSI main / 210 PSI ramp-up for ~85 kg rider."},"pressure_chart":[{"min_kg":50,"max_kg":60,"min_psi":70,"max_psi":88},{"min_kg":60,"max_kg":70,"min_psi":85,"max_psi":102},{"min_kg":70,"max_kg":80,"min_psi":98,"max_psi":115},{"min_kg":80,"max_kg":90,"min_psi":112,"max_psi":128},{"min_kg":90,"max_kg":100,"min_psi":122,"max_psi":140},{"min_kg":100,"max_kg":120,"min_psi":135,"max_psi":160}],"setup_notes":"Flagship enduro fork. Three-chamber system: main sets sag (25\u201330%), ramp-up at ~1.75\u00d7 main (e.g. 120 PSI main \u2192 210 PSI ramp-up). Sag range: 42\u201351mm at 170mm travel. m.2 and m.3 variants available \u2014 m.3 adds updated damper internals. 15 clicks LSC, 15 clicks rebound, 3 clicks HSC. Always set main first, then ramp-up.","damping":{"damper":"\u00d6hlins TTX Air Cartridge","rebound":{"total_clicks":15,"count_from":"fully_closed","note":"15-click rebound. Enduro use \u2014 heavier riders and rougher terrain may need more clicks than RXF 36.","starting_clicks":[{"min_kg":50,"max_kg":65,"clicks":5},{"min_kg":65,"max_kg":80,"clicks":7},{"min_kg":80,"max_kg":95,"clicks":8},{"min_kg":95,"max_kg":120,"clicks":10}]},"lsc":{"total_clicks":15,"count_from":"fully_open","note":"15-click LSC. Start slightly higher than RXF 36 for enduro terrain.","starting_clicks":[{"min_kg":50,"max_kg":65,"clicks":5},{"min_kg":65,"max_kg":80,"clicks":7},{"min_kg":80,"max_kg":95,"clicks":8},{"min_kg":95,"max_kg":120,"clicks":10}]},"hsc":{"total_positions":4,"type":"lever","label":"Open / Position 1 / Position 2 / Climb","note":"4-position compression lever (3 riding positions + climb/lockout). Start at Position 1 for most riders. Move to Position 2 for more compression on technical/rough terrain."},"ride_style_adjust":{"xc_trail":{"rebound":-2,"lsc":-1,"hsc":-1,"note":"Faster rebound, less compression \u2014 efficient on smoother terrain"},"all_mountain":{"rebound":0,"lsc":0,"hsc":0,"note":"Balanced baseline \u2014 good starting point for mixed terrain"},"enduro_dh":{"rebound":2,"lsc":1,"hsc":1,"note":"Slower rebound, more compression control \u2014 for aggressive/rough terrain"}}}}],"shocks":[{"model":"TTX1 Air","series":"Trail/XC","sag_percent":{"min":25,"max":30},"max_pressure_psi":300,"volume_spacers_supported":true,"volume_spacer_sizes_cc":[2,4,6,8,12],"volume_spacer_note":"Band spacers fit in eyelet end; one puck-style spacer fits on shaft. Reduces air volume = increases progression. Use to prevent bottoming.","formula_psi":"weight_lbs","pressure_chart":[{"min_kg":40,"max_kg":50,"min_psi":88,"max_psi":110},{"min_kg":50,"max_kg":60,"min_psi":110,"max_psi":132},{"min_kg":60,"max_kg":70,"min_psi":132,"max_psi":154},{"min_kg":70,"max_kg":80,"min_psi":154,"max_psi":176},{"min_kg":80,"max_kg":90,"min_psi":176,"max_psi":198},{"min_kg":90,"max_kg":100,"min_psi":198,"max_psi":220},{"min_kg":100,"max_kg":120,"min_psi":220,"max_psi":264}],"setup_notes":"Single-tube TTX design for linear suspension kinematics. Starting pressure: rider weight in lbs \u2248 PSI. Max 300 PSI. Volume spacers available in 2\u201312 cc sizes; band spacers go in eyelet, one puck spacer on shaft. TTX twin-tube damper gives more consistent damping across the stroke than conventional single-tube designs.","damping":{"damper":"TTX Twin-Tube","rebound":{"total_clicks":12,"count_from":"fully_closed","note":"12-click rebound. TTX twin-tube design provides consistent damping. Start at 5\u20136 clicks.","starting_clicks":[{"min_kg":40,"max_kg":55,"clicks":4},{"min_kg":55,"max_kg":70,"clicks":5},{"min_kg":70,"max_kg":85,"clicks":6},{"min_kg":85,"max_kg":105,"clicks":7},{"min_kg":105,"max_kg":130,"clicks":8}]},"lsc":{"total_clicks":10,"count_from":"fully_open","note":"10-click LSC. Twin-tube design = more consistent across stroke than single-tube. Clockwise = more.","starting_clicks":[{"min_kg":40,"max_kg":55,"clicks":3},{"min_kg":55,"max_kg":70,"clicks":4},{"min_kg":70,"max_kg":85,"clicks":5},{"min_kg":85,"max_kg":105,"clicks":6},{"min_kg":105,"max_kg":130,"clicks":7}]},"hsc":{"total_positions":3,"type":"lever","label":"Open / Medium / Firm","note":"3-position HSC lever. Open = most compliance. Firm = maximum support. Start at Medium for trail; adjust based on feel."},"ride_style_adjust":{"xc_trail":{"rebound":-2,"lsc":-1,"hsc":-1,"note":"Faster rebound, less compression \u2014 efficient on smoother terrain"},"all_mountain":{"rebound":0,"lsc":0,"hsc":0,"note":"Balanced baseline \u2014 good starting point for mixed terrain"},"enduro_dh":{"rebound":2,"lsc":1,"hsc":1,"note":"Slower rebound, more compression control \u2014 for aggressive/rough terrain"}}}},{"model":"TTX2 Air","series":"Trail/Enduro","sag_percent":{"min":25,"max":32},"max_pressure_psi":325,"volume_spacers_supported":true,"volume_spacer_sizes_cc":[2,4,6,8,12],"volume_spacer_note":"Band spacers in eyelet end; puck spacer on shaft. Sizes in cc (cubic centimetres). Reduces air volume = more progressive feel.","formula_psi":"weight_lbs","pressure_chart":[{"min_kg":40,"max_kg":50,"min_psi":88,"max_psi":110},{"min_kg":50,"max_kg":60,"min_psi":110,"max_psi":132},{"min_kg":60,"max_kg":70,"min_psi":132,"max_psi":154},{"min_kg":70,"max_kg":80,"min_psi":154,"max_psi":176},{"min_kg":80,"max_kg":90,"min_psi":176,"max_psi":202},{"min_kg":90,"max_kg":100,"min_psi":198,"max_psi":225},{"min_kg":100,"max_kg":120,"min_psi":220,"max_psi":270}],"setup_notes":"Double-tube TTX design for progressive suspension kinematics (higher leverage ratio bikes). Max 325 PSI \u2014 highest of all models in this dataset (suitable for e-MTB and heavier riders). Starting point: weight in lbs \u2248 PSI. Known data: 88 kg rider \u2192 202 PSI with 10 cc spacers at 28% sag. After pressurising, pump may read ~10 PSI higher \u2014 disconnect slowly. Volume spacers available 2\u201312 cc.","damping":{"damper":"TTX Twin-Tube (double-can)","rebound":{"total_clicks":12,"count_from":"fully_closed","note":"12-click rebound. Double-can design. Start at 5\u20136 clicks and adjust to feel.","starting_clicks":[{"min_kg":40,"max_kg":55,"clicks":4},{"min_kg":55,"max_kg":70,"clicks":5},{"min_kg":70,"max_kg":85,"clicks":6},{"min_kg":85,"max_kg":105,"clicks":7},{"min_kg":105,"max_kg":130,"clicks":8}]},"lsc":{"total_clicks":10,"count_from":"fully_open","note":"Clockwise = more low-speed compression damping.","starting_clicks":[{"min_kg":40,"max_kg":55,"clicks":3},{"min_kg":55,"max_kg":70,"clicks":4},{"min_kg":70,"max_kg":85,"clicks":5},{"min_kg":85,"max_kg":105,"clicks":6},{"min_kg":105,"max_kg":130,"clicks":7}]},"hsc":{"total_positions":3,"type":"lever","label":"Open / Medium / Firm","note":"3-position HSC lever. Open = most compliance. Firm = maximum support. Start at Medium for trail; adjust based on feel."},"ride_style_adjust":{"xc_trail":{"rebound":-2,"lsc":-1,"hsc":-1,"note":"Faster rebound, less compression \u2014 efficient on smoother terrain"},"all_mountain":{"rebound":0,"lsc":0,"hsc":0,"note":"Balanced baseline \u2014 good starting point for mixed terrain"},"enduro_dh":{"rebound":2,"lsc":1,"hsc":1,"note":"Slower rebound, more compression control \u2014 for aggressive/rough terrain"}}}},{"model":"TTX22M","series":"Trail/Enduro","sag_percent":{"min":25,"max":32},"max_pressure_psi":null,"volume_spacers_supported":false,"formula_psi":null,"pressure_chart":null,"coil_spring_rate_range":{"min_lbsin":251,"max_lbsin":708,"increment_lbsin":23},"rider_weight_range_kg":{"min":55,"max":115},"setup_notes":"Coil spring shock \u2014 no air pressure. Twin-tube TTX damper with coil spring. Spring rate range: 251\u2013708 lb/in (44\u2013124 N/mm) in 23 lb/in increments. For 55\u2013115 kg riders. Damping: 3 clicks HSC, 16 clicks LSC, 7 clicks rebound. Consult \u00d6hlins spring rate guide or your bike manufacturer's recommended rates. Weight ~450 g.","damping":{"damper":"TTX Twin-Tube (coil)","rebound":{"total_clicks":7,"count_from":"fully_closed","note":"7-click rebound. Coil shock \u2014 fewer clicks than air equivalents. Each click is significant.","starting_clicks":[{"min_kg":40,"max_kg":55,"clicks":2},{"min_kg":55,"max_kg":70,"clicks":3},{"min_kg":70,"max_kg":85,"clicks":4},{"min_kg":85,"max_kg":110,"clicks":5}]},"lsc":{"total_clicks":16,"count_from":"fully_open","note":"16-click LSC. Coil shocks typically need more LSC to control the livelier spring. Start near middle.","starting_clicks":[{"min_kg":40,"max_kg":55,"clicks":5},{"min_kg":55,"max_kg":70,"clicks":7},{"min_kg":70,"max_kg":85,"clicks":8},{"min_kg":85,"max_kg":105,"clicks":10},{"min_kg":105,"max_kg":130,"clicks":11}]},"hsc":{"total_positions":3,"type":"lever","label":"Open / Medium / Firm","note":"3-position HSC. Coil shock \u2014 start at Open or Medium. Move to Firm for DH/drops."},"ride_style_adjust":{"xc_trail":{"rebound":-2,"lsc":-1,"hsc":-1,"note":"Faster rebound, less compression \u2014 efficient on smoother terrain"},"all_mountain":{"rebound":0,"lsc":0,"hsc":0,"note":"Balanced baseline \u2014 good starting point for mixed terrain"},"enduro_dh":{"rebound":2,"lsc":1,"hsc":1,"note":"Slower rebound, more compression control \u2014 for aggressive/rough terrain"}}}}]},"manitou":{"brand_notes":"Manitou's signature feature is the IRT (Infinite Rate Tune) system \u2014 a secondary positive air chamber on most forks that independently controls mid-stroke to end-stroke progression. IRT-equipped forks have TWO Schrader valves: always fill the IRT (upper/top) valve FIRST, then the main (lower/bottom) chamber. Main chamber controls sag and initial feel; IRT controls ramp-up and bottom-out resistance. Starting formula: Main \u2248 1/3 rider weight (lbs), IRT \u2248 Main + model-specific offset (30 PSI for Mezzer, ~68 PSI for Mattoc). IVA (Incremental Volume Adjust) spacers are Manitou's integrated token system. TPC/TPC+ dampers provide Twin Piston Control for independent HSC/LSC tuning. Manitou shocks run lower starting pressures than Fox/RockShox \u2014 typically 66\u201370% of body weight in lbs rather than 100%.","forks":[{"model":"Marvel","series":"XC","travel_mm":[80,100,120],"air_spring":"ISO Air (self-equalising negative)","sag_percent":{"min":20,"max":25},"max_pressure_psi":180,"volume_spacers_supported":true,"irt_system":false,"formula_psi":null,"pressure_chart":[{"min_kg":40,"max_kg":50,"min_psi":40,"max_psi":52},{"min_kg":50,"max_kg":60,"min_psi":50,"max_psi":62},{"min_kg":60,"max_kg":70,"min_psi":60,"max_psi":72},{"min_kg":70,"max_kg":80,"min_psi":70,"max_psi":82},{"min_kg":80,"max_kg":90,"min_psi":80,"max_psi":92},{"min_kg":90,"max_kg":105,"min_psi":90,"max_psi":105}],"setup_notes":"XC fork with ISO air single-valve system. Negative spring self-equalises automatically. Wheel should be off the ground when pressurising for accurate sag measurement. Kwik-Toggle lockout on Comp/Expert. 32mm stanchions, HexLock SL thru-axle. Travel adjustable in 10mm steps via internal spacer.","damping":{"damper":"Kwik-Toggle / Motion Control","rebound":{"type":"continuous_sweep","total_clicks":null,"note":"Continuous sweep rebound dial \u2014 not click-based. Turn until rebound feels controlled without harsh kickback. Roughly 180\u00b0 of rotation. Start at centre position."},"compression":{"total_positions":3,"type":"lever","label":"Open / Trail / Climb","note":"Kwik-Toggle 3-position: Open (full travel), Trail (pedalling support), Climb (near-lockout). Use Trail for most XC riding."},"ride_style_adjust":{"xc_trail":{"rebound":-2,"lsc":-1,"hsc":-1,"note":"Faster rebound, less compression \u2014 efficient on smoother terrain"},"all_mountain":{"rebound":0,"lsc":0,"hsc":0,"note":"Balanced baseline \u2014 good starting point for mixed terrain"},"enduro_dh":{"rebound":2,"lsc":1,"hsc":1,"note":"Slower rebound, more compression control \u2014 for aggressive/rough terrain"}}}},{"model":"Machete","series":"XC/Trail","travel_mm":[80,100,120],"air_spring":"TS Air (self-equalising negative spring)","sag_percent":{"min":20,"max":25},"max_pressure_psi":180,"volume_spacers_supported":true,"irt_system":false,"formula_psi":null,"pressure_chart":[{"min_kg":40,"max_kg":50,"min_psi":38,"max_psi":50},{"min_kg":50,"max_kg":60,"min_psi":48,"max_psi":60},{"min_kg":60,"max_kg":70,"min_psi":57,"max_psi":70},{"min_kg":70,"max_kg":80,"min_psi":67,"max_psi":80},{"min_kg":80,"max_kg":90,"min_psi":76,"max_psi":88},{"min_kg":90,"max_kg":110,"min_psi":85,"max_psi":100}],"setup_notes":"32mm stanchion trail fork. TS Air self-equalising negative spring: single valve, automatically pressurises negative chamber on each compression stroke. Kwik-Toggle damper with external lockout. HexLock SL thru-axle. Travel adjustable 80\u2013100mm or 100\u2013120mm via internal spacer. Community starting point: ~40\u201350 PSI for average adult rider. No IRT system.","damping":{"damper":"Kwik-Toggle / TPC","rebound":{"type":"continuous_sweep","total_clicks":null,"note":"Continuous sweep rebound dial (not click-based). Start at centre. Adjust until rebound is just controlled \u2014 not kicking back harshly."},"compression":{"total_positions":3,"type":"lever","label":"Open / Trail / Climb","note":"Kwik-Toggle 3-position lever. Trail position suits most riding. Climb for sustained ascents."},"ride_style_adjust":{"xc_trail":{"rebound":-2,"lsc":-1,"hsc":-1,"note":"Faster rebound, less compression \u2014 efficient on smoother terrain"},"all_mountain":{"rebound":0,"lsc":0,"hsc":0,"note":"Balanced baseline \u2014 good starting point for mixed terrain"},"enduro_dh":{"rebound":2,"lsc":1,"hsc":1,"note":"Slower rebound, more compression control \u2014 for aggressive/rough terrain"}}}},{"model":"Magnum","series":"Fat/Plus","travel_mm":[100,120],"air_spring":"Self-pressurising (positive and negative)","sag_percent":{"min":20,"max":25},"max_pressure_psi":150,"volume_spacers_supported":false,"irt_system":false,"formula_psi":null,"pressure_chart":[{"min_kg":50,"max_kg":60,"min_psi":35,"max_psi":48},{"min_kg":60,"max_kg":70,"min_psi":45,"max_psi":58},{"min_kg":70,"max_kg":80,"min_psi":55,"max_psi":68},{"min_kg":80,"max_kg":90,"min_psi":63,"max_psi":76},{"min_kg":90,"max_kg":105,"min_psi":72,"max_psi":86}],"setup_notes":"34mm stanchion fat bike and plus-tyre fork. Single valve pressurises both chambers simultaneously. Run 10\u201315 PSI below normal recommendation to account for extra air volume absorbed by fat/plus tyres. 27.5+ (48mm offset) and 29+ (51mm offset) variants available. No IRT system.","damping":{"damper":"Motion Control","rebound":{"type":"continuous_sweep","total_clicks":null,"note":"Sweep rebound dial. Fat/plus bikes add inertia \u2014 run slightly more rebound damping than on a standard tyre bike. Start slightly past centre toward slower."},"compression":{"total_positions":3,"type":"lever","label":"Open / Trail / Climb","note":"3-position compression. Open recommended for most fat bike and plus tyre trail riding."},"ride_style_adjust":{"xc_trail":{"rebound":-2,"lsc":-1,"hsc":-1,"note":"Faster rebound, less compression \u2014 efficient on smoother terrain"},"all_mountain":{"rebound":0,"lsc":0,"hsc":0,"note":"Balanced baseline \u2014 good starting point for mixed terrain"},"enduro_dh":{"rebound":2,"lsc":1,"hsc":1,"note":"Slower rebound, more compression control \u2014 for aggressive/rough terrain"}}}},{"model":"Mattoc","series":"Trail/Enduro","travel_mm":[110,120,130,140,150],"air_spring":"ABS+ with IRT (Infinite Rate Tune)","sag_percent":{"min":20,"max":25},"max_pressure_psi":150,"volume_spacers_supported":true,"irt_system":true,"formula_psi":null,"secondary_chamber":{"name":"IRT","offset_psi":68,"note":"IRT (Infinite Rate Tune) secondary positive air chamber. FILL IRT (TOP valve) FIRST, then main chamber (BOTTOM valve). IRT pressure = Main + 68 PSI for Mattoc. Real-world: 84 kg (185 lbs) \u2192 70 PSI main / 140 PSI IRT. IRT only affects mid-stroke to end-stroke. +10 PSI IRT = more progressive/DH feel; -10 PSI = softer trail feel. IRT must always be minimum 10 PSI above main chamber. IVA spacers available for additional volume tuning."},"pressure_chart":[{"min_kg":45,"max_kg":55,"min_psi":37,"max_psi":48},{"min_kg":55,"max_kg":65,"min_psi":46,"max_psi":57},{"min_kg":65,"max_kg":75,"min_psi":55,"max_psi":66},{"min_kg":75,"max_kg":85,"min_psi":64,"max_psi":74},{"min_kg":85,"max_kg":95,"min_psi":72,"max_psi":84},{"min_kg":95,"max_kg":115,"min_psi":80,"max_psi":98}],"setup_notes":"34mm stanchion trail fork with IRT. TWO valves \u2014 IRT top, main bottom. Fill IRT first. Main \u2248 1/3 rider weight in lbs (85 kg / 187 lbs \u2192 ~62 PSI starting; real-world ~70 PSI). IRT = Main + 68 PSI. IVA (Incremental Volume Adjuster) for progression tuning. Comp, Expert (TPC), and Pro (TPC+) variants. Travel adjustable in 10mm increments via internal spacer.","damping":{"damper":"TPC (Expert) / TPC+ (Pro)","rebound":{"total_clicks":10,"count_from":"fully_closed","note":"10-click rebound. Clockwise = slower rebound. Start at 4\u20135 clicks for average rider.","starting_clicks":[{"min_kg":45,"max_kg":60,"clicks":3},{"min_kg":60,"max_kg":75,"clicks":4},{"min_kg":75,"max_kg":90,"clicks":5},{"min_kg":90,"max_kg":115,"clicks":6}]},"compression":{"total_positions":6,"type":"lever","label":"Positions 1\u20136 (VTT-6P)","note":"VTT-6P: 6-position compression lever. Position 1 = most open. Position 6 = firmest. Start at Position 2\u20133 for trail. TPC+ (Pro) adds separate LSC dial."},"lsc_note":"Pro variant only: TPC+ adds external LSC adjuster (~8 clicks) for low-speed compression tuning independently of the 6-position lever.","ride_style_adjust":{"xc_trail":{"rebound":-2,"lsc":-1,"hsc":-1,"note":"Faster rebound, less compression \u2014 efficient on smoother terrain"},"all_mountain":{"rebound":0,"lsc":0,"hsc":0,"note":"Balanced baseline \u2014 good starting point for mixed terrain"},"enduro_dh":{"rebound":2,"lsc":1,"hsc":1,"note":"Slower rebound, more compression control \u2014 for aggressive/rough terrain"}}}},{"model":"Mezzer","series":"Enduro","travel_mm":[140,150,160,170,180],"air_spring":"ABS+ with IRT (Infinite Rate Tune)","sag_percent":{"min":20,"max":25},"max_pressure_psi":150,"volume_spacers_supported":true,"irt_system":true,"formula_psi":null,"secondary_chamber":{"name":"IRT","offset_psi":30,"note":"IRT (Infinite Rate Tune) secondary positive air chamber. FILL IRT (TOP valve) FIRST, then main chamber (BOTTOM valve). IRT pressure = Main + 30 PSI for Mezzer. Real-world (160mm): 68 kg \u2192 52 PSI main / 84 PSI IRT; 72.6 kg \u2192 56 PSI main / 85 PSI IRT; 77 kg \u2192 60 PSI main / 90 PSI IRT; 81.6 kg \u2192 64 PSI main / 92 PSI IRT. +10 PSI IRT for DH/progressive; -10 PSI for trail. IRT must always be min 10 PSI above main. IVA spacers available."},"pressure_chart":[{"min_kg":45,"max_kg":55,"min_psi":32,"max_psi":43},{"min_kg":55,"max_kg":65,"min_psi":40,"max_psi":52},{"min_kg":65,"max_kg":73,"min_psi":50,"max_psi":58},{"min_kg":73,"max_kg":82,"min_psi":56,"max_psi":66},{"min_kg":82,"max_kg":90,"min_psi":64,"max_psi":74},{"min_kg":90,"max_kg":100,"min_psi":72,"max_psi":84},{"min_kg":100,"max_kg":120,"min_psi":82,"max_psi":100}],"setup_notes":"37mm stanchion flagship enduro fork. IRT system with TWO valves \u2014 always fill IRT (top) first. Main \u2248 1/3 rider weight in lbs; IRT = Main + 30 PSI. Expert variant: VTT-6P damper (6-click compression). Pro variant: adds HSC. Travel adjustable 140\u2013180mm in 10mm steps via internal spacer. IVA system for volume tuning (similar to RockShox tokens). 27.5 and 29-inch wheel sizes available.","damping":{"damper":"VTT-6P (Expert) / TPC+ (Pro)","rebound":{"total_clicks":10,"count_from":"fully_closed","note":"10-click rebound adjuster. Clockwise = slower. Enduro fork \u2014 start at 5 clicks and adjust.","starting_clicks":[{"min_kg":50,"max_kg":65,"clicks":3},{"min_kg":65,"max_kg":80,"clicks":4},{"min_kg":80,"max_kg":95,"clicks":5},{"min_kg":95,"max_kg":120,"clicks":6}]},"compression":{"total_positions":6,"type":"lever","label":"Positions 1\u20136 (VTT-6P)","note":"VTT-6P: 6-position compression lever. Start at Position 2 for trail, Position 3 for enduro. Expert variant only. Pro adds TPC+ LSC dial."},"lsc_note":"Pro variant: TPC+ adds separate LSC dial (~8 clicks). Allows fine-tuning compression feel without changing platform position.","ride_style_adjust":{"xc_trail":{"rebound":-2,"lsc":-1,"hsc":-1,"note":"Faster rebound, less compression \u2014 efficient on smoother terrain"},"all_mountain":{"rebound":0,"lsc":0,"hsc":0,"note":"Balanced baseline \u2014 good starting point for mixed terrain"},"enduro_dh":{"rebound":2,"lsc":1,"hsc":1,"note":"Slower rebound, more compression control \u2014 for aggressive/rough terrain"}}}},{"model":"Circus","series":"Jump/Street/Park","travel_mm":[80,100,120,140],"air_spring":"ABS+ (Absolute Plus)","sag_percent":{"min":15,"max":20},"max_pressure_psi":200,"volume_spacers_supported":true,"irt_system":false,"formula_psi":null,"pressure_chart":[{"min_kg":45,"max_kg":55,"min_psi":60,"max_psi":80},{"min_kg":55,"max_kg":65,"min_psi":78,"max_psi":100},{"min_kg":65,"max_kg":75,"min_psi":95,"max_psi":118},{"min_kg":75,"max_kg":85,"min_psi":112,"max_psi":135},{"min_kg":85,"max_kg":100,"min_psi":128,"max_psi":155},{"min_kg":100,"max_kg":120,"min_psi":148,"max_psi":175}],"setup_notes":"Dirt jump, slopestyle and park fork. ABS+ compression with Jump Stack tuning. Lower sag target (15\u201320%) for predictable jump behaviour. Run higher pressure vs trail riding. Standard: 20\u00d7110mm axle; Pro: 15mm thru-axle. Travel adjustable 80\u2013140mm (Pro model). No IRT system.","damping":{"damper":"ABS+ Jump Stack","rebound":{"type":"continuous_sweep","total_clicks":null,"note":"Smooth sweep rebound dial (no detent clicks). DJ/park fork \u2014 set rebound firm enough to not kick back on landings. Start at 70% of range toward slow."},"compression":{"type":"internal_shim","externally_adjustable":false,"note":"ABS+ internal shim stack \u2014 not externally adjustable. Jump Stack tuning for consistent compression on repeated impacts. Send to Manitou for revalving if behaviour is not suitable."},"ride_style_adjust":{"xc_trail":{"note":"N/A \u2014 jump fork"},"all_mountain":{"note":"N/A \u2014 jump fork"},"enduro_dh":{"note":"N/A \u2014 jump fork"}}}},{"model":"Dorado","series":"DH/Downhill","travel_mm":[160,170,180],"air_spring":"Air spring (Expert/Pro) or coil spring (Comp)","sag_percent":{"min":25,"max":30},"max_pressure_psi":120,"volume_spacers_supported":false,"irt_system":false,"formula_psi":null,"coil_spring_rates_lbsin":[25,30,35,40,45,50],"pressure_chart":[{"min_kg":55,"max_kg":65,"min_psi":40,"max_psi":55},{"min_kg":65,"max_kg":75,"min_psi":52,"max_psi":68},{"min_kg":75,"max_kg":85,"min_psi":62,"max_psi":78},{"min_kg":85,"max_kg":95,"min_psi":72,"max_psi":90},{"min_kg":95,"max_kg":115,"min_psi":82,"max_psi":110}],"setup_notes":"DH-specific fork. Expert/Pro variants are air-sprung (50\u201390 PSI range); Comp is coil spring (see coil_spring_rates_lbsin for spring selection by weight). No IRT system on Dorado. ABS+ damper with external high/low-speed compression and rebound. 36mm stanchions. Pressure chart printed on lower leg on some model years.","damping":{"damper":"ABS+ DH","rebound":{"total_clicks":24,"count_from":"fully_closed","note":"24-click rebound. DH fork \u2014 wide range for varied terrain. Start at 8\u201310 clicks and tune per track.","starting_clicks":[{"min_kg":55,"max_kg":70,"clicks":7},{"min_kg":70,"max_kg":85,"clicks":10},{"min_kg":85,"max_kg":100,"clicks":13},{"min_kg":100,"max_kg":125,"clicks":16}]},"lsc":{"total_clicks":15,"count_from":"fully_open","note":"15-click LSC. Start at mid-range (7\u20138 clicks). Adjust for pedalling efficiency vs sensitivity.","starting_clicks":[{"min_kg":55,"max_kg":70,"clicks":4},{"min_kg":70,"max_kg":85,"clicks":6},{"min_kg":85,"max_kg":100,"clicks":8},{"min_kg":100,"max_kg":125,"clicks":10}]},"hsc":{"total_clicks":15,"count_from":"fully_open","note":"15-click HSC. Controls big hits and drops. Start at 6\u20137 clicks. Increase for harder landings.","starting_clicks":[{"min_kg":55,"max_kg":70,"clicks":4},{"min_kg":70,"max_kg":85,"clicks":6},{"min_kg":85,"max_kg":100,"clicks":8},{"min_kg":100,"max_kg":125,"clicks":10}]},"ride_style_adjust":{"xc_trail":{"rebound":-2,"lsc":-1,"hsc":-1,"note":"Faster rebound, less compression \u2014 efficient on smoother terrain"},"all_mountain":{"rebound":0,"lsc":0,"hsc":0,"note":"Balanced baseline \u2014 good starting point for mixed terrain"},"enduro_dh":{"rebound":2,"lsc":1,"hsc":1,"note":"Slower rebound, more compression control \u2014 for aggressive/rough terrain"}}}}],"shocks":[{"model":"Mara","series":"Trail/Enduro","sag_percent":{"min":25,"max":30},"max_pressure_psi":300,"volume_spacers_supported":true,"formula_psi":null,"pressure_chart":[{"min_kg":45,"max_kg":55,"min_psi":70,"max_psi":88},{"min_kg":55,"max_kg":65,"min_psi":85,"max_psi":102},{"min_kg":65,"max_kg":75,"min_psi":100,"max_psi":118},{"min_kg":75,"max_kg":85,"min_psi":115,"max_psi":135},{"min_kg":85,"max_kg":95,"min_psi":130,"max_psi":152},{"min_kg":95,"max_kg":110,"min_psi":148,"max_psi":168},{"min_kg":110,"max_kg":130,"min_psi":162,"max_psi":185}],"setup_notes":"Manitou shocks run lower pressure than Fox/RockShox \u2014 starting point ~66\u201370% of rider weight in lbs (vs 100% for most brands). For 75 kg (165 lbs): start at ~110\u2013115 PSI. Sealed atmospheric negative spring. IPA compression platform (4-click). Infinity-adjustable rebound. King Can upgrade option adds 54% more air volume for a more linear spring curve.","damping":{"damper":"IPA (Incremental Platform Adjust)","rebound":{"type":"continuous_sweep","total_clicks":null,"note":"Infinity-adjustable rebound dial (no click detents). Turn counter-clockwise for faster rebound, clockwise for slower. Start at centre position and adjust 1/4 turn at a time. Rebound is correctly set when the shock returns quickly but doesn't kick the rider forward."},"compression":{"total_positions":4,"type":"lever","label":"Positions 1\u20134 (IPA)","note":"IPA (Incremental Platform Adjust): 4-lever positions. 1 = fully open (most plush). 4 = firm platform. Start at Position 2 for trail, Position 3 for enduro. King Can upgrade reduces need for firmer positions."},"ride_style_adjust":{"xc_trail":{"rebound":-2,"lsc":-1,"hsc":-1,"note":"Faster rebound, less compression \u2014 efficient on smoother terrain"},"all_mountain":{"rebound":0,"lsc":0,"hsc":0,"note":"Balanced baseline \u2014 good starting point for mixed terrain"},"enduro_dh":{"rebound":2,"lsc":1,"hsc":1,"note":"Slower rebound, more compression control \u2014 for aggressive/rough terrain"}}}},{"model":"Mara Pro","series":"Trail/Enduro","sag_percent":{"min":25,"max":30},"max_pressure_psi":300,"volume_spacers_supported":true,"formula_psi":null,"pressure_chart":[{"min_kg":45,"max_kg":55,"min_psi":72,"max_psi":92},{"min_kg":55,"max_kg":65,"min_psi":88,"max_psi":108},{"min_kg":65,"max_kg":75,"min_psi":105,"max_psi":125},{"min_kg":75,"max_kg":85,"min_psi":118,"max_psi":140},{"min_kg":85,"max_kg":95,"min_psi":135,"max_psi":158},{"min_kg":95,"max_kg":110,"min_psi":152,"max_psi":172},{"min_kg":110,"max_kg":130,"min_psi":165,"max_psi":192}],"setup_notes":"Premium Mara with King Can sealed atmospheric negative spring for improved small-bump sensitivity. Same lower-pressure starting point as Mara (~66\u201370% of weight in lbs). Known range: 100\u2013155 PSI for 68\u201386 kg riders. Adds high-speed compression adjuster vs standard Mara. IPA 4-position compression. Available in 230\u00d760mm, 230\u00d765mm and other eyelet sizes. Weight ~425 g.","damping":{"damper":"IPA + HSC","rebound":{"type":"continuous_sweep","total_clicks":null,"note":"Infinity-adjustable rebound dial (no click detents). Turn counter-clockwise for faster rebound, clockwise for slower. Start at centre position and adjust 1/4 turn at a time. Rebound is correctly set when the shock returns quickly but doesn't kick the rider forward."},"compression":{"total_positions":4,"type":"lever","label":"Positions 1\u20134 (IPA)","note":"IPA (Incremental Platform Adjust): 4-lever positions. 1 = fully open (most plush). 4 = firm platform. Start at Position 2 for trail, Position 3 for enduro. King Can upgrade reduces need for firmer positions."},"hsc":{"type":"external_dial","total_clicks":6,"note":"Mara Pro adds external HSC dial (6 clicks). Controls bottom-out harshness and big hits. Start at 2\u20133 clicks from open. Pro-only feature over standard Mara."},"ride_style_adjust":{"xc_trail":{"rebound":-2,"lsc":-1,"hsc":-1,"note":"Faster rebound, less compression \u2014 efficient on smoother terrain"},"all_mountain":{"rebound":0,"lsc":0,"hsc":0,"note":"Balanced baseline \u2014 good starting point for mixed terrain"},"enduro_dh":{"rebound":2,"lsc":1,"hsc":1,"note":"Slower rebound, more compression control \u2014 for aggressive/rough terrain"}}}},{"model":"McLeod","series":"Trail/Enduro","sag_percent":{"min":25,"max":30},"max_pressure_psi":300,"volume_spacers_supported":true,"formula_psi":null,"pressure_chart":[{"min_kg":45,"max_kg":55,"min_psi":78,"max_psi":98},{"min_kg":55,"max_kg":65,"min_psi":96,"max_psi":115},{"min_kg":65,"max_kg":75,"min_psi":112,"max_psi":130},{"min_kg":75,"max_kg":85,"min_psi":128,"max_psi":148},{"min_kg":85,"max_kg":95,"min_psi":142,"max_psi":165},{"min_kg":95,"max_kg":110,"min_psi":160,"max_psi":178},{"min_kg":110,"max_kg":130,"min_psi":172,"max_psi":196}],"setup_notes":"Standard air shock with non-adjustable atmospheric negative spring (sealed between two oil seals). Known data: 77 kg (170 lbs) \u2192 135 PSI achieves ~30% sag. IPA compression platform (4 clicks). Infinity-adjustable rebound. Available: 152\u00d732, 216\u00d763, 222\u00d765mm. Optional King Can upgrade (+54% air volume = more linear, reduces PSI required). Remote-lockout compatible. Max 300 PSI.","damping":{"damper":"IPA","rebound":{"type":"continuous_sweep","total_clicks":null,"note":"Infinity-adjustable rebound dial (no click detents). Turn counter-clockwise for faster rebound, clockwise for slower. Start at centre position and adjust 1/4 turn at a time. Rebound is correctly set when the shock returns quickly but doesn't kick the rider forward."},"compression":{"total_positions":4,"type":"lever","label":"Positions 1\u20134 (IPA)","note":"IPA (Incremental Platform Adjust): 4-lever positions. 1 = fully open (most plush). 4 = firm platform. Start at Position 2 for trail, Position 3 for enduro. King Can upgrade reduces need for firmer positions."},"ride_style_adjust":{"xc_trail":{"rebound":-2,"lsc":-1,"hsc":-1,"note":"Faster rebound, less compression \u2014 efficient on smoother terrain"},"all_mountain":{"rebound":0,"lsc":0,"hsc":0,"note":"Balanced baseline \u2014 good starting point for mixed terrain"},"enduro_dh":{"rebound":2,"lsc":1,"hsc":1,"note":"Slower rebound, more compression control \u2014 for aggressive/rough terrain"}}}}]}},"helper_functions":{"description":"Pseudocode / reference logic for building the calculator","kg_to_lbs":"lbs = kg * 2.2046","lbs_to_kg":"kg = lbs / 2.2046","get_recommended_psi":["1. Look up brand \u2192 type (fork/shock) \u2192 model in the data","2. If formula_psi == 'weight_lbs': starting_psi = weight_kg * 2.2046 (round to nearest integer)","3. Otherwise, find the pressure_chart entry where min_kg <= weight_kg < max_kg","4. Interpolate: t = (weight_kg - min_kg) / (max_kg - min_kg); psi = min_psi + t * (max_psi - min_psi)","5. Round result to nearest 5 PSI for practical use","6. Return: { recommended_psi, sag_target_percent, setup_notes }","7. If secondary_chamber is present, also return secondary chamber recommendation:","   - \u00d6hlins RXF forks (factor): secondary_psi = recommended_psi * secondary_chamber.factor","   - Manitou IRT forks (offset_psi): secondary_psi = recommended_psi + secondary_chamber.offset_psi","   - DVO shocks (fixed range): secondary_psi = secondary_chamber.min_psi to secondary_chamber.max_psi","   - Round all secondary values to nearest 5 PSI"],"sag_calculation":{"description":"How to calculate sag from total travel","formula":"sag_mm = travel_mm * (sag_percent / 100)","example":"140mm fork at 25% sag = 35mm sag"}},"sources":["https://support.rockshox.com/hc/en-us/articles/4412294430107 \u2014 RockShox Fork Air Pressure FAQ","https://support.rockshox.com/hc/en-us/articles/4412440335643 \u2014 RockShox Rear Shock Air Pressure FAQ","https://trailhead.rockshox.com \u2014 RockShox TrailHead Setup Tool","https://tech.ridefox.com/bike/owners-manuals/2978/ \u2014 Fox 2025 32/34mm Fork Manual","https://tech.ridefox.com/bike/owners-manuals/2979/ \u2014 Fox 2025 36/38mm Fork Manual","https://tech.ridefox.com/bike/owners-manuals/2980/ \u2014 Fox 2025 40mm Fork Manual","https://tech.ridefox.com/bike/owners-manuals/2926/ \u2014 Fox 2024 Float X2 Shock Manual","https://tech.dvosuspension.com/setup/diamond/ \u2014 DVO Diamond Setup Guide","https://dvosuspension.com/wp-content/uploads/2024/05/DVO-Diamond-36-Setup-Guide-May16.pdf \u2014 DVO Diamond 36 Setup Guide","https://dvosuspension.com/wp-content/uploads/2024/05/DVO-Topaz-Setup-Guide-May9.pdf \u2014 DVO Topaz Setup Guide","https://ohlins.pl/sites/default/files/mtb_rxf34_rxf36_27.5-29-1.pdf \u2014 \u00d6hlins RXF34/RXF36 Owner's Manual","https://www.ohlins.com/storage/RXF38-m2-Owners-Manual \u2014 \u00d6hlins RXF38 m.2 Owner's Manual","https://www.ohlins.com/storage/TTX-Air-OM \u2014 \u00d6hlins TTX Air Owner's Manual","https://www.ohlins.com/en-us/document-library \u2014 \u00d6hlins Document Library","https://sagly.at/general/suspension-setup-calculator/ \u2014 SAGLY Suspension Calculator","https://hayesbicycle.com/pages/manitou-technology \u2014 Manitou Technology Overview","https://www.starbike.com/manuals/mezzer-pro-setupguide-manitou.pdf \u2014 Manitou Mezzer Pro Setup Guide","https://hayesbicycle.zendesk.com/hc/en-us/articles/18789224175511 \u2014 Manitou Suspension Sag Setup Guide","https://dvosuspension.com/wp-content/uploads/2024/05/DVO-Diamond-36-Setup-Guide-May16.pdf \u2014 DVO Diamond 36 Setup Guide","https://dvosuspension.com/wp-content/uploads/2024/05/DVO-Topaz-Setup-Guide-May9.pdf \u2014 DVO Topaz Setup Guide","https://www.shockcraft.co.nz/manitou-irt/ \u2014 Manitou IRT System Explanation","Community data from PinkBike, NSMB, Flow Mountain Bike, Blister Review, MTBR"]};
+
+// Track selected values for custom dropdowns
+const selectedValues = { fork: null, shock: null };
+
+const BRAND_LABELS = { rockshox: 'RockShox', fox: 'Fox', dvo: 'DVO', ohlins: 'Öhlins', manitou: 'Manitou' };
+
+function populateDropdowns() {
+  const forkPanel  = document.getElementById('fork-panel');
+  const shockPanel = document.getElementById('shock-panel');
+
+  for (const [brand, brandData] of Object.entries(suspensionData.brands)) {
+    const brandLabel = BRAND_LABELS[brand] || brand;
+
+    // Fork group
+    const fg = document.createElement('div');
+    fg.innerHTML = `<div class="cs-group-label">${brandLabel}</div>`;
+    for (const m of brandData.forks) {
+      const el = document.createElement('div');
+      el.className = 'cs-option';
+      el.dataset.value = `${brand}::${m.model}`;
+      el.innerHTML = `<span>${m.model}</span><span class="cs-opt-series">${m.series}</span>`;
+      el.addEventListener('click', () => selectOption('fork', brand, m));
+      fg.appendChild(el);
+    }
+    forkPanel.appendChild(fg);
+
+    // Shock group
+    const sg = document.createElement('div');
+    sg.innerHTML = `<div class="cs-group-label">${brandLabel}</div>`;
+    for (const m of brandData.shocks) {
+      const el = document.createElement('div');
+      el.className = 'cs-option';
+      el.dataset.value = `${brand}::${m.model}`;
+      el.innerHTML = `<span>${m.model}</span><span class="cs-opt-series">${m.series}</span>`;
+      el.addEventListener('click', () => selectOption('shock', brand, m));
+      sg.appendChild(el);
+    }
+    shockPanel.appendChild(sg);
+  }
+}
+
+function toggleDropdown(type, e) {
+  e && e.stopPropagation();
+  const wrap = document.getElementById(`${type}-wrap`);
+  const isOpen = wrap.classList.contains('open');
+  // Close all first
+  document.querySelectorAll('.cs-wrap.open').forEach(w => w.classList.remove('open'));
+  if (!isOpen) wrap.classList.add('open');
+}
+
+function selectOption(type, brand, model) {
+  selectedValues[type] = { brand, model };
+  const label = BRAND_LABELS[brand] || brand;
+  const valEl = document.getElementById(`${type}-value`);
+  valEl.textContent = `${label} ${model.model}`;
+  valEl.classList.remove('placeholder');
+  // Mark selected in panel
+  document.querySelectorAll(`#${type}-panel .cs-option`).forEach(el => {
+    el.classList.toggle('selected', el.dataset.value === `${brand}::${model.model}`);
+  });
+  // Close dropdown
+  document.getElementById(`${type}-wrap`).classList.remove('open');
+}
+
+// Close dropdowns when clicking outside
+document.addEventListener('click', () => {
+  document.querySelectorAll('.cs-wrap.open').forEach(w => w.classList.remove('open'));
+});
+
+function getModel(type) {
+  const sel = selectedValues[type];
+  if (!sel) return null;
+  return { brand: sel.brand, model: sel.model };
+}
+
+function interpolatePSI(chart, weightKg) {
+  for (const row of chart) {
+    if (weightKg >= row.min_kg && weightKg <= row.max_kg) {
+      const t = (weightKg - row.min_kg) / (row.max_kg - row.min_kg);
+      const raw = row.min_psi + t * (row.max_psi - row.min_psi);
+      return { psi: Math.round(raw / 5) * 5, range: `${row.min_psi}–${row.max_psi} PSI` };
+    }
+  }
+  if (weightKg < chart[0].min_kg) {
+    return { psi: chart[0].min_psi, range: `${chart[0].min_psi}–${chart[0].max_psi} PSI`, clamped: true };
+  }
+  const last = chart[chart.length - 1];
+  return { psi: last.max_psi, range: `${last.min_psi}–${last.max_psi} PSI`, clamped: true };
+}
+
+function buildResultHTML(brand, model, weightKg, type) {
+  const brandLabel = { rockshox: 'RockShox', fox: 'Fox', dvo: 'DVO', ohlins: 'Öhlins', manitou: 'Manitou' }[brand] || brand;
+  const colorClass = type === 'fork' ? 'fork-color' : 'shock-color';
+  const fillClass  = type === 'fork' ? 'fork-fill'  : 'shock-fill';
+  const dotClass   = type === 'fork' ? 'fork-dot'   : 'shock-dot';
+  const notesClass = type === 'fork' ? 'fork-notes' : 'shock-notes';
+  const iconClass  = type === 'fork' ? 'fork-icon'  : 'shock-icon';
+  const iconText   = type === 'fork' ? 'FK' : 'SH';
+  const typeLabel  = type === 'fork' ? 'Fork' : 'Rear Shock';
+
+  // Coil shock
+  if (!model.pressure_chart) {
+    return `
+      <div class="rc-top">
+        <div class="rc-model">
+          <div class="rc-icon ${iconClass}">${iconText}</div>
+          <div>
+            <div class="rc-model-name">${model.model}</div>
+            <div class="rc-model-sub">${brandLabel}</div>
+          </div>
+        </div>
+        <div class="rc-type-tag">${typeLabel}</div>
+      </div>
+      <div class="coil-notice">
+        <strong>Coil shock — no air pressure.</strong><br>${model.setup_notes}
+      </div>`;
+  }
+
+  let psi, rangeStr, isFormula = false;
+
+  if (model.formula_psi === 'weight_lbs') {
+    psi = Math.round(weightKg * 2.2046);
+    isFormula = true;
+    rangeStr = interpolatePSI(model.pressure_chart, weightKg).range;
+  } else {
+    const res = interpolatePSI(model.pressure_chart, weightKg);
+    psi = res.psi;
+    rangeStr = res.range;
+  }
+
+  const chartFirst = model.pressure_chart[0];
+  const chartLast  = model.pressure_chart[model.pressure_chart.length - 1];
+  const barMin = chartFirst.min_psi;
+  const barMax = chartLast.max_psi;
+  const barPct = Math.min(100, Math.max(0, ((psi - barMin) / (barMax - barMin)) * 100));
+
+  const travelStr = model.travel_mm ? model.travel_mm.map(t => `${t}mm`).join(' / ') : null;
+  const airSpring = model.air_spring;
+  const maxPsi    = model.max_pressure_psi;
+
+  return `
+    <div class="rc-top">
+      <div class="rc-model">
+        <div class="rc-icon ${iconClass}">${iconText}</div>
+        <div>
+          <div class="rc-model-name">${model.model}</div>
+          <div class="rc-model-sub">${brandLabel} · ${model.series}</div>
+        </div>
+      </div>
+      <div class="rc-type-tag">${typeLabel}</div>
+    </div>
+
+    ${isFormula ? '<div class="formula-pill">Weight in lbs ≈ PSI</div>' : ''}
+
+    <div class="unit-toggle">
+      <button class="active" onclick="setUnit('${type}','psi',this)">PSI</button>
+      <button onclick="setUnit('${type}','bar',this)">BAR</button>
+    </div>
+
+    <div class="rc-psi" id="${type}-psi-display" data-psi="${psi}">
+      <div class="psi-num ${colorClass}"><span id="${type}-psi-val">${psi}</span><span class="psi-unit" id="${type}-psi-unit">PSI</span></div>
+      <div class="psi-sub" id="${type}-psi-sub">Starting pressure · ${Math.round(weightKg * 2.2046)} lbs rider</div>
+    </div>
+
+    <div class="range-bar-wrap">
+      <div class="range-ends">
+        <span>${barMin} PSI</span>
+        <span>${barMax} PSI</span>
+      </div>
+      <div class="range-bar">
+        <div class="range-bar-fill ${fillClass}" style="width:${barPct}%"></div>
+        <div class="range-bar-dot ${dotClass}" style="left:${barPct}%"></div>
+      </div>
+    </div>
+
+    <div class="meta-chips">
+      <div class="chip">
+        <div class="chip-label">Sag</div>
+        <div class="chip-val">${model.sag_percent.min}–${model.sag_percent.max}%</div>
+      </div>
+      <div class="chip">
+        <div class="chip-label">Range</div>
+        <div class="chip-val">${rangeStr}</div>
+      </div>
+      ${airSpring ? `<div class="chip">
+        <div class="chip-label">Spring</div>
+        <div class="chip-val">${airSpring}</div>
+      </div>` : ''}
+      ${travelStr ? `<div class="chip">
+        <div class="chip-label">Travel</div>
+        <div class="chip-val">${travelStr}</div>
+      </div>` : ''}
+      ${maxPsi ? `<div class="chip">
+        <div class="chip-label">Max PSI</div>
+        <div class="chip-val">${maxPsi}</div>
+      </div>` : ''}
+    </div>
+
+    <div class="notes-box ${notesClass}">${model.setup_notes}</div>
+  ${buildDampingHTML(model, weightKg, type)}
+  `;
+}
+
+function setUnit(type, unit, btn) {
+  const display = document.getElementById(`${type}-psi-display`);
+  if (!display) return;
+  const psi = parseFloat(display.dataset.psi);
+  const valEl  = document.getElementById(`${type}-psi-val`);
+  const unitEl = document.getElementById(`${type}-psi-unit`);
+
+  if (unit === 'bar') {
+    valEl.textContent  = (psi * 0.0689476).toFixed(2);
+    unitEl.textContent = ' BAR';
+  } else {
+    valEl.textContent  = psi;
+    unitEl.textContent = ' PSI';
+  }
+
+  // update toggle button states
+  btn.closest('.unit-toggle').querySelectorAll('button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function resetAll() {
+  // Reset dropdowns to placeholder
+  // Reset custom dropdowns
+  selectedValues.fork  = null;
+  selectedValues.shock = null;
+  ['fork', 'shock'].forEach(type => {
+    const valEl = document.getElementById(`${type}-value`);
+    valEl.textContent = type === 'fork' ? 'Select fork model…' : 'Select shock model…';
+    valEl.classList.add('placeholder');
+    document.querySelectorAll(`#${type}-panel .cs-option`).forEach(el => el.classList.remove('selected'));
+  });
+  // Clear weight
+  document.getElementById('weight-input').value = '';
+  // Hide results and error
+  document.getElementById('fork-result').classList.remove('visible');
+  document.getElementById('shock-result').classList.remove('visible');
+  document.getElementById('fork-result').innerHTML  = '';
+  document.getElementById('shock-result').innerHTML = '';
+  clearError();
+  // Hide reset button and save strip
+  document.getElementById('reset-btn').style.display = 'none';
+  document.getElementById('save-strip').classList.remove('visible');
+  closeSaveNameRow();
+  pendingCalc = null;
+  if (editingId !== null) cancelEdit();
+}
+
+function showError(msg) {
+  const el = document.getElementById('error-card');
+  el.textContent = msg;
+  el.classList.add('visible');
+}
+
+function clearError() {
+  const el = document.getElementById('error-card');
+  el.textContent = '';
+  el.classList.remove('visible');
+}
+
+function calculate() {
+  clearError();
+
+  const weightRaw = document.getElementById('weight-input').value.trim();
+  const weightKg  = parseFloat(weightRaw);
+
+  if (!weightRaw || isNaN(weightKg) || weightKg < 20 || weightKg > 200) {
+    showError('Please enter a valid rider weight between 20 and 200 kg.');
+    return;
+  }
+
+  const forkData  = getModel('fork');
+  const shockData = getModel('shock');
+
+  const forkCard  = document.getElementById('fork-result');
+  const shockCard = document.getElementById('shock-result');
+
+  if (forkData) {
+    forkCard.innerHTML = buildResultHTML(forkData.brand, forkData.model, weightKg, 'fork');
+    forkCard.classList.add('visible');
+  }
+
+  if (shockData) {
+    shockCard.innerHTML = buildResultHTML(shockData.brand, shockData.model, weightKg, 'shock');
+    shockCard.classList.add('visible');
+  }
+
+  if (forkData || shockData) {
+    document.getElementById('reset-btn').style.display = 'block';
+
+    // Capture current calc for saving
+    const forkPsi  = forkData  ? computePSI(forkData.model,  weightKg) : null;
+    const shockPsi = shockData ? computePSI(shockData.model, weightKg) : null;
+    pendingCalc = {
+      weightKg,
+      rideStyle: currentRideStyle,
+      fork:  forkData  ? { brand: forkData.brand,  model: forkData.model,  psi: forkPsi,  damping: computeDampingSnapshot(forkData.model,  weightKg) } : null,
+      shock: shockData ? { brand: shockData.brand, model: shockData.model, psi: shockPsi, damping: computeDampingSnapshot(shockData.model, weightKg) } : null,
+    };
+
+    // Show save strip
+    const strip = document.getElementById('save-strip');
+    strip.classList.add('visible');
+    updateSaveTrigger();
+    closeSaveNameRow();
+
+    document.getElementById('fork-result').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+}
+
+// Returns the PSI number for a model + weight
+function computePSI(model, weightKg) {
+  if (!model.pressure_chart) return null;
+  if (model.formula_psi === 'weight_lbs') return Math.round(weightKg * 2.2046);
+  return interpolatePSI(model.pressure_chart, weightKg).psi;
+}
+
+// Returns a compact damping snapshot for storage
+function computeDampingSnapshot(model, weightKg) {
+  const d = model.damping;
+  if (!d) return null;
+  const styleAdj = d.ride_style_adjust ? (d.ride_style_adjust[currentRideStyle] || {}) : {};
+  const snap = { damper: d.damper || '', rideStyle: currentRideStyle };
+  const calc = (obj, key) => {
+    if (!obj || !obj.starting_clicks) return null;
+    const base = getClicksForWeight(obj.starting_clicks, weightKg);
+    return applyStyleDelta(base, obj.total_clicks, styleAdj[key] || 0);
+  };
+  if (d.rebound)     snap.rebound    = calc(d.rebound, 'rebound');
+  if (d.rebound_lsr) snap.reboundLSR = calc(d.rebound_lsr, 'rebound');
+  if (d.rebound_hsr) snap.reboundHSR = calc(d.rebound_hsr, 'rebound');
+  if (d.lsc)         snap.lsc        = calc(d.lsc, 'lsc');
+  if (d.hsc)         snap.hsc        = calc(d.hsc, 'hsc');
+  if (d.compression && d.compression.label) snap.compressionMode = d.compression.label;
+  return snap;
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Enter') calculate(); });
+
+// ── Theme toggle ───────────────────────────────────────────────────────────
+function applyTheme(light) {
+  document.body.classList.toggle('light-theme', light);
+  document.getElementById('theme-icon').textContent = light ? '☀️' : '🌙';
+  document.getElementById('theme-toggle').title = light ? 'Switch to dark mode' : 'Switch to light mode';
+  localStorage.setItem('suspension_theme', light ? 'light' : 'dark');
+}
+function toggleTheme() {
+  applyTheme(!document.body.classList.contains('light-theme'));
+}
+// Load saved theme on init
+(function() {
+  const saved = localStorage.getItem('suspension_theme');
+  if (saved === 'light') applyTheme(true); else document.getElementById('theme-icon').textContent = '🌙';
+})();
+
+
+// ── Ride style ─────────────────────────────────────────────────────────────
+let currentRideStyle = 'all_mountain';
+const RS_LABELS = { xc_trail: 'XC / Trail', all_mountain: 'All Mountain', enduro_dh: 'Enduro / DH' };
+
+function setRideStyle(style) {
+  currentRideStyle = style;
+  document.getElementById('rs-xc').classList.toggle('active', style === 'xc_trail');
+  document.getElementById('rs-am').classList.toggle('active', style === 'all_mountain');
+  document.getElementById('rs-ed').classList.toggle('active', style === 'enduro_dh');
+}
+
+function getClicksForWeight(startingClicks, weightKg) {
+  if (!startingClicks || !startingClicks.length) return null;
+  for (const row of startingClicks) {
+    if (weightKg >= row.min_kg && weightKg <= row.max_kg) return row.clicks;
+  }
+  if (weightKg < startingClicks[0].min_kg) return startingClicks[0].clicks;
+  return startingClicks[startingClicks.length - 1].clicks;
+}
+
+function applyStyleDelta(clicks, total, delta) {
+  if (clicks === null || clicks === undefined) return null;
+  return Math.min(total, Math.max(0, clicks + delta));
+}
+
+function buildDampingHTML(model, weightKg, type) {
+  const d = model.damping;
+  if (!d) return '';
+
+  // Coil / no-pressure models — just a note
+  if (!model.pressure_chart && d.note) {
+    return `<div class="damping-section">
+      <div class="damping-header">
+        <div class="damping-header-top">
+          <span class="damping-heading">Damping</span>
+        </div>
+      </div>
+      <div class="damp-rows">
+        <div class="damp-row damp-row-info">
+          <div class="damp-row-top"><div class="damp-row-left">
+            <div class="damp-row-note">${d.note}</div>
+          </div></div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  const styleAdj  = d.ride_style_adjust ? (d.ride_style_adjust[currentRideStyle] || {}) : {};
+  const styleNote = styleAdj.note || '';
+  const rsLabel   = RS_LABELS[currentRideStyle] || currentRideStyle;
+  const colorClass = type === 'fork' ? 'fork-damp' : 'shock-damp';
+
+  let rows = '';
+
+  // ── Helpers ────────────────────────────────────────────────────────────
+  function clickRow(label, clicksObj, styleKey) {
+    if (!clicksObj || !clicksObj.starting_clicks) return '';
+    const base  = getClicksForWeight(clicksObj.starting_clicks, weightKg);
+    const delta = styleAdj[styleKey] || 0;
+    const final = applyStyleDelta(base, clicksObj.total_clicks, delta);
+    const pct   = Math.round((final / clicksObj.total_clicks) * 100);
+    const fromLabel = clicksObj.count_from === 'fully_closed' ? 'from closed' : 'from open';
+    let deltaBadge = '';
+    if (delta > 0) deltaBadge = `<span class="damp-delta-badge pos">+${delta}</span>`;
+    if (delta < 0) deltaBadge = `<span class="damp-delta-badge neg">${delta}</span>`;
+    return `<div class="damp-row ${colorClass}">
+      <div class="damp-row-top">
+        <div class="damp-row-left">
+          <div class="damp-row-label">${label}</div>
+          <div class="damp-row-note">${clicksObj.note || ''}</div>
+        </div>
+        <div class="damp-row-right">
+          <span class="damp-clicks">${final}</span>
+          <span class="damp-clicks-unit">clicks</span>
+          ${deltaBadge}
+        </div>
+      </div>
+      <div class="damp-bar-row">
+        <div class="damp-bar"><div class="damp-bar-fill" style="width:${pct}%"></div></div>
+        <span class="damp-bar-meta">${final} / ${clicksObj.total_clicks} · ${fromLabel}</span>
+      </div>
+    </div>`;
+  }
+
+  function leverRow(label, compObj) {
+    if (!compObj || !compObj.total_positions) return '';
+    const positions = (compObj.label || '').split('/').map(p => p.trim());
+    const pills = positions.map((p, i) =>
+      `<span class="damp-lever-pill${i === 0 ? ' active-lever' : ''}">${p}</span>`
+    ).join('');
+    return `<div class="damp-row damp-row-lever">
+      <div class="damp-row-top"><div class="damp-row-left">
+        <div class="damp-row-label">${label}</div>
+      </div></div>
+      <div class="damp-lever-pills">${pills}</div>
+      ${compObj.note ? `<div class="damp-row-note" style="margin-top:10px">${compObj.note}</div>` : ''}
+    </div>`;
+  }
+
+  function noteRow(label, note) {
+    if (!note) return '';
+    return `<div class="damp-row damp-row-info">
+      <div class="damp-row-top"><div class="damp-row-left">
+        <div class="damp-row-label">${label}</div>
+        <div class="damp-row-note">${note}</div>
+      </div></div>
+    </div>`;
+  }
+
+  function ottRow(ott) {
+    if (!ott) return '';
+    return `<div class="damp-row damp-row-info">
+      <div class="damp-row-top"><div class="damp-row-left">
+        <div class="damp-row-label">OTT — Off The Top</div>
+        <div class="damp-row-note">${ott.note}</div>
+      </div></div>
+    </div>`;
+  }
+
+  // ── Build rows ─────────────────────────────────────────────────────────
+  if (d.rebound)     rows += clickRow('Rebound', d.rebound, 'rebound');
+  if (d.rebound_lsr) rows += clickRow('Rebound — Low Speed', d.rebound_lsr, 'rebound');
+  if (d.rebound_hsr) rows += clickRow('Rebound — High Speed', d.rebound_hsr, 'rebound');
+  if (d.lsc)         rows += clickRow('Low-Speed Compression', d.lsc, 'lsc');
+  if (d.hsc)         rows += clickRow('High-Speed Compression', d.hsc, 'hsc');
+  if (d.compression) rows += leverRow('Compression Mode', d.compression);
+  if (d.lsc_note)    rows += noteRow('Low-Speed Compression', d.lsc_note);
+  if (d.hsc_note)    rows += noteRow('High-Speed Compression', d.hsc_note);
+  if (d.grip_note)   rows += noteRow('GRIP Damper Note', d.grip_note);
+  if (d.climb_switch)rows += noteRow('Climb Switch', d.climb_switch);
+  if (d.ott)         rows += ottRow(d.ott);
+
+  if (!rows) return '';
+
+  return `<div class="damping-section">
+    <div class="damping-header">
+      <div class="damping-header-top">
+        <span class="damping-heading">Damping Setup</span>
+        <span class="damping-damper-name">${d.damper || ''}</span>
+      </div>
+      ${styleNote ? `<div class="damping-style-note">${styleNote}</div>` : ''}
+    </div>
+    <div class="damp-rows">${rows}</div>
+  </div>`;
+}
+
+
+// ── Saved weight ───────────────────────────────────────────────────────────
+function loadSavedWeight() {
+  const saved = localStorage.getItem('suspension_saved_kg');
+  if (saved) {
+    document.getElementById('weight-input').value = saved;
+    setPinState(true);
+  }
+}
+
+function toggleSavedWeight() {
+  const isPinned = document.getElementById('weight-pin-btn').classList.contains('pinned');
+  if (isPinned) {
+    localStorage.removeItem('suspension_saved_kg');
+    setPinState(false);
+  } else {
+    const kg = document.getElementById('weight-input').value.trim();
+    if (!kg || isNaN(parseFloat(kg))) return;
+    localStorage.setItem('suspension_saved_kg', kg);
+    setPinState(true);
+  }
+}
+
+function onWeightInput() {
+  // If a weight is pinned, update it live
+  if (localStorage.getItem('suspension_saved_kg')) {
+    const kg = document.getElementById('weight-input').value.trim();
+    if (kg && !isNaN(parseFloat(kg))) {
+      localStorage.setItem('suspension_saved_kg', kg);
+    }
+  }
+  // Always unpin visual if field cleared
+  if (!document.getElementById('weight-input').value.trim()) {
+    setPinState(false);
+  }
+}
+
+function setPinState(pinned) {
+  const btn   = document.getElementById('weight-pin-btn');
+  const label = document.getElementById('weight-pin-label');
+  btn.classList.toggle('pinned', pinned);
+  label.textContent = pinned ? 'Weight saved — tap to forget' : 'Remember my weight';
+}
+
+
+// ── Saved calculations ─────────────────────────────────────────────────────
+const MAX_SAVES = 3;
+let pendingCalc = null; // holds current calc result to be saved
+
+function loadSaves() {
+  try { return JSON.parse(localStorage.getItem('suspension_saves') || '[]'); }
+  catch(e) { return []; }
+}
+function persistSaves(saves) {
+  localStorage.setItem('suspension_saves', JSON.stringify(saves));
+}
+
+function openSaveNameRow() {
+  if (editingId !== null) {
+    // In edit mode: update immediately without name prompt
+    confirmSave();
+    return;
+  }
+  document.getElementById('save-name-row').classList.add('visible');
+  document.getElementById('save-trigger-btn').style.display = 'none';
+  const inp = document.getElementById('save-name-input');
+  inp.value = '';
+  inp.focus();
+}
+function closeSaveNameRow() {
+  document.getElementById('save-name-row').classList.remove('visible');
+  document.getElementById('save-trigger-btn').style.display = '';
+}
+
+function confirmSave() {
+  if (!pendingCalc) return;
+  let saves = loadSaves();
+
+  if (editingId !== null) {
+    // Update existing save
+    const idx = saves.findIndex(s => s.id === editingId);
+    if (idx !== -1) {
+      const oldName = saves[idx].name;
+      const raw = document.getElementById('save-name-input').value.trim();
+      saves[idx] = { ...saves[idx], name: raw || oldName, ...pendingCalc };
+    }
+    persistSaves(saves);
+    closeSaveNameRow();
+    cancelEdit();
+    renderSaves();
+    return;
+  }
+
+  if (saves.length >= MAX_SAVES) return;
+  const raw = document.getElementById('save-name-input').value.trim();
+  const name = raw || 'Setup ' + (saves.length + 1);
+  saves.push({ id: Date.now(), name, ...pendingCalc });
+  persistSaves(saves);
+  closeSaveNameRow();
+  renderSaves();
+  updateSaveTrigger();
+}
+
+function deleteSave(id) {
+  const saves = loadSaves().filter(s => s.id !== id);
+  persistSaves(saves);
+  renderSaves();
+  updateSaveTrigger();
+}
+
+let editingId = null; // ID of the save currently being edited
+
+function startEditName(id) {
+  const saves = loadSaves();
+  const save  = saves.find(s => s.id === id);
+  if (!save) return;
+
+  editingId = id;
+
+  // Load everything into the calculator form
+  if (save.fork)  selectOption('fork',  save.fork.brand,  save.fork.model);
+  if (save.shock) selectOption('shock', save.shock.brand, save.shock.model);
+  document.getElementById('weight-input').value = save.weightKg;
+  if (save.rideStyle) setRideStyle(save.rideStyle);
+
+  // Show edit banner
+  document.getElementById('edit-banner-name').textContent = save.name;
+  document.getElementById('edit-banner').style.display = 'block';
+
+  // Update save trigger button label
+  const btn = document.getElementById('save-trigger-btn');
+  btn.textContent = `Update "${save.name}"`;
+  btn.classList.add('update-mode');
+
+  // Scroll to top and calculate
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  setTimeout(calculate, 350);
+}
+
+function cancelEdit() {
+  editingId = null;
+  document.getElementById('edit-banner').style.display = 'none';
+  const btn = document.getElementById('save-trigger-btn');
+  btn.textContent = '+ Save this calculation';
+  btn.classList.remove('update-mode');
+  closeSaveNameRow();
+  resetAll();
+}
+
+function finishEditName(id) {
+  // Legacy — no longer used inline; keeping for safety
+  renderSaves();
+}
+
+function loadSaveIntoForm(save) {
+  if (save.fork)  selectOption('fork',  save.fork.brand,  save.fork.model);
+  if (save.shock) selectOption('shock', save.shock.brand, save.shock.model);
+  document.getElementById('weight-input').value = save.weightKg;
+  if (save.rideStyle) setRideStyle(save.rideStyle);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  setTimeout(calculate, 300);
+}
+
+function updateSaveTrigger() {
+  const saves = loadSaves();
+  const btn = document.getElementById('save-trigger-btn');
+  if (saves.length >= MAX_SAVES) {
+    btn.disabled = true;
+    btn.textContent = 'Max 3 saves reached — delete one to save again';
+  } else {
+    btn.disabled = false;
+    btn.textContent = '+ Save this calculation';
+  }
+}
+
+function barPct(psi, chart) {
+  if (!chart || !chart.length) return 0;
+  const mn = chart[0].min_psi, mx = chart[chart.length - 1].max_psi;
+  return Math.min(100, Math.max(0, ((psi - mn) / (mx - mn)) * 100));
+}
+
+function renderSaves() {
+  const saves = loadSaves();
+  const section = document.getElementById('saved-section');
+  const list    = document.getElementById('saved-list');
+  const badge   = document.getElementById('saved-count-badge');
+
+  badge.textContent = `${saves.length} / ${MAX_SAVES}`;
+
+  if (saves.length === 0) {
+    section.style.display = 'none';
+    return;
+  }
+  section.style.display = 'block';
+
+  list.innerHTML = saves.map(s => {
+    const BRAND = { rockshox: 'RockShox', fox: 'Fox', dvo: 'DVO', ohlins: 'Öhlins', manitou: 'Manitou' };
+
+    const forkBox = s.fork ? (() => {
+      const bl = BRAND[s.fork.brand] || s.fork.brand;
+      const pct = barPct(s.fork.psi, s.fork.model.pressure_chart);
+      return `<div class="sc-result-box fork-box">
+        <div class="sc-result-label">Fork</div>
+        <div class="sc-result-model">${bl} ${s.fork.model.model}</div>
+        <div class="sc-result-psi">${s.fork.psi}<span class="sc-unit">PSI</span></div>
+        <div class="sc-result-bar"><div class="sc-result-bar-fill" style="width:${pct}%"></div></div>
+      </div>`;
+    })() : '';
+
+    const shockBox = s.shock ? (() => {
+      const bl = BRAND[s.shock.brand] || s.shock.brand;
+      if (!s.shock.model.pressure_chart) {
+        return `<div class="sc-result-box coil-box">
+          <div class="sc-result-label">Rear Shock</div>
+          <div class="sc-result-model">${bl} ${s.shock.model.model}</div>
+          <div class="sc-result-psi">Coil</div>
+        </div>`;
+      }
+      const pct = barPct(s.shock.psi, s.shock.model.pressure_chart);
+      return `<div class="sc-result-box shock-box">
+        <div class="sc-result-label">Rear Shock</div>
+        <div class="sc-result-model">${bl} ${s.shock.model.model}</div>
+        <div class="sc-result-psi">${s.shock.psi}<span class="sc-unit">PSI</span></div>
+        <div class="sc-result-bar"><div class="sc-result-bar-fill" style="width:${pct}%"></div></div>
+      </div>`;
+    })() : '';
+
+    // Damping summary chips
+    const dampChips = (dampSnap) => {
+      if (!dampSnap) return '';
+      const chips = [];
+      if (dampSnap.rebound    != null) chips.push(['Rebound', dampSnap.rebound, 'clk']);
+      if (dampSnap.reboundLSR != null) chips.push(['R-LSR',   dampSnap.reboundLSR, 'clk']);
+      if (dampSnap.reboundHSR != null) chips.push(['R-HSR',   dampSnap.reboundHSR, 'clk']);
+      if (dampSnap.lsc        != null) chips.push(['LSC',     dampSnap.lsc, 'clk']);
+      if (dampSnap.hsc        != null) chips.push(['HSC',     dampSnap.hsc, 'clk']);
+      if (dampSnap.compressionMode) chips.push(['Mode', dampSnap.compressionMode, '']);
+      return chips.map(([lbl, val, unit]) =>
+        `<div class="sc-damp-chip">
+          <span class="sc-damp-chip-label">${lbl}</span>
+          <span class="sc-damp-chip-val">${val}<span class="sc-damp-chip-unit">${unit}</span></span>
+        </div>`
+      ).join('');
+    };
+
+    const RS_DISPLAY = { xc_trail: 'XC / Trail', all_mountain: 'All Mountain', enduro_dh: 'Enduro / DH' };
+    const rideStyleTag = s.rideStyle
+      ? `<div class="sc-damp-style-tag">${RS_DISPLAY[s.rideStyle] || s.rideStyle}</div>` : '';
+
+    const forkDampRow = s.fork && s.fork.damping
+      ? `<div class="sc-damping-row">${dampChips(s.fork.damping)}${rideStyleTag}</div>` : '';
+    const shockDampRow = s.shock && s.shock.damping
+      ? `<div class="sc-damping-row">${dampChips(s.shock.damping)}</div>` : '';
+
+    return `<div class="saved-card" id="sc-${s.id}">
+      <div class="saved-card-top">
+        <div class="saved-card-name-wrap">
+          <div class="saved-card-name">${s.name}</div>
+          <div class="saved-card-weight">${s.weightKg} kg · ${Math.round(s.weightKg * 2.2046)} lbs</div>
+        </div>
+        <div class="saved-card-actions">
+          <button class="sc-action-btn edit-btn" title="Edit setup" onclick="startEditName(${s.id})">
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+              <path d="M1 12l3-1L11.5 3.5a1.4 1.4 0 00-2-2L2 9l-1 3z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <button class="sc-action-btn delete-btn" title="Delete" onclick="deleteSave(${s.id})">
+            <svg width="11" height="13" viewBox="0 0 11 13" fill="none">
+              <path d="M1 3h9M4 3V2h3v1M2 3l.7 8.5h5.6L9 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="saved-card-results">
+        <div>
+          ${forkBox}
+          ${forkDampRow}
+        </div>
+        <div>
+          ${shockBox}
+          ${shockDampRow}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// Press Enter in save name input
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.getElementById('save-name-row').classList.contains('visible')) {
+    confirmSave();
+  }
+});
+
+populateDropdowns();
+renderSaves();
+loadSavedWeight();
+</script>
+</body>
+</html>

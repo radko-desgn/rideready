@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UI Kit — Typography & Text Fields</title>
+  <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #e5e7eb;
+      font-family: 'Ubuntu', sans-serif;
+      min-height: 100vh;
+      padding: 40px 24px;
+    }
+
+    .page {
+      background: #f3f4f6;
+      border-radius: 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 56px 64px 72px;
+    }
+
+    /* ── Page title ── */
+    .page-title {
+      font-size: 48px;
+      font-weight: 500;
+      line-height: 56px;
+      color: #000;
+      margin-bottom: 48px;
+    }
+    .page-title span { color: #116acc; }
+
+    /* ── Section ── */
+    .section { margin-bottom: 56px; }
+    .section-title {
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 36px;
+      color: #374151;
+      margin-bottom: 24px;
+    }
+
+    /* ── Card wrapper (dashed border container) ── */
+    .card {
+      background: #fff;
+      border: 1.5px dashed #c7d3e8;
+      border-radius: 16px;
+      padding: 24px 28px;
+    }
+
+    /* ── Column label above each variant ── */
+    .col-label {
+      font-family: 'Ubuntu', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: #4b5563;
+      margin-bottom: 10px;
+      letter-spacing: -0.01em;
+    }
+
+    /* ── Grid layouts ── */
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px 32px;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px 32px;
+    }
+
+    /* ── Base input ── */
+    .field {
+      height: 44px;
+      background: #fff;
+      border: 1px solid #9ca3af;
+      border-radius: 7px;
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      font-family: 'Ubuntu', sans-serif;
+      font-size: 16px;
+      font-weight: 400;
+      color: #6b7280;
+      letter-spacing: -0.01em;
+      width: 100%;
+      position: relative;
+    }
+    .field .placeholder { color: #6b7280; }
+    .field .value { color: #374151; }
+
+    /* States */
+    .field.focused {
+      border-color: #116acc;
+      border-width: 1.5px;
+    }
+    .field.focused .value { color: #374151; }
+    .field.error {
+      border-color: #ba0000;
+      border-width: 1.5px;
+    }
+    .field.disabled {
+      background: #f9fafb;
+      border-color: #e5e7eb;
+      color: #d1d5db;
+    }
+    .field.hover {
+      border-color: #374151;
+    }
+    .field.success {
+      border-color: #76ca66;
+      border-width: 1.5px;
+    }
+
+    /* ── Field with label ── */
+    .field-with-label {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+    .field-label-text {
+      font-size: 16px;
+      font-weight: 500;
+      color: #182233;
+      white-space: nowrap;
+    }
+
+    /* ── State message (error/success) ── */
+    .state-msg {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+    }
+    .state-msg.error-msg { color: #ba0000; }
+    .state-msg.success-msg { color: #76ca66; }
+    .state-msg img { width: 16px; height: 16px; }
+
+    /* ── Check/Delete field ── */
+    .field-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .field-actions .field { flex: 1; }
+    .icon-btn {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .icon-btn img { width: 18px; height: 18px; }
+
+    /* ── Dropdown field ── */
+    .field-dropdown {
+      justify-content: space-between;
+      cursor: pointer;
+    }
+    .chevron {
+      width: 10px;
+      height: 5px;
+      flex-shrink: 0;
+    }
+
+    /* ── Tooltip field ── */
+    .field-tooltip-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .info-btn {
+      width: 24px;
+      height: 24px;
+      background: #374151;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .tooltip-popup {
+      position: absolute;
+      top: -40px;
+      left: 60px;
+      background: #374151;
+      color: #fff;
+      font-size: 13px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    .tooltip-popup::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 14px;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-top: 6px solid #374151;
+    }
+
+    /* ── Dropdown open panels ── */
+    .dropdown-open {
+      position: relative;
+      width: 100%;
+    }
+    .dropdown-trigger {
+      height: 44px;
+      background: #fff;
+      border: 1.5px solid #116acc;
+      border-radius: 7px;
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 16px;
+      color: #6b7280;
+      cursor: pointer;
+    }
+    .dropdown-list {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-top: none;
+      border-radius: 0 0 7px 7px;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.13), 0 1px 3.6px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    .dropdown-item {
+      padding: 10px 16px;
+      font-size: 16px;
+      color: #374151;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+    .dropdown-item.active { background: rgba(160,195,255,0.1); }
+    .dropdown-item .check-icon { width: 20px; height: 20px; flex-shrink: 0; }
+    .dropdown-item .checkbox { width: 20px; height: 20px; flex-shrink: 0; }
+
+    /* ── Picker fields ── */
+    .field-icon-right {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+    .picker-icon { width: 22px; height: 22px; flex-shrink: 0; }
+
+    /* ── Add field (input + blue button) ── */
+    .add-field-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .add-btn {
+      width: 44px;
+      height: 44px;
+      background: #116acc;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+    .add-btn img { width: 22px; height: 22px; }
+
+    /* ── Drag handle icon ── */
+    .drag-handle {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      flex-shrink: 0;
+    }
+    .drag-bar {
+      width: 2px;
+      height: 20px;
+      background: #182233;
+      border-radius: 1px;
+    }
+
+    /* ── Icon field ── */
+    .icon-field-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .user-icon { width: 24px; height: 24px; flex-shrink: 0; }
+
+    /* ── Cursor blink ── */
+    .cursor {
+      display: inline-block;
+      width: 1.5px;
+      height: 18px;
+      background: #374151;
+      margin-left: 2px;
+      vertical-align: middle;
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* ── Typography section ── */
+    .type-scale-row {
+      display: grid;
+      grid-template-columns: 160px 1fr 200px;
+      align-items: baseline;
+      gap: 16px;
+      padding: 20px 0;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .type-scale-row:last-child { border-bottom: none; }
+    .type-meta {
+      font-size: 13px;
+      font-weight: 500;
+      color: #9ca3af;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      line-height: 1.4;
+    }
+    .type-meta strong { display: block; color: #374151; font-size: 14px; text-transform: none; letter-spacing: 0; }
+    .type-sample { color: #182233; }
+    .type-specs {
+      font-size: 12px;
+      color: #9ca3af;
+      font-family: 'Ubuntu', sans-serif;
+      line-height: 1.7;
+    }
+    .type-specs span { display: block; }
+
+    /* Colour palette */
+    .palette-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 16px;
+    }
+    .swatch {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .swatch-block {
+      height: 64px;
+      border-radius: 10px;
+      border: 1px solid rgba(0,0,0,0.08);
+    }
+    .swatch-name {
+      font-size: 12px;
+      font-weight: 500;
+      color: #374151;
+      line-height: 1.3;
+    }
+    .swatch-hex {
+      font-size: 11px;
+      color: #9ca3af;
+      font-family: monospace;
+    }
+
+    /* Weight samples */
+    .weight-row {
+      display: flex;
+      align-items: baseline;
+      gap: 32px;
+      flex-wrap: wrap;
+      padding: 20px 0;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .weight-row:last-child { border-bottom: none; }
+    .weight-label {
+      font-size: 12px;
+      color: #9ca3af;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      min-width: 100px;
+    }
+    .weight-sample { font-size: 22px; color: #182233; line-height: 1.2; }
+
+    @media (max-width: 900px) {
+      .type-scale-row { grid-template-columns: 1fr; gap: 6px; }
+      .type-specs { margin-top: 4px; }
+    }
+
+    @media (max-width: 900px) {
+      .page { padding: 32px 20px 48px; border-radius: 24px; }
+      .grid-4 { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .grid-4, .grid-2 { grid-template-columns: 1fr; }
+      .page-title { font-size: 32px; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <h1 class="page-title">UI <span>Kit</span></h1>
+
+  <!-- ══════════════ TYPOGRAPHY ══════════════ -->
+  <section class="section">
+    <h2 class="section-title">Typography</h2>
+
+    <!-- Type scale -->
+    <div class="card" style="margin-bottom:24px;">
+      <h3 style="font-size:14px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">Type scale</h3>
+
+      <div class="type-scale-row">
+        <div class="type-meta"><strong>Display</strong>48 / Medium</div>
+        <div class="type-sample" style="font-size:48px;font-weight:500;line-height:56px;letter-spacing:0;">The quick brown fox</div>
+        <div class="type-specs">
+          <span>Size: 48px</span><span>Weight: 500 Medium</span><span>Line height: 56px</span><span>Font: Ubuntu</span>
+        </div>
+      </div>
+
+      <div class="type-scale-row">
+        <div class="type-meta"><strong>Heading</strong>32 / Bold</div>
+        <div class="type-sample" style="font-size:32px;font-weight:700;line-height:36px;letter-spacing:0;">The quick brown fox</div>
+        <div class="type-specs">
+          <span>Size: 32px</span><span>Weight: 700 Bold</span><span>Line height: 36px</span><span>Font: Ubuntu</span>
+        </div>
+      </div>
+
+      <div class="type-scale-row">
+        <div class="type-meta"><strong>Subheading</strong>18 / Medium</div>
+        <div class="type-sample" style="font-size:18px;font-weight:500;line-height:22px;letter-spacing:-0.18px;">The quick brown fox jumps over the lazy dog</div>
+        <div class="type-specs">
+          <span>Size: 18px</span><span>Weight: 500 Medium</span><span>Line height: 22px</span><span>Tracking: −0.18px</span>
+        </div>
+      </div>
+
+      <div class="type-scale-row">
+        <div class="type-meta"><strong>Body</strong>16 / Regular</div>
+        <div class="type-sample" style="font-size:16px;font-weight:400;line-height:24px;letter-spacing:-0.16px;">The quick brown fox jumps over the lazy dog. Sphinx of black quartz, judge my vow.</div>
+        <div class="type-specs">
+          <span>Size: 16px</span><span>Weight: 400 Regular</span><span>Line height: 24px</span><span>Tracking: −0.16px</span>
+        </div>
+      </div>
+
+      <div class="type-scale-row">
+        <div class="type-meta"><strong>Body</strong>16 / Medium</div>
+        <div class="type-sample" style="font-size:16px;font-weight:500;line-height:20px;letter-spacing:-0.16px;">The quick brown fox jumps over the lazy dog. Sphinx of black quartz, judge my vow.</div>
+        <div class="type-specs">
+          <span>Size: 16px</span><span>Weight: 500 Medium</span><span>Line height: 20px</span><span>Tracking: −0.16px</span>
+        </div>
+      </div>
+
+      <div class="type-scale-row">
+        <div class="type-meta"><strong>Caption</strong>13 / Medium</div>
+        <div class="type-sample" style="font-size:13px;font-weight:500;line-height:20px;letter-spacing:-0.13px;">The quick brown fox jumps over the lazy dog. Sphinx of black quartz, judge my vow.</div>
+        <div class="type-specs">
+          <span>Size: 13px</span><span>Weight: 500 Medium</span><span>Line height: 20px</span><span>Tracking: −0.13px</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Font weights -->
+    <div class="card" style="margin-bottom:24px;">
+      <h3 style="font-size:14px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">Ubuntu — weights</h3>
+      <div class="weight-row">
+        <span class="weight-label">Regular · 400</span>
+        <span class="weight-sample" style="font-weight:400;">AaBbCcDdEeFf 0123456789</span>
+      </div>
+      <div class="weight-row">
+        <span class="weight-label">Medium · 500</span>
+        <span class="weight-sample" style="font-weight:500;">AaBbCcDdEeFf 0123456789</span>
+      </div>
+      <div class="weight-row">
+        <span class="weight-label">Bold · 700</span>
+        <span class="weight-sample" style="font-weight:700;">AaBbCcDdEeFf 0123456789</span>
+      </div>
+    </div>
+
+    <!-- Colour palette -->
+    <div class="card">
+      <h3 style="font-size:14px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:16px;">Colour palette</h3>
+      <div class="palette-grid">
+        <div class="swatch">
+          <div class="swatch-block" style="background:#116acc;"></div>
+          <div class="swatch-name">Primary</div>
+          <div class="swatch-hex">#116ACC</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-block" style="background:#182233;"></div>
+          <div class="swatch-name">Secondary</div>
+          <div class="swatch-hex">#182233</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-block" style="background:#000000;"></div>
+          <div class="swatch-name">Black</div>
+          <div class="swatch-hex">#000000</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-block" style="background:#374151;"></div>
+          <div class="swatch-name">Gray 2</div>
+          <div class="swatch-hex">#374151</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-block" style="background:#4b5563;"></div>
+          <div class="swatch-name">Gray 3</div>
+          <div class="swatch-hex">#4B5563</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-block" style="background:#6b7280;"></div>
+          <div class="swatch-name">Gray 4</div>
+          <div class="swatch-hex">#6B7280</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-block" style="background:#9ca3af;"></div>
+          <div class="swatch-name">Gray 5</div>
+          <div class="swatch-hex">#9CA3AF</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-block" style="background:#f3f4f6;border:1px solid #e5e7eb;"></div>
+          <div class="swatch-name">Gray 7</div>
+          <div class="swatch-hex">#F3F4F6</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-block" style="background:#ffffff;border:1px solid #e5e7eb;"></div>
+          <div class="swatch-name">White</div>
+          <div class="swatch-hex">#FFFFFF</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-block" style="background:#ba0000;"></div>
+          <div class="swatch-name">Error</div>
+          <div class="swatch-hex">#BA0000</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-block" style="background:#76ca66;"></div>
+          <div class="swatch-name">Success</div>
+          <div class="swatch-hex">#76CA66</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <h2 class="section-title" style="margin-bottom:32px;">04. <span style="color:#116acc;">Text fields</span></h2>
+
+  <!-- ══════════════ FIELD TYPES ══════════════ -->
+  <section class="section">
+    <h2 class="section-title">Field types</h2>
+    <div class="card">
+      <div class="grid-4">
+
+        <!-- Label -->
+        <div>
+          <div class="col-label">Field with label</div>
+          <div class="field-with-label">
+            <span class="field-label-text">Label</span>
+            <div class="field"><span class="placeholder">Placeholder</span></div>
+          </div>
+        </div>
+
+        <!-- Icon -->
+        <div>
+          <div class="col-label">Field with icon</div>
+          <div class="icon-field-wrap">
+            <img class="user-icon" src="https://www.figma.com/api/mcp/asset/2c9214f8-01c5-4ba6-8a38-b75ac7439366" alt="user icon">
+            <div class="field"><span class="placeholder">Placeholder</span></div>
+          </div>
+        </div>
+
+        <!-- Drag and drop -->
+        <div>
+          <div class="col-label">Field with drag and drop</div>
+          <div style="display:flex;align-items:center;gap:14px;">
+            <div class="drag-handle">
+              <div class="drag-bar"></div>
+              <div class="drag-bar"></div>
+              <div class="drag-bar"></div>
+            </div>
+            <div class="field"><span class="placeholder">Placeholder</span></div>
+          </div>
+        </div>
+
+        <!-- Add -->
+        <div>
+          <div class="col-label">Add</div>
+          <div class="add-field-wrap">
+            <div class="field" style="flex:1;"><span class="placeholder">Placeholder</span></div>
+            <div class="add-btn">
+              <img src="https://www.figma.com/api/mcp/asset/4c460536-fa9f-45e2-919b-eb05c9e41f2e" alt="plus">
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ TEXT INPUT ══════════════ -->
+  <section class="section">
+    <h2 class="section-title">Text input</h2>
+    <div class="card">
+      <div class="grid-4" style="row-gap:28px;">
+
+        <!-- Default -->
+        <div>
+          <div class="col-label">Default</div>
+          <div class="field"><span class="placeholder">Placeholder</span></div>
+        </div>
+
+        <!-- Focused -->
+        <div>
+          <div class="col-label">Focused</div>
+          <div class="field focused"><span class="value">|<span class="cursor"></span></span></div>
+        </div>
+
+        <!-- Filled -->
+        <div>
+          <div class="col-label">Filled</div>
+          <div class="field"><span class="value" style="color:#374151;">Placeholder</span></div>
+        </div>
+
+        <!-- Error -->
+        <div>
+          <div class="col-label">Error message</div>
+          <div class="field error" style="justify-content:space-between;">
+            <span class="value" style="color:#374151;">John</span>
+            <img src="https://www.figma.com/api/mcp/asset/d5ef2706-1db6-4e89-994d-eb9bc19d4825" alt="error" style="width:20px;height:20px;">
+          </div>
+          <div class="state-msg error-msg">
+            <img src="https://www.figma.com/api/mcp/asset/d5ef2706-1db6-4e89-994d-eb9bc19d4825" alt="error">
+            Error message
+          </div>
+        </div>
+
+        <!-- Disable -->
+        <div>
+          <div class="col-label">Disable</div>
+          <div class="field disabled"><span style="color:#d1d5db;">Placeholder</span></div>
+        </div>
+
+        <!-- Hover -->
+        <div>
+          <div class="col-label">Hover</div>
+          <div class="field hover"><span class="placeholder">Placeholder</span></div>
+        </div>
+
+        <!-- Typing -->
+        <div>
+          <div class="col-label">Typing</div>
+          <div class="field focused">
+            <span class="value" style="color:#374151;">Text <span class="cursor"></span></span>
+          </div>
+        </div>
+
+        <!-- Success -->
+        <div>
+          <div class="col-label">Success message</div>
+          <div class="field success" style="justify-content:space-between;">
+            <span class="value" style="color:#374151;">John</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#76ca66" stroke-width="2"/><path d="M7 12.5l3.5 3.5L17 9" stroke="#76ca66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="state-msg success-msg">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#76ca66" stroke-width="2"/><path d="M7 12.5l3.5 3.5L17 9" stroke="#76ca66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Success message
+          </div>
+        </div>
+
+        <!-- Check / Delete -->
+        <div>
+          <div class="col-label">Check / Delete</div>
+          <div class="field-actions">
+            <div class="field focused" style="flex:1;color:#374151;">|<span class="cursor"></span></div>
+            <div class="icon-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6" stroke="#ba0000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="icon-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#116acc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dropdown -->
+        <div>
+          <div class="col-label">Dropdown</div>
+          <div class="field field-dropdown">
+            <span class="placeholder">Placeholder</span>
+            <img class="chevron" src="https://www.figma.com/api/mcp/asset/c46c2566-c631-4b11-9b30-d2cd0ce50d7a" alt="chevron">
+          </div>
+        </div>
+
+        <!-- Tooltip -->
+        <div>
+          <div class="col-label">Tooltip</div>
+          <div class="field-tooltip-wrap">
+            <div class="field" style="flex:1;"><span class="placeholder">Placeholder</span></div>
+            <div class="info-btn">i</div>
+            <div class="tooltip-popup">Tooltip content here.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ DROPDOWN ══════════════ -->
+  <section class="section">
+    <h2 class="section-title">Dropdown</h2>
+    <div class="card">
+      <div class="grid-4" style="align-items:start;">
+
+        <!-- Default -->
+        <div>
+          <div class="col-label">Default</div>
+          <div class="field-with-label">
+            <span class="field-label-text">Label</span>
+            <div class="field field-dropdown" style="flex:1;">
+              <span class="placeholder">Placeholder</span>
+              <img class="chevron" src="https://www.figma.com/api/mcp/asset/c46c2566-c631-4b11-9b30-d2cd0ce50d7a" alt="chevron">
+            </div>
+          </div>
+        </div>
+
+        <!-- Autosuggest (open) -->
+        <div>
+          <div class="col-label">Autosuggest</div>
+          <div class="dropdown-open">
+            <div class="dropdown-trigger">
+              <span style="color:#374151;">Placeholder |<span class="cursor"></span></span>
+              <img class="chevron" src="https://www.figma.com/api/mcp/asset/c46c2566-c631-4b11-9b30-d2cd0ce50d7a" alt="chevron" style="transform:rotate(180deg);">
+            </div>
+            <div class="dropdown-list">
+              <div class="dropdown-item">Placeholder something</div>
+              <div class="dropdown-item">Placeholder something</div>
+              <div class="dropdown-item active">Placeholder something</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Select (open) -->
+        <div>
+          <div class="col-label">Select</div>
+          <div class="dropdown-open">
+            <div class="dropdown-trigger">
+              <span>…</span>
+              <img class="chevron" src="https://www.figma.com/api/mcp/asset/c46c2566-c631-4b11-9b30-d2cd0ce50d7a" alt="chevron" style="transform:rotate(180deg);">
+            </div>
+            <div class="dropdown-list">
+              <div class="dropdown-item">Placeholder something</div>
+              <div class="dropdown-item" style="justify-content:space-between;">
+                <span>Placeholder something</span>
+                <svg class="check-icon" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#116acc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="dropdown-item active">Placeholder something</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Multiselect (open) -->
+        <div>
+          <div class="col-label">Multiselect</div>
+          <div class="dropdown-open">
+            <div class="dropdown-trigger">
+              <span>…</span>
+              <img class="chevron" src="https://www.figma.com/api/mcp/asset/c46c2566-c631-4b11-9b30-d2cd0ce50d7a" alt="chevron" style="transform:rotate(180deg);">
+            </div>
+            <div class="dropdown-list">
+              <div class="dropdown-item">
+                <img class="checkbox" src="https://www.figma.com/api/mcp/asset/37e87270-fe34-45e2-b8c2-0650e128ece8" alt="checked">
+                <span>Placeholder something</span>
+              </div>
+              <div class="dropdown-item">
+                <img class="checkbox" src="https://www.figma.com/api/mcp/asset/37e87270-fe34-45e2-b8c2-0650e128ece8" alt="checked">
+                <span>Placeholder something</span>
+              </div>
+              <div class="dropdown-item active">
+                <img class="checkbox" src="https://www.figma.com/api/mcp/asset/b00e1a33-8ece-4baa-87cc-8c06ca15bd7b" alt="unchecked">
+                <span>Placeholder something</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ PICKER TYPES ══════════════ -->
+  <section class="section">
+    <h2 class="section-title">Picker types</h2>
+    <div class="card">
+      <div class="grid-2" style="max-width:700px;">
+
+        <!-- Time picker -->
+        <div>
+          <div class="col-label">Time picker</div>
+          <div class="field field-icon-right">
+            <img class="picker-icon" src="https://www.figma.com/api/mcp/asset/e232d705-96c2-4028-99ae-545013cadf42" alt="clock">
+          </div>
+        </div>
+
+        <!-- Calendar picker -->
+        <div>
+          <div class="col-label">Calendar picker</div>
+          <div class="field field-icon-right" style="border-color:#6b7280;">
+            <img class="picker-icon" src="https://www.figma.com/api/mcp/asset/9ad819c8-eb27-481a-b60a-e150dab87d9f" alt="calendar">
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>
