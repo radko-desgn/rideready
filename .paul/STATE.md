@@ -47,13 +47,13 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-05-20
-Stopped at: Phase 2 complete — session paused intentionally
+Last session: 2026-05-21
+Stopped at: Phase 2 complete — Google OAuth mobile fix applied, session paused
 Next action: Run /paul:plan to start Phase 3 — Cloud-Synced Saved Settings
-Resume file: .paul/HANDOFF-2026-05-20.md
+Resume file: .paul/HANDOFF-2026-05-21.md
 Resume context:
 - App is live at https://rideready-two.vercel.app
-- Auth working (email + Google), all code in index.html
+- Auth working (email + Google) on desktop and mobile
 - Phase 3 = migrate localStorage saves → Supabase DB
 
 ---
