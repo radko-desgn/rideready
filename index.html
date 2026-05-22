@@ -2234,6 +2234,13 @@ function closeSaveNameRow() {
   document.getElementById('save-trigger-btn').style.display = '';
 }
 
+function withTimeout(promise, ms) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => setTimeout(() => reject(new Error('Timed out — check your connection')), ms))
+  ]);
+}
+
 function showSaveFeedback(msg, isError) {
   const el = document.getElementById('save-feedback');
   if (!el) return;
@@ -2271,7 +2278,7 @@ async function confirmSave() {
       const raw = document.getElementById('save-name-input').value.trim();
       const oldSave = cachedSaves.find(s => s.id === editingId);
       const name = raw || oldSave?.name || 'Setup';
-      const { error } = await supabaseClient.from('saves').update({ ...dbRow, name, updated_at: new Date().toISOString() }).eq('id', editingId);
+      const { error } = await withTimeout(supabaseClient.from('saves').update({ ...dbRow, name, updated_at: new Date().toISOString() }).eq('id', editingId), 8000);
       if (error) throw error;
       closeSaveNameRow();
       cancelEdit();
@@ -2282,7 +2289,7 @@ async function confirmSave() {
     if (cachedSaves.length >= MAX_SAVES) { showSaveFeedback('Max 3 saves reached — delete one first.', true); return; }
     const raw = document.getElementById('save-name-input').value.trim();
     const name = raw || 'Setup ' + (cachedSaves.length + 1);
-    const { error } = await supabaseClient.from('saves').insert({ ...dbRow, name });
+    const { error } = await withTimeout(supabaseClient.from('saves').insert({ ...dbRow, name }), 8000);
     if (error) throw error;
     closeSaveNameRow();
     await renderSaves();
@@ -2374,7 +2381,7 @@ function barPct(psi, chart) {
 
 async function renderSaves() {
   if (!currentUser) return;
-  const { data: rows, error: fetchError } = await supabaseClient.from('saves').select('*').order('created_at');
+  const { data: rows, error: fetchError } = await withTimeout(supabaseClient.from('saves').select('*').order('created_at'), 8000);
   if (fetchError) {
     console.error('renderSaves fetch error:', fetchError);
     const list = document.getElementById('saved-list');
