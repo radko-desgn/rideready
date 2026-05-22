@@ -1464,9 +1464,9 @@
     /* ── Toast ── */
     .toast {
       position: fixed;
-      top: 20px;
+      bottom: 84px;
       left: 50%;
-      transform: translateX(-50%) translateY(-6px);
+      transform: translateX(-50%) translateY(6px);
       z-index: 2000;
       display: none;
       align-items: center;
@@ -1484,7 +1484,7 @@
       pointer-events: none;
     }
     .toast.toast-show { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
-    .toast.toast-hide { opacity: 0; transform: translateX(-50%) translateY(-6px); }
+    .toast.toast-hide { opacity: 0; transform: translateX(-50%) translateY(6px); }
     .toast-icon { font-size: 1rem; flex-shrink: 0; }
 
     /* ── Confirm modal ── */
