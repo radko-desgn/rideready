@@ -361,8 +361,7 @@
       width: 32px; height: 32px;
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-size: 0.75rem;
-      font-weight: 800;
+      font-size: 0.9rem;
       flex-shrink: 0;
     }
     .rc-icon.fork-icon  { background: var(--orange); color: var(--text-dk); }
@@ -585,7 +584,7 @@
       border-color: #111;
       color: #fff;
     }
-    .weight-pin-btn .pin-dot { display: none; }
+    .weight-pin-btn i { font-size: 0.75rem; }
 
     /* ── Save strip ── */
     .save-strip {
@@ -1003,8 +1002,8 @@
     }
     .rs-btn .rs-icon {
       display: block;
-      font-size: 1.1rem;
-      margin-bottom: 3px;
+      font-size: 1rem;
+      margin-bottom: 4px;
     }
 
     /* ── Damping section in result card ── */
@@ -1298,6 +1297,7 @@
   .auth-logout-btn:hover { border-color: var(--orange); color: var(--orange); }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 </head>
 <body>
 <div id="app-content" style="display:none">
@@ -1310,9 +1310,9 @@
         <p>Air pressure guide based on rider weight</p>
       </div>
       <div style="display:flex;align-items:center;gap:8px;">
-        <button class="auth-logout-btn" id="logout-btn" onclick="handleSignOut()" style="display:none">Log Out</button>
+        <button class="auth-logout-btn" id="logout-btn" onclick="handleSignOut()" style="display:none"><i class="fa-solid fa-right-from-bracket"></i> Log out</button>
         <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Switch theme">
-          <span class="theme-toggle-knob" id="theme-icon">🌙</span>
+          <span class="theme-toggle-knob" id="theme-icon"><i class="fa-solid fa-moon"></i></span>
         </button>
       </div>
     </div>
@@ -1338,9 +1338,7 @@
         <div class="cs-wrap" id="fork-wrap">
           <button class="cs-trigger" onclick="toggleDropdown('fork', event)">
             <span class="cs-value placeholder" id="fork-value">Select fork model…</span>
-            <span class="cs-chevron">
-              <svg width="11" height="7" viewBox="0 0 11 7" fill="none"><path d="M1 1l4.5 4.5L10 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-            </span>
+            <span class="cs-chevron"><i class="fa-solid fa-chevron-down"></i></span>
           </button>
           <div class="cs-panel" id="fork-panel"></div>
         </div>
@@ -1350,9 +1348,7 @@
         <div class="cs-wrap" id="shock-wrap">
           <button class="cs-trigger" onclick="toggleDropdown('shock', event)">
             <span class="cs-value placeholder" id="shock-value">Select shock model…</span>
-            <span class="cs-chevron">
-              <svg width="11" height="7" viewBox="0 0 11 7" fill="none"><path d="M1 1l4.5 4.5L10 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-            </span>
+            <span class="cs-chevron"><i class="fa-solid fa-chevron-down"></i></span>
           </button>
           <div class="cs-panel" id="shock-panel"></div>
         </div>
@@ -1362,13 +1358,13 @@
     <div class="panel-row-label">Ride Style</div>
     <div class="ride-style-row">
       <button class="rs-btn" id="rs-xc" onclick="setRideStyle('xc_trail')">
-        <span class="rs-icon">🚀</span>XC / Trail
+        <span class="rs-icon"><i class="fa-solid fa-gauge-high"></i></span>XC / Trail
       </button>
       <button class="rs-btn active" id="rs-am" onclick="setRideStyle('all_mountain')">
-        <span class="rs-icon">⛰️</span>All Mountain
+        <span class="rs-icon"><i class="fa-solid fa-mountain"></i></span>All Mountain
       </button>
       <button class="rs-btn" id="rs-ed" onclick="setRideStyle('enduro_dh')">
-        <span class="rs-icon">🤘</span>Enduro / DH
+        <span class="rs-icon"><i class="fa-solid fa-fire"></i></span>Enduro / DH
       </button>
     </div>
 
@@ -1381,12 +1377,12 @@
       </div>
       <div class="weight-pin-wrap">
         <button class="weight-pin-btn" id="weight-pin-btn" onclick="toggleSavedWeight()">
-          <span class="pin-dot"></span>
+          <i class="fa-solid fa-thumbtack"></i>
           <span id="weight-pin-label">Remember my weight</span>
         </button>
       </div>
       <div class="btn-row">
-        <button class="calc-btn" onclick="calculate()">Calculate Pressure</button>
+        <button class="calc-btn" onclick="calculate()"><i class="fa-solid fa-bolt"></i> Calculate Pressure</button>
         <button class="reset-btn" id="reset-btn" onclick="resetAll()" style="display:none">Reset</button>
       </div>
     </div>
@@ -1403,11 +1399,11 @@
 
   <!-- Save strip -->
   <div class="save-strip" id="save-strip">
-    <button class="save-trigger-btn" id="save-trigger-btn" onclick="openSaveNameRow()">+ Save this calculation</button>
+    <button class="save-trigger-btn" id="save-trigger-btn" onclick="openSaveNameRow()"><i class="fa-regular fa-bookmark"></i> Save this calculation</button>
     <div class="save-name-row" id="save-name-row">
       <input class="save-name-input" id="save-name-input" type="text" placeholder="Name this setup… e.g. Trail build" maxlength="40" />
       <button class="save-confirm-btn" onclick="confirmSave()">Save</button>
-      <button class="save-cancel-btn" onclick="closeSaveNameRow()">✕</button>
+      <button class="save-cancel-btn" onclick="closeSaveNameRow()"><i class="fa-solid fa-xmark"></i></button>
     </div>
   </div>
 
@@ -1531,7 +1527,7 @@ function buildResultHTML(brand, model, weightKg, type) {
   const dotClass   = type === 'fork' ? 'fork-dot'   : 'shock-dot';
   const notesClass = type === 'fork' ? 'fork-notes' : 'shock-notes';
   const iconClass  = type === 'fork' ? 'fork-icon'  : 'shock-icon';
-  const iconText   = type === 'fork' ? 'FK' : 'SH';
+  const iconText   = type === 'fork' ? '<i class="fa-solid fa-arrows-up-down"></i>' : '<i class="fa-solid fa-rotate"></i>';
   const typeLabel  = type === 'fork' ? 'Fork' : 'Rear Shock';
 
   // Coil shock
@@ -1778,7 +1774,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Enter') calculate(); 
 // ── Theme toggle ───────────────────────────────────────────────────────────
 function applyTheme(light) {
   document.body.classList.toggle('light-theme', light);
-  document.getElementById('theme-icon').textContent = light ? '☀️' : '🌙';
+  document.getElementById('theme-icon').innerHTML = light ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
   document.getElementById('theme-toggle').title = light ? 'Switch to dark mode' : 'Switch to light mode';
   localStorage.setItem('suspension_theme', light ? 'light' : 'dark');
 }
@@ -1788,7 +1784,7 @@ function toggleTheme() {
 // Load saved theme on init
 (function() {
   const saved = localStorage.getItem('suspension_theme');
-  if (saved === 'light') applyTheme(true); else document.getElementById('theme-icon').textContent = '🌙';
+  if (saved === 'light') applyTheme(true); else document.getElementById('theme-icon').innerHTML = '<i class="fa-solid fa-moon"></i>';
 })();
 
 
@@ -2077,7 +2073,7 @@ function startEditName(id) {
 
   // Update save trigger button label
   const btn = document.getElementById('save-trigger-btn');
-  btn.textContent = `Update "${save.name}"`;
+  btn.innerHTML = `<i class="fa-regular fa-pen-to-square"></i> Update "${save.name}"`;
   btn.classList.add('update-mode');
 
   // Scroll to top and calculate
@@ -2089,7 +2085,7 @@ function cancelEdit() {
   editingId = null;
   document.getElementById('edit-banner').style.display = 'none';
   const btn = document.getElementById('save-trigger-btn');
-  btn.textContent = '+ Save this calculation';
+  btn.innerHTML = '<i class="fa-regular fa-bookmark"></i> Save this calculation';
   btn.classList.remove('update-mode');
   closeSaveNameRow();
   resetAll();
@@ -2114,10 +2110,10 @@ function updateSaveTrigger() {
   const btn = document.getElementById('save-trigger-btn');
   if (saves.length >= MAX_SAVES) {
     btn.disabled = true;
-    btn.textContent = 'Max 3 saves reached — delete one to save again';
+    btn.innerHTML = '<i class="fa-regular fa-bookmark"></i> Max 3 saves — delete one to save again';
   } else {
     btn.disabled = false;
-    btn.textContent = '+ Save this calculation';
+    btn.innerHTML = '<i class="fa-regular fa-bookmark"></i> Save this calculation';
   }
 }
 
@@ -2223,14 +2219,10 @@ async function renderSaves() {
         </div>
         <div class="saved-card-actions">
           <button class="sc-action-btn edit-btn" title="Edit setup" onclick="startEditName('${s.id}')">
-            <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-              <path d="M1 12l3-1L11.5 3.5a1.4 1.4 0 00-2-2L2 9l-1 3z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
-            </svg>
+            <i class="fa-regular fa-pen-to-square"></i>
           </button>
           <button class="sc-action-btn delete-btn" title="Delete" onclick="deleteSave('${s.id}')">
-            <svg width="11" height="13" viewBox="0 0 11 13" fill="none">
-              <path d="M1 3h9M4 3V2h3v1M2 3l.7 8.5h5.6L9 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+            <i class="fa-regular fa-trash-can"></i>
           </button>
         </div>
       </div>
