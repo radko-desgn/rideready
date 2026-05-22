@@ -1985,14 +1985,15 @@ function setPinState(pinned) {
 
 // ── Saved calculations ─────────────────────────────────────────────────────
 const MAX_SAVES = 3;
-let pendingCalc = null; // holds current calc result to be saved
+let pendingCalc = null;
+let currentUser = null;
+let cachedSaves = [];
 
-function loadSaves() {
-  try { return JSON.parse(localStorage.getItem('suspension_saves') || '[]'); }
-  catch(e) { return []; }
-}
-function persistSaves(saves) {
-  localStorage.setItem('suspension_saves', JSON.stringify(saves));
+function findModel(brand, modelName, type) {
+  const brandData = suspensionData.brands[brand];
+  if (!brandData) return null;
+  const arr = type === 'fork' ? brandData.forks : brandData.shocks;
+  return (arr || []).find(m => m.model === modelName) || null;
 }
 
 function openSaveNameRow() {
@@ -2012,46 +2013,53 @@ function closeSaveNameRow() {
   document.getElementById('save-trigger-btn').style.display = '';
 }
 
-function confirmSave() {
-  if (!pendingCalc) return;
-  let saves = loadSaves();
+async function confirmSave() {
+  if (!pendingCalc || !currentUser) return;
+
+  const dbRow = {
+    user_id: currentUser.id,
+    fork_brand: pendingCalc.fork?.brand || null,
+    fork_model: pendingCalc.fork?.model?.model || null,
+    shock_brand: pendingCalc.shock?.brand || null,
+    shock_model: pendingCalc.shock?.model?.model || null,
+    weight_kg: pendingCalc.weightKg,
+    ride_style: pendingCalc.rideStyle || null,
+    damping_snapshot: {
+      fork: pendingCalc.fork ? { psi: pendingCalc.fork.psi, damping: pendingCalc.fork.damping } : null,
+      shock: pendingCalc.shock ? { psi: pendingCalc.shock.psi, damping: pendingCalc.shock.damping } : null
+    }
+  };
 
   if (editingId !== null) {
-    // Update existing save
-    const idx = saves.findIndex(s => s.id === editingId);
-    if (idx !== -1) {
-      const oldName = saves[idx].name;
-      const raw = document.getElementById('save-name-input').value.trim();
-      saves[idx] = { ...saves[idx], name: raw || oldName, ...pendingCalc };
-    }
-    persistSaves(saves);
+    const raw = document.getElementById('save-name-input').value.trim();
+    const oldSave = cachedSaves.find(s => s.id === editingId);
+    const name = raw || oldSave?.name || 'Setup';
+    await supabaseClient.from('saves').update({ ...dbRow, name, updated_at: new Date().toISOString() }).eq('id', editingId);
     closeSaveNameRow();
     cancelEdit();
-    renderSaves();
+    await renderSaves();
     return;
   }
 
-  if (saves.length >= MAX_SAVES) return;
+  if (cachedSaves.length >= MAX_SAVES) return;
   const raw = document.getElementById('save-name-input').value.trim();
-  const name = raw || 'Setup ' + (saves.length + 1);
-  saves.push({ id: Date.now(), name, ...pendingCalc });
-  persistSaves(saves);
+  const name = raw || 'Setup ' + (cachedSaves.length + 1);
+  await supabaseClient.from('saves').insert({ ...dbRow, name });
   closeSaveNameRow();
-  renderSaves();
+  await renderSaves();
   updateSaveTrigger();
 }
 
-function deleteSave(id) {
-  const saves = loadSaves().filter(s => s.id !== id);
-  persistSaves(saves);
-  renderSaves();
+async function deleteSave(id) {
+  await supabaseClient.from('saves').delete().eq('id', id);
+  await renderSaves();
   updateSaveTrigger();
 }
 
 let editingId = null; // ID of the save currently being edited
 
 function startEditName(id) {
-  const saves = loadSaves();
+  const saves = cachedSaves;
   const save  = saves.find(s => s.id === id);
   if (!save) return;
 
@@ -2102,7 +2110,7 @@ function loadSaveIntoForm(save) {
 }
 
 function updateSaveTrigger() {
-  const saves = loadSaves();
+  const saves = cachedSaves;
   const btn = document.getElementById('save-trigger-btn');
   if (saves.length >= MAX_SAVES) {
     btn.disabled = true;
@@ -2119,8 +2127,23 @@ function barPct(psi, chart) {
   return Math.min(100, Math.max(0, ((psi - mn) / (mx - mn)) * 100));
 }
 
-function renderSaves() {
-  const saves = loadSaves();
+async function renderSaves() {
+  if (!currentUser) return;
+  const { data: rows } = await supabaseClient.from('saves').select('*').order('created_at');
+  const saves = (rows || []).map(row => {
+    const forkModel  = row.fork_model  ? findModel(row.fork_brand,  row.fork_model,  'fork')  : null;
+    const shockModel = row.shock_model ? findModel(row.shock_brand, row.shock_model, 'shock') : null;
+    return {
+      id:       row.id,
+      name:     row.name,
+      weightKg: row.weight_kg,
+      rideStyle: row.ride_style,
+      fork:  forkModel  ? { brand: row.fork_brand,  model: forkModel,  psi: row.damping_snapshot?.fork?.psi,  damping: row.damping_snapshot?.fork?.damping  } : null,
+      shock: shockModel ? { brand: row.shock_brand, model: shockModel, psi: row.damping_snapshot?.shock?.psi, damping: row.damping_snapshot?.shock?.damping } : null,
+    };
+  });
+  cachedSaves = saves;
+
   const section = document.getElementById('saved-section');
   const list    = document.getElementById('saved-list');
   const badge   = document.getElementById('saved-count-badge');
@@ -2199,12 +2222,12 @@ function renderSaves() {
           <div class="saved-card-weight">${s.weightKg} kg · ${Math.round(s.weightKg * 2.2046)} lbs</div>
         </div>
         <div class="saved-card-actions">
-          <button class="sc-action-btn edit-btn" title="Edit setup" onclick="startEditName(${s.id})">
+          <button class="sc-action-btn edit-btn" title="Edit setup" onclick="startEditName('${s.id}')">
             <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
               <path d="M1 12l3-1L11.5 3.5a1.4 1.4 0 00-2-2L2 9l-1 3z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
             </svg>
           </button>
-          <button class="sc-action-btn delete-btn" title="Delete" onclick="deleteSave(${s.id})">
+          <button class="sc-action-btn delete-btn" title="Delete" onclick="deleteSave('${s.id}')">
             <svg width="11" height="13" viewBox="0 0 11 13" fill="none">
               <path d="M1 3h9M4 3V2h3v1M2 3l.7 8.5h5.6L9 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
@@ -2233,19 +2256,22 @@ document.addEventListener('keydown', e => {
 });
 
 populateDropdowns();
-renderSaves();
 loadSavedWeight();
 
 // ── Auth ──────────────────────────────────────────────────────────────
-supabaseClient.auth.onAuthStateChange((event, session) => {
+supabaseClient.auth.onAuthStateChange(async (event, session) => {
   const overlay = document.getElementById('auth-overlay');
   const appContent = document.getElementById('app-content');
   const logoutBtn = document.getElementById('logout-btn');
   if (session) {
+    currentUser = session.user;
     overlay.style.display = 'none';
     appContent.style.display = '';
     logoutBtn.style.display = '';
+    await renderSaves();
   } else {
+    currentUser = null;
+    cachedSaves = [];
     overlay.style.display = 'flex';
     appContent.style.display = 'none';
     logoutBtn.style.display = 'none';
