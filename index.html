@@ -1565,9 +1565,10 @@
     <button class="save-trigger-btn" id="save-trigger-btn" onclick="openSaveNameRow()"><i class="fa-regular fa-bookmark"></i> Save this calculation</button>
     <div class="save-name-row" id="save-name-row">
       <input class="save-name-input" id="save-name-input" type="text" placeholder="Name this setup… e.g. Trail build" maxlength="40" />
-      <button class="save-confirm-btn" onclick="confirmSave()">Save</button>
+      <button class="save-confirm-btn" id="save-confirm-btn" onclick="confirmSave()">Save</button>
       <button class="save-cancel-btn" onclick="closeSaveNameRow()"><i class="fa-solid fa-xmark"></i></button>
     </div>
+    <div id="save-feedback" style="display:none;margin-top:8px;font-size:0.8rem;font-weight:600;padding:8px 12px;border-radius:8px;"></div>
   </div>
 
   </div><!-- end tab-setup -->
@@ -2233,8 +2234,23 @@ function closeSaveNameRow() {
   document.getElementById('save-trigger-btn').style.display = '';
 }
 
+function showSaveFeedback(msg, isError) {
+  const el = document.getElementById('save-feedback');
+  if (!el) return;
+  el.textContent = msg;
+  el.style.display = 'block';
+  el.style.background = isError ? 'rgba(186,0,0,0.12)' : 'rgba(118,202,102,0.12)';
+  el.style.color = isError ? '#ff6b6b' : '#76ca66';
+  clearTimeout(el._t);
+  el._t = setTimeout(() => { el.style.display = 'none'; }, 3000);
+}
+
 async function confirmSave() {
-  if (!pendingCalc || !currentUser) return;
+  if (!currentUser) { showSaveFeedback('Not signed in — please log in again.', true); return; }
+  if (!pendingCalc)  { showSaveFeedback('Calculate a setup first, then save.', true); return; }
+
+  const btn = document.getElementById('save-confirm-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
 
   const dbRow = {
     user_id: currentUser.id,
@@ -2250,24 +2266,33 @@ async function confirmSave() {
     }
   };
 
-  if (editingId !== null) {
-    const raw = document.getElementById('save-name-input').value.trim();
-    const oldSave = cachedSaves.find(s => s.id === editingId);
-    const name = raw || oldSave?.name || 'Setup';
-    await supabaseClient.from('saves').update({ ...dbRow, name, updated_at: new Date().toISOString() }).eq('id', editingId);
-    closeSaveNameRow();
-    cancelEdit();
-    await renderSaves();
-    return;
-  }
+  try {
+    if (editingId !== null) {
+      const raw = document.getElementById('save-name-input').value.trim();
+      const oldSave = cachedSaves.find(s => s.id === editingId);
+      const name = raw || oldSave?.name || 'Setup';
+      const { error } = await supabaseClient.from('saves').update({ ...dbRow, name, updated_at: new Date().toISOString() }).eq('id', editingId);
+      if (error) throw error;
+      closeSaveNameRow();
+      cancelEdit();
+      await renderSaves();
+      return;
+    }
 
-  if (cachedSaves.length >= MAX_SAVES) return;
-  const raw = document.getElementById('save-name-input').value.trim();
-  const name = raw || 'Setup ' + (cachedSaves.length + 1);
-  await supabaseClient.from('saves').insert({ ...dbRow, name });
-  closeSaveNameRow();
-  await renderSaves();
-  updateSaveTrigger();
+    if (cachedSaves.length >= MAX_SAVES) { showSaveFeedback('Max 3 saves reached — delete one first.', true); return; }
+    const raw = document.getElementById('save-name-input').value.trim();
+    const name = raw || 'Setup ' + (cachedSaves.length + 1);
+    const { error } = await supabaseClient.from('saves').insert({ ...dbRow, name });
+    if (error) throw error;
+    closeSaveNameRow();
+    await renderSaves();
+    updateSaveTrigger();
+  } catch (err) {
+    console.error('Save failed:', err);
+    showSaveFeedback('Save failed: ' + (err.message || 'unknown error'), true);
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Save'; }
+  }
 }
 
 async function deleteSave(id) {
