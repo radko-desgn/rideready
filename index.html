@@ -2325,8 +2325,8 @@ function startEditName(id) {
   btn.innerHTML = `<i class="fa-regular fa-pen-to-square"></i> Update "${save.name}"`;
   btn.classList.add('update-mode');
 
-  // Scroll to top and calculate
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  // Switch to Setup tab so the user sees the edit form, then calculate
+  switchTab('setup');
   setTimeout(calculate, 350);
 }
 
@@ -2374,7 +2374,13 @@ function barPct(psi, chart) {
 
 async function renderSaves() {
   if (!currentUser) return;
-  const { data: rows } = await supabaseClient.from('saves').select('*').order('created_at');
+  const { data: rows, error: fetchError } = await supabaseClient.from('saves').select('*').order('created_at');
+  if (fetchError) {
+    console.error('renderSaves fetch error:', fetchError);
+    const list = document.getElementById('saved-list');
+    if (list) list.innerHTML = `<div class="saved-empty-state"><div class="saved-empty-title" style="color:#ff6b6b">Could not load saves</div><div class="saved-empty-sub">${fetchError.message}</div></div>`;
+    return;
+  }
   const saves = (rows || []).map(row => {
     const forkModel  = row.fork_model  ? findModel(row.fork_brand,  row.fork_model,  'fork')  : null;
     const shockModel = row.shock_model ? findModel(row.shock_brand, row.shock_model, 'shock') : null;
@@ -2393,6 +2399,7 @@ async function renderSaves() {
   const badge    = document.getElementById('saved-count-badge');
   const navBadge = document.getElementById('saved-nav-badge');
 
+  if (!list || !badge) return;
   badge.textContent = `${saves.length} / ${MAX_SAVES}`;
   if (navBadge) {
     navBadge.textContent = saves.length;
@@ -2541,6 +2548,7 @@ function switchTab(tab) {
   document.getElementById('tab-' + tab).classList.add('active');
   document.getElementById('nav-' + tab).classList.add('active');
   window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (tab === 'saved' && currentUser) renderSaves();
 }
 
 async function handleDeleteAccount() {
