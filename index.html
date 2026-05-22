@@ -1460,6 +1460,126 @@
     line-height: 1.55;
     max-width: 260px;
   }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-6px);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 18px;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid transparent;
+      font-size: 0.875rem;
+      font-weight: 600;
+      max-width: calc(100vw - 32px);
+      min-width: 220px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.45);
+      opacity: 0;
+      transition: opacity 0.25s, transform 0.25s;
+      pointer-events: none;
+    }
+    .toast.toast-show { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+    .toast.toast-hide { opacity: 0; transform: translateX(-50%) translateY(-6px); }
+    .toast-icon { font-size: 1rem; flex-shrink: 0; }
+
+    /* ── Confirm modal ── */
+    .confirm-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.72);
+      z-index: 1500;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+    .confirm-card {
+      background: var(--surface);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius);
+      padding: 24px;
+      width: 100%;
+      max-width: 360px;
+    }
+    .confirm-icon {
+      font-size: 1.5rem;
+      margin-bottom: 12px;
+    }
+    .confirm-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .confirm-body {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 18px;
+    }
+    .confirm-type-wrap { margin-bottom: 16px; }
+    .confirm-type-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .confirm-type-input {
+      width: 100%;
+      background: var(--input-bg);
+      border: 1.5px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-size: 0.9rem;
+      padding: 10px 14px;
+      outline: none;
+      transition: border-color 0.15s;
+      font-family: inherit;
+    }
+    .confirm-type-input:focus { border-color: #e05555; }
+    .confirm-type-input.input-error { border-color: #e05555; }
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20%,60%  { transform: translateX(-5px); }
+      40%,80%  { transform: translateX(5px); }
+    }
+    .confirm-type-input.shaking { animation: shake 0.3s ease; }
+    .confirm-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+    .confirm-cancel-btn {
+      padding: 10px 18px;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid var(--border-strong);
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .confirm-cancel-btn:hover { color: var(--text); border-color: var(--border-strong); }
+    .confirm-ok-btn {
+      padding: 10px 18px;
+      border-radius: var(--radius-sm);
+      border: none;
+      background: #e05555;
+      color: #fff;
+      font-size: 0.875rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: opacity 0.15s;
+    }
+    .confirm-ok-btn:hover { opacity: 0.88; }
+    .confirm-ok-btn:disabled { opacity: 0.4; cursor: not-allowed; }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
@@ -1649,6 +1769,29 @@
 </nav>
 
 </div><!-- end #app-content -->
+
+<!-- Toast -->
+<div id="toast" class="toast">
+  <i id="toast-icon" class="toast-icon"></i>
+  <span id="toast-msg"></span>
+</div>
+
+<!-- Confirm modal -->
+<div id="confirm-modal" class="confirm-overlay">
+  <div class="confirm-card">
+    <div id="confirm-icon" class="confirm-icon"></div>
+    <div id="confirm-title" class="confirm-title"></div>
+    <div id="confirm-body" class="confirm-body"></div>
+    <div id="confirm-type-wrap" class="confirm-type-wrap" style="display:none">
+      <div class="confirm-type-label">Type <strong>Delete</strong> to confirm</div>
+      <input id="confirm-type-input" class="confirm-type-input" type="text" placeholder="Delete" autocomplete="off" />
+    </div>
+    <div class="confirm-actions">
+      <button class="confirm-cancel-btn" onclick="closeConfirm()">Cancel</button>
+      <button class="confirm-ok-btn" id="confirm-ok-btn">Delete</button>
+    </div>
+  </div>
+</div>
 
 <script>
   const SUPABASE_URL = 'https://vhvfbsqivfmqcmqhibpq.supabase.co';
@@ -2234,6 +2377,89 @@ function closeSaveNameRow() {
   document.getElementById('save-trigger-btn').style.display = '';
 }
 
+// ── Toast ──────────────────────────────────────────────────────────────────
+function showToast(msg, type) {
+  const toast   = document.getElementById('toast');
+  const iconEl  = document.getElementById('toast-icon');
+  const msgEl   = document.getElementById('toast-msg');
+  const cfg = {
+    success: { icon: 'fa-solid fa-circle-check',          color: '#76ca66', bg: 'rgba(62,207,94,0.10)',  border: 'rgba(62,207,94,0.28)'  },
+    warning: { icon: 'fa-solid fa-triangle-exclamation',  color: '#e8a84a', bg: 'rgba(232,168,74,0.10)', border: 'rgba(232,168,74,0.28)' },
+    error:   { icon: 'fa-solid fa-circle-xmark',          color: '#ff6b6b', bg: 'rgba(186,0,0,0.12)',    border: 'rgba(186,0,0,0.3)'     },
+  };
+  const c = cfg[type] || cfg.success;
+  iconEl.className = 'toast-icon ' + c.icon;
+  iconEl.style.color = c.color;
+  msgEl.textContent  = msg;
+  toast.style.color       = c.color;
+  toast.style.background  = c.bg;
+  toast.style.borderColor = c.border;
+  toast.style.display = 'flex';
+  toast.classList.remove('toast-hide');
+  void toast.offsetWidth;
+  toast.classList.add('toast-show');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => {
+    toast.classList.remove('toast-show');
+    toast.classList.add('toast-hide');
+    setTimeout(() => { toast.style.display = 'none'; toast.classList.remove('toast-hide'); }, 280);
+  }, 3200);
+}
+
+// ── Confirm modal ──────────────────────────────────────────────────────────
+let _confirmCb = null;
+let _confirmNeedsType = false;
+
+function openConfirm({ icon, title, body, okLabel, needsType, onConfirm }) {
+  _confirmCb = onConfirm;
+  _confirmNeedsType = !!needsType;
+  document.getElementById('confirm-icon').innerHTML  = icon  || '';
+  document.getElementById('confirm-title').textContent = title || '';
+  document.getElementById('confirm-body').textContent  = body  || '';
+  const okBtn    = document.getElementById('confirm-ok-btn');
+  const typeWrap = document.getElementById('confirm-type-wrap');
+  const typeInp  = document.getElementById('confirm-type-input');
+  okBtn.textContent = okLabel || 'Delete';
+  if (_confirmNeedsType) {
+    typeWrap.style.display = 'block';
+    typeInp.value = '';
+    typeInp.classList.remove('input-error', 'shaking');
+    setTimeout(() => typeInp.focus(), 120);
+  } else {
+    typeWrap.style.display = 'none';
+  }
+  document.getElementById('confirm-modal').style.display = 'flex';
+}
+
+function closeConfirm() {
+  document.getElementById('confirm-modal').style.display = 'none';
+  _confirmCb = null;
+}
+
+function submitConfirm() {
+  if (_confirmNeedsType) {
+    const inp = document.getElementById('confirm-type-input');
+    if (inp.value.trim() !== 'Delete') {
+      inp.classList.add('input-error', 'shaking');
+      inp.addEventListener('animationend', () => inp.classList.remove('shaking'), { once: true });
+      return;
+    }
+  }
+  const cb = _confirmCb;
+  closeConfirm();
+  if (cb) cb();
+}
+
+// Allow Enter key to submit confirm modal
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.getElementById('confirm-modal').style.display === 'flex') {
+    submitConfirm();
+  }
+  if (e.key === 'Escape' && document.getElementById('confirm-modal').style.display === 'flex') {
+    closeConfirm();
+  }
+});
+
 function withTimeout(promise, ms) {
   return Promise.race([
     promise,
@@ -2283,10 +2509,14 @@ async function confirmSave() {
       closeSaveNameRow();
       cancelEdit();
       await renderSaves();
+      showToast(`"${name}" updated!`, 'success');
       return;
     }
 
-    if (cachedSaves.length >= MAX_SAVES) { showSaveFeedback('Max 3 saves reached — delete one first.', true); return; }
+    if (cachedSaves.length >= MAX_SAVES) {
+      showToast('All 3 slots are full — delete a setup to save another.', 'warning');
+      return;
+    }
     const raw = document.getElementById('save-name-input').value.trim();
     const name = raw || 'Setup ' + (cachedSaves.length + 1);
     const { error } = await withTimeout(supabaseClient.from('saves').insert({ ...dbRow, name }), 8000);
@@ -2294,6 +2524,8 @@ async function confirmSave() {
     closeSaveNameRow();
     await renderSaves();
     updateSaveTrigger();
+    const isNowFull = cachedSaves.length >= MAX_SAVES;
+    showToast(isNowFull ? `"${name}" saved — all 3 slots now full.` : `"${name}" saved!`, isNowFull ? 'warning' : 'success');
   } catch (err) {
     console.error('Save failed:', err);
     showSaveFeedback('Save failed: ' + (err.message || 'unknown error'), true);
@@ -2302,10 +2534,22 @@ async function confirmSave() {
   }
 }
 
-async function deleteSave(id) {
-  await supabaseClient.from('saves').delete().eq('id', id);
-  await renderSaves();
-  updateSaveTrigger();
+function deleteSave(id) {
+  const save = cachedSaves.find(s => s.id === id);
+  const name = save?.name || 'this setup';
+  openConfirm({
+    icon:  '<i class="fa-regular fa-trash-can" style="color:#e05555"></i>',
+    title: 'Delete setup',
+    body:  `"${name}" will be permanently removed. This cannot be undone.`,
+    okLabel: 'Delete',
+    needsType: false,
+    onConfirm: async () => {
+      await withTimeout(supabaseClient.from('saves').delete().eq('id', id), 8000);
+      await renderSaves();
+      updateSaveTrigger();
+      showToast('Setup deleted', 'success');
+    }
+  });
 }
 
 let editingId = null; // ID of the save currently being edited
@@ -2558,10 +2802,18 @@ function switchTab(tab) {
   if (tab === 'saved' && currentUser) renderSaves();
 }
 
-async function handleDeleteAccount() {
-  if (!confirm('Delete your account? This cannot be undone. All your saved setups will be removed.')) return;
-  await supabaseClient.from('saves').delete().eq('user_id', currentUser.id);
-  await supabaseClient.auth.signOut();
+function handleDeleteAccount() {
+  openConfirm({
+    icon:  '<i class="fa-solid fa-circle-exclamation" style="color:#e05555"></i>',
+    title: 'Delete account',
+    body:  'This will permanently delete your account and all saved setups. This action cannot be undone.',
+    okLabel: 'Delete account',
+    needsType: true,
+    onConfirm: async () => {
+      await supabaseClient.from('saves').delete().eq('user_id', currentUser.id);
+      await supabaseClient.auth.signOut();
+    }
+  });
 }
 
 function authShowTab(tab) {
