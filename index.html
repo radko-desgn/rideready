@@ -457,18 +457,35 @@
 
     /* Meta chips */
     .meta-chips {
-      display: flex;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
       gap: 8px;
       margin-bottom: 20px;
     }
     .chip {
-      background: var(--chip-bg);
-      border-radius: var(--radius-xs);
-      padding: 7px 11px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
     }
-    .chip .chip-label { font-size: 0.72rem; color: var(--text-muted); margin-bottom: 2px; font-weight: 600; }
-    .chip .chip-val   { font-size: 0.88rem; font-weight: 700; color: var(--text); }
+    .chip.chip-wide { grid-column: span 2; }
+    .chip .chip-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .chip .chip-label i { font-size: 0.65rem; }
+    .chip .chip-val { font-size: 1rem; font-weight: 700; color: var(--text); line-height: 1.2; }
+    .chip-sag   .chip-label { color: var(--shock-accent); }
+    .chip-range .chip-label { color: var(--fork-accent); }
+    .chip-spring .chip-label { color: var(--text-secondary); }
+    .chip-travel .chip-label { color: #82aadc; }
+    .chip-maxpsi .chip-label { color: #e07755; }
 
     /* Unit toggle */
     .unit-toggle {
@@ -1974,25 +1991,25 @@ function buildResultHTML(brand, model, weightKg, type) {
     </div>
 
     <div class="meta-chips">
-      <div class="chip">
-        <div class="chip-label">Sag</div>
+      <div class="chip chip-sag">
+        <div class="chip-label"><i class="fa-solid fa-percent"></i> Sag</div>
         <div class="chip-val">${model.sag_percent.min}–${model.sag_percent.max}%</div>
       </div>
-      <div class="chip">
-        <div class="chip-label">Range</div>
+      <div class="chip chip-range">
+        <div class="chip-label"><i class="fa-solid fa-gauge"></i> PSI Range</div>
         <div class="chip-val">${rangeStr}</div>
       </div>
-      ${airSpring ? `<div class="chip">
-        <div class="chip-label">Spring</div>
+      ${airSpring ? `<div class="chip chip-spring">
+        <div class="chip-label"><i class="fa-regular fa-circle-dot"></i> Air Spring</div>
         <div class="chip-val">${airSpring}</div>
       </div>` : ''}
-      ${travelStr ? `<div class="chip">
-        <div class="chip-label">Travel</div>
-        <div class="chip-val">${travelStr}</div>
-      </div>` : ''}
-      ${maxPsi ? `<div class="chip">
-        <div class="chip-label">Max PSI</div>
+      ${maxPsi ? `<div class="chip chip-maxpsi">
+        <div class="chip-label"><i class="fa-solid fa-gauge-high"></i> Max PSI</div>
         <div class="chip-val">${maxPsi}</div>
+      </div>` : ''}
+      ${travelStr ? `<div class="chip chip-travel chip-wide">
+        <div class="chip-label"><i class="fa-solid fa-arrows-up-down"></i> Travel</div>
+        <div class="chip-val">${travelStr}</div>
       </div>` : ''}
     </div>
 
