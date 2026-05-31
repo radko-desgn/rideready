@@ -3,11 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="MTB suspension setup calculator — find the right PSI and damping for your fork and shock." />
+  <meta name="theme-color" content="#0f0f0f" />
   <title>RideReady</title>
   <link rel="icon" type="image/png" href="logo.png" />
+  <!-- Preconnect to every external host so DNS+TCP is ready before the requests fire -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="preconnect" href="https://vhvfbsqivfmqcmqhibpq.supabase.co" crossorigin>
+  <!-- Inter — only the 4 weights actually used (was 6) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <!-- Font Awesome — non-blocking preload so it never delays first paint -->
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -1598,8 +1608,6 @@
     .confirm-ok-btn:hover { opacity: 0.88; }
     .confirm-ok-btn:disabled { opacity: 0.4; cursor: not-allowed; }
   </style>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 </head>
 <body>
 <div id="app-content" style="display:none">
@@ -1810,6 +1818,8 @@
   </div>
 </div>
 
+<!-- Supabase loaded here (after HTML is painted) instead of blocking <head> -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   const SUPABASE_URL = 'https://vhvfbsqivfmqcmqhibpq.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZodmZic3FpdmZtcWNtcWhpYnBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzMDE4NzcsImV4cCI6MjA5NDg3Nzg3N30.UAGlfUAu6HEVGkomEbuA_cd3dDwme09Qi7Ri35OX9ts';
