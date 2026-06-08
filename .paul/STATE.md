@@ -10,21 +10,21 @@ See: .paul/PROJECT.md (updated 2026-05-20)
 ## Current Position
 
 Milestone: v0.1 Initial Release
-Phase: 2 of 4 (User Auth) — Complete
-Plan: 02-01 complete
-Status: Ready for Phase 3
-Last activity: 2026-05-20 — Phase 2 complete, auth live at https://rideready-two.vercel.app
+Phase: 3 of 4 (Cloud-Synced Saves) — Complete
+Plan: 03-01 complete
+Status: UNIFY done — ready for Phase 4
+Last activity: 2026-05-22 — Phase 3 complete, saves migrated to Supabase
 
 Progress:
-- Milestone: [████░░░░░░] 50%
-- Phase 2:   [██████████] 100%
+- Milestone: [██████░░░░] 75%
+- Phase 3:   [██████████] 100%
 
 ## Loop Position
 
 Current loop state:
 ```
 PLAN ──▶ APPLY ──▶ UNIFY
-  ✓        ✓        ✓     [Phase 2 complete — ready for Phase 3 PLAN]
+  ✓        ✓        ✓     [Phase 3 complete]
 ```
 
 ## Accumulated Context
@@ -47,14 +47,14 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-05-21
-Stopped at: Phase 2 complete — Google OAuth mobile fix applied, session paused
-Next action: Run /paul:plan to start Phase 3 — Cloud-Synced Saved Settings
-Resume file: .paul/HANDOFF-2026-05-21.md
+Last session: 2026-05-22
+Stopped at: Phase 3 complete — cloud saves verified on device
+Next action: Run /paul:plan to start Phase 4 — Polish & Launch
 Resume context:
 - App is live at https://rideready-two.vercel.app
 - Auth working (email + Google) on desktop and mobile
-- Phase 3 = migrate localStorage saves → Supabase DB
+- Saves stored in Supabase `saves` table with RLS
+- Phase 4 = polish, onboarding, launch prep
 
 ---
 *STATE.md — Updated after every significant action*

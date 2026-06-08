@@ -394,14 +394,64 @@
       gap: 8px;
     }
     .rc-icon {
-      width: 32px; height: 32px;
+      width: 36px; height: 36px;
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
       font-size: 0.9rem;
       flex-shrink: 0;
+      overflow: hidden;
     }
     .rc-icon.fork-icon  { background: var(--orange); color: var(--text-dk); }
     .rc-icon.shock-icon { background: var(--green);  color: var(--text-dk); }
+
+    /* ── Bike part sprite icons — result cards (36px, white on coloured circles) ── */
+    .bike-part-icon {
+      display: block;
+      width: 36px; height: 36px;
+      flex-shrink: 0;
+      background-color: #fff;
+      -webkit-mask-image: url('bike-parts-transparent.png');
+      mask-image: url('bike-parts-transparent.png');
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
+      -webkit-mask-size: 180px 180px;          /* 5 cells × 36px = 180px */
+      mask-size: 180px 180px;
+    }
+    .bike-fork-icon {
+      -webkit-mask-position: -72px -36px;      /* row 1, col 2 */
+      mask-position: -72px -36px;
+    }
+    .bike-shock-icon {
+      -webkit-mask-position: -36px -36px;      /* row 1, col 1 */
+      mask-position: -36px -36px;
+    }
+    .bike-tyre-icon {
+      -webkit-mask-position: 0px 0px;          /* row 0, col 0 */
+      mask-position: 0px 0px;
+    }
+
+    /* Sub-tab button icons — mask approach so colour always matches the button text */
+    .subtab-icon {
+      display: inline-block;
+      width: 18px; height: 18px;
+      flex-shrink: 0;
+      vertical-align: middle;
+      background-color: currentColor;          /* inherits text colour from parent button */
+      -webkit-mask-image: url('bike-parts-transparent.png');
+      mask-image: url('bike-parts-transparent.png');
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
+      -webkit-mask-size: 90px 90px;            /* 5 cells × 18px = 90px */
+      mask-size: 90px 90px;
+    }
+    .subtab-icon.fork-icon {
+      -webkit-mask-position: -36px -18px;      /* row 1, col 2 */
+      mask-position: -36px -18px;
+    }
+    .subtab-icon.tyre-icon {
+      -webkit-mask-position: 0px 0px;          /* row 0, col 0 */
+      mask-position: 0px 0px;
+    }
     .rc-model-name {
       font-size: 0.95rem;
       font-weight: 700;
@@ -790,8 +840,8 @@
       flex-shrink: 0;
     }
     .sc-action-btn {
-      width: 32px;
-      height: 32px;
+      width: 40px;
+      height: 40px;
       border-radius: var(--radius-xs);
       border: 1px solid var(--border);
       background: transparent;
@@ -965,6 +1015,75 @@
       flex-shrink: 0;
     }
     .edit-banner-cancel:hover { color: var(--text); border-color: var(--orange); }
+
+    /* ── Loaded setup banner ── */
+    .loaded-banner { margin-bottom: 20px; }
+    .loaded-banner-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: rgba(74,222,128,0.08);
+      border: 1.5px solid rgba(74,222,128,0.35);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+    }
+    .loaded-banner-label {
+      font-size: 0.7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #4ade80;
+      margin-bottom: 2px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .loaded-banner-name {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .loaded-banner-actions {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .loaded-banner-update {
+      padding: 7px 14px;
+      border-radius: var(--radius-xs);
+      border: 1.5px solid rgba(74,222,128,0.5);
+      background: rgba(74,222,128,0.12);
+      color: #4ade80;
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s;
+      font-family: inherit;
+    }
+    .loaded-banner-update:hover { background: rgba(74,222,128,0.22); border-color: #4ade80; }
+    .loaded-banner-unload {
+      padding: 7px 14px;
+      border-radius: var(--radius-xs);
+      border: 1.5px solid var(--border-strong);
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s;
+      font-family: inherit;
+    }
+    .loaded-banner-unload:hover { color: var(--text); border-color: var(--border-strong); }
+    body.light-theme .loaded-banner-inner { background: rgba(22,163,74,0.07); border-color: rgba(22,163,74,0.3); }
+    body.light-theme .loaded-banner-label  { color: #16a34a; }
+    body.light-theme .loaded-banner-update { background: rgba(22,163,74,0.1); border-color: rgba(22,163,74,0.4); color: #16a34a; }
 
     /* ── Saved card damping summary ── */
     .sc-damping-row {
@@ -1502,6 +1621,184 @@
     max-width: 260px;
   }
 
+  /* ── Card animations ── */
+  @keyframes cardEnter {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes cardExit {
+    to { opacity: 0; transform: translateX(40px); max-height: 0; padding: 0; margin: 0; overflow: hidden; }
+  }
+  .saved-card { animation: cardEnter 0.2s ease; }
+  .saved-card.removing { animation: cardExit 0.22s ease forwards; pointer-events: none; }
+
+  /* ── Empty slot placeholder ── */
+  .saved-slot-empty {
+    border: 1.5px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    opacity: 0.55;
+  }
+  .saved-slot-empty-num {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    border: 1.5px dashed var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem;
+    color: var(--text-faint);
+    flex-shrink: 0;
+  }
+  .saved-slot-empty-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-faint);
+  }
+  .saved-slot-empty-hint {
+    font-size: 0.72rem;
+    color: var(--text-faint);
+    margin-top: 2px;
+  }
+
+  /* ── Active / loaded card state ── */
+  .saved-card.is-active {
+    border-color: var(--orange);
+    box-shadow: 0 0 0 1px var(--orange);
+  }
+  .saved-active-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.66rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--orange);
+    background: rgba(232,168,74,0.15);
+    border-radius: 4px;
+    padding: 2px 6px;
+    margin-top: 4px;
+  }
+
+  /* ── Card timestamp ── */
+  .saved-card-ts {
+    font-size: 0.72rem;
+    color: var(--text-faint);
+    margin-top: 3px;
+  }
+
+  /* ── Load into calculator button ── */
+  .sc-load-btn {
+    width: 100%;
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xs);
+    color: var(--text-secondary);
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+  }
+  .sc-load-btn:hover {
+    background: rgba(232,168,74,0.08);
+    border-color: var(--orange);
+    color: var(--text);
+  }
+  .saved-card.is-active .sc-load-btn {
+    border-color: var(--orange);
+    background: rgba(232,168,74,0.1);
+    color: var(--orange);
+  }
+
+  /* ── Replace slot bottom sheet ── */
+  .replace-sheet-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    z-index: 210;
+    display: flex;
+    align-items: flex-end;
+    animation: fadeIn 0.15s ease;
+  }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .replace-sheet {
+    width: 100%;
+    background: var(--surface);
+    border-radius: 20px 20px 0 0;
+    padding: 20px 20px 36px;
+    border-top: 1px solid var(--border-strong);
+    animation: sheetUp 0.2s ease;
+  }
+  @keyframes sheetUp {
+    from { transform: translateY(40px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+  }
+  .replace-sheet-title {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .replace-sheet-sub {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    line-height: 1.4;
+  }
+  .replace-sheet-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 14px;
+    border-radius: var(--radius-xs);
+    border: 1px solid var(--border);
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: var(--surface2);
+  }
+  .replace-sheet-item:hover, .replace-sheet-item:active {
+    border-color: var(--orange);
+    background: rgba(232,168,74,0.08);
+  }
+  .replace-sheet-item-name {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .replace-sheet-item-meta {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+  .replace-sheet-cancel {
+    width: 100%;
+    margin-top: 4px;
+    padding: 12px;
+    border: none;
+    border-radius: var(--radius-xs);
+    background: var(--chip-bg);
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.15s;
+  }
+  .replace-sheet-cancel:hover { background: var(--surface2); }
+
     /* ── Toast ── */
     .toast {
       position: fixed;
@@ -1664,8 +1961,8 @@
     .tyre-rear-dot    { background: var(--tyre-rear);  border-color: var(--dot-border); }
     .tyre-front-notes { border-left-color: var(--tyre-front); }
     .tyre-rear-notes  { border-left-color: var(--tyre-rear); }
-    .tyre-front-icon  { background: rgba(124,106,247,0.15); color: var(--tyre-front); }
-    .tyre-rear-icon   { background: rgba(74,222,128,0.15);  color: var(--tyre-rear); }
+    .tyre-front-icon  { background: rgba(124,106,247,0.45); color: var(--tyre-front); overflow: hidden; }
+    .tyre-rear-icon   { background: rgba(74,222,128,0.45);  color: var(--tyre-rear);  overflow: hidden; }
 
     /* ── Tyre section divider inside orange panel ── */
     .tyre-wheel-section {
@@ -1801,15 +2098,29 @@
   <!-- Setup sub-tab switcher -->
   <div class="subtab-row">
     <button class="subtab-btn active" id="setupsub-suspension" onclick="switchSetupSubTab('suspension')">
-      <i class="fa-solid fa-sliders"></i> Suspension
+      <span class="subtab-icon fork-icon"></span> Suspension
     </button>
     <button class="subtab-btn" id="setupsub-tyres" onclick="switchSetupSubTab('tyres')">
-      <i class="fa-solid fa-circle-dot"></i> Tyres
+      <span class="subtab-icon tyre-icon"></span> Tyres
     </button>
   </div>
 
   <!-- Suspension sub-tab panel -->
   <div id="subtab-suspension">
+
+  <!-- Loaded setup banner -->
+  <div class="loaded-banner" id="loaded-banner" style="display:none">
+    <div class="loaded-banner-inner">
+      <div>
+        <div class="loaded-banner-label"><i class="fa-solid fa-circle-check"></i> Loaded</div>
+        <div class="loaded-banner-name" id="loaded-banner-name"></div>
+      </div>
+      <div class="loaded-banner-actions">
+        <button class="loaded-banner-update" onclick="updateLoadedSave()">Update</button>
+        <button class="loaded-banner-unload" onclick="unloadSave()">Unload</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Edit mode banner -->
   <div class="edit-banner" id="edit-banner" style="display:none">
@@ -1851,13 +2162,13 @@
     <div class="panel-row-label">Ride Style</div>
     <div class="ride-style-row">
       <button class="rs-btn" id="rs-xc" onclick="setRideStyle('xc_trail')">
-        <span class="rs-icon"><i class="fa-solid fa-gauge-high"></i></span>XC / Trail
+        <span class="rs-icon"><i class="fa-solid fa-route"></i></span>XC / Trail
       </button>
       <button class="rs-btn active" id="rs-am" onclick="setRideStyle('all_mountain')">
         <span class="rs-icon"><i class="fa-solid fa-mountain"></i></span>All Mountain
       </button>
       <button class="rs-btn" id="rs-ed" onclick="setRideStyle('enduro_dh')">
-        <span class="rs-icon"><i class="fa-solid fa-fire"></i></span>Enduro / DH
+        <span class="rs-icon"><i class="fa-solid fa-flag-checkered"></i></span>Enduro / DH
       </button>
     </div>
 
@@ -1906,6 +2217,19 @@
   <!-- Tyres sub-tab panel -->
   <div id="subtab-tyres" style="display:none">
 
+  <!-- Loaded tyre setup banner -->
+  <div class="loaded-banner" id="tyre-loaded-banner" style="display:none">
+    <div class="loaded-banner-inner">
+      <div>
+        <div class="loaded-banner-label"><i class="fa-solid fa-circle-check"></i> Loaded</div>
+        <div class="loaded-banner-name" id="tyre-loaded-banner-name"></div>
+      </div>
+      <div class="loaded-banner-actions">
+        <button class="loaded-banner-unload" onclick="unloadTyreSave()">Unload</button>
+      </div>
+    </div>
+  </div>
+
   <div class="input-panel">
 
     <!-- Wheel Configuration -->
@@ -1946,7 +2270,7 @@
         </div>
       </div>
       <div class="tubeless-row">
-        <span class="tubeless-label"><i class="fa-solid fa-circle-dot"></i> Tubeless</span>
+        <span class="tubeless-label"><i class="fa-regular fa-circle"></i> Tubeless</span>
         <label class="toggle-switch">
           <input type="checkbox" id="front-tubeless-toggle" onchange="setTubeless('front', this.checked)">
           <span class="toggle-slider"></span>
@@ -1980,7 +2304,7 @@
         </div>
       </div>
       <div class="tubeless-row">
-        <span class="tubeless-label"><i class="fa-solid fa-circle-dot"></i> Tubeless</span>
+        <span class="tubeless-label"><i class="fa-regular fa-circle"></i> Tubeless</span>
         <label class="toggle-switch">
           <input type="checkbox" id="rear-tubeless-toggle" onchange="setTubeless('rear', this.checked)">
           <span class="toggle-slider"></span>
@@ -2051,24 +2375,18 @@
     <!-- Saved sub-tab switcher -->
     <div class="subtab-row">
       <button class="subtab-btn active" id="savedsub-suspension" onclick="switchSavedSubTab('suspension')">
-        <i class="fa-solid fa-sliders"></i> Suspension
+        <span class="subtab-icon fork-icon"></span> Suspension
       </button>
       <button class="subtab-btn" id="savedsub-tyres" onclick="switchSavedSubTab('tyres')">
-        <i class="fa-solid fa-circle-dot"></i> Tyres
+        <span class="subtab-icon tyre-icon"></span> Tyres
       </button>
     </div>
 
     <div id="saved-suspension-panel">
-      <div style="display:flex;justify-content:flex-end;margin-bottom:8px">
-        <span class="saved-count-badge" id="saved-count-badge">0 / 3</span>
-      </div>
       <div id="saved-list"></div>
     </div>
 
     <div id="saved-tyres-panel" style="display:none">
-      <div style="display:flex;justify-content:flex-end;margin-bottom:8px">
-        <span class="saved-count-badge" id="tyre-saved-count-badge">0 / 3</span>
-      </div>
       <div id="saved-tyres-list"></div>
     </div>
   </div>
@@ -2125,7 +2443,7 @@
 <!-- Bottom navigation -->
 <nav class="bottom-nav">
   <button class="nav-btn active" id="nav-setup" onclick="switchTab('setup')">
-    <i class="fa-solid fa-sliders"></i>
+    <i class="fa-solid fa-person-biking"></i>
     <span>Setup</span>
   </button>
   <button class="nav-btn" id="nav-saved" onclick="switchTab('saved')">
@@ -2389,7 +2707,9 @@ function buildResultHTML(brand, model, weightKg, type) {
   const dotClass   = type === 'fork' ? 'fork-dot'   : 'shock-dot';
   const notesClass = type === 'fork' ? 'fork-notes' : 'shock-notes';
   const iconClass  = type === 'fork' ? 'fork-icon'  : 'shock-icon';
-  const iconText   = type === 'fork' ? '<i class="fa-solid fa-arrows-up-down"></i>' : '<i class="fa-solid fa-rotate"></i>';
+  const iconText   = type === 'fork'
+    ? '<span class="bike-part-icon bike-fork-icon"></span>'
+    : '<span class="bike-part-icon bike-shock-icon"></span>';
   const typeLabel  = type === 'fork' ? 'Fork' : 'Rear Shock';
 
   // Coil shock
@@ -2477,11 +2797,11 @@ function buildResultHTML(brand, model, weightKg, type) {
         <div class="chip-val">${rangeStr}</div>
       </div>
       ${airSpring ? `<div class="chip chip-spring">
-        <div class="chip-label"><i class="fa-regular fa-circle-dot"></i> Air Spring</div>
+        <div class="chip-label"><i class="fa-solid fa-wind"></i> Air Spring</div>
         <div class="chip-val">${airSpring}</div>
       </div>` : ''}
       ${maxPsi ? `<div class="chip chip-maxpsi">
-        <div class="chip-label"><i class="fa-solid fa-gauge-high"></i> Max PSI</div>
+        <div class="chip-label"><i class="fa-solid fa-gauge"></i> Max PSI</div>
         <div class="chip-val">${maxPsi}</div>
       </div>` : ''}
       ${travelStr ? `<div class="chip chip-travel chip-wide">
@@ -2843,6 +3163,129 @@ function setPinState(pinned) {
 
 // ── Saved calculations ─────────────────────────────────────────────────────
 const MAX_SAVES = 3;
+let loadedSaveId = null; // ID of the suspension save currently loaded into the calculator
+
+function relativeTime(iso) {
+  if (!iso) return '';
+  const diff  = Date.now() - new Date(iso).getTime();
+  const mins  = Math.floor(diff / 60000);
+  const hours = Math.floor(diff / 3600000);
+  const days  = Math.floor(diff / 86400000);
+  if (mins  <  1) return 'Just now';
+  if (mins  < 60) return `${mins}m ago`;
+  if (hours < 24) return `${hours}h ago`;
+  if (days  ===1) return 'Yesterday';
+  if (days  <  7) return `${days} days ago`;
+  return new Date(iso).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+}
+
+function openReplaceSheet(name, dbRow, onDone) {
+  document.getElementById('replace-sheet-overlay')?.remove();
+  const overlay = document.createElement('div');
+  overlay.id = 'replace-sheet-overlay';
+  overlay.className = 'replace-sheet-overlay';
+  const sheet = document.createElement('div');
+  sheet.className = 'replace-sheet';
+  sheet.innerHTML = `
+    <div class="replace-sheet-title">All 3 slots are full</div>
+    <div class="replace-sheet-sub">Choose which saved setup to replace with <strong>${name}</strong>:</div>
+    <div id="replace-sheet-items"></div>
+    <button class="replace-sheet-cancel">Cancel</button>
+  `;
+  overlay.appendChild(sheet);
+  document.body.appendChild(overlay);
+  cachedSaves.forEach(s => {
+    const item = document.createElement('div');
+    item.className = 'replace-sheet-item';
+    item.innerHTML = `
+      <div>
+        <div class="replace-sheet-item-name">${s.name}</div>
+        <div class="replace-sheet-item-meta">${relativeTime(s.createdAt)} · ${s.weightKg} kg</div>
+      </div>
+      <i class="fa-solid fa-chevron-right" style="color:var(--text-faint);font-size:0.8rem"></i>
+    `;
+    item.addEventListener('click', () => { overlay.remove(); onDone(s.id); });
+    sheet.querySelector('#replace-sheet-items').appendChild(item);
+  });
+  sheet.querySelector('.replace-sheet-cancel').addEventListener('click', () => overlay.remove());
+  overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
+}
+
+function loadSaveNoEdit(id) {
+  const save = cachedSaves.find(s => s.id === id);
+  if (!save) return;
+  loadedSaveId = id;
+  if (save.fork)  selectOption('fork',  save.fork.brand,  save.fork.model);
+  if (save.shock) selectOption('shock', save.shock.brand, save.shock.model);
+  document.getElementById('weight-input').value = save.weightKg;
+  if (save.rideStyle) setRideStyle(save.rideStyle);
+  // Show loaded banner in suspension subtab
+  const banner = document.getElementById('loaded-banner');
+  const bannerName = document.getElementById('loaded-banner-name');
+  if (banner && bannerName) { bannerName.textContent = save.name; banner.style.display = 'block'; }
+  // Hide edit banner if shown
+  document.getElementById('edit-banner').style.display = 'none';
+  switchSetupSubTab('suspension');
+  switchTab('setup');
+  setTimeout(calculate, 350);
+  // Update active indicators in saved list
+  document.querySelectorAll('.saved-card').forEach(card => {
+    const active = card.id === `sc-${id}`;
+    card.classList.toggle('is-active', active);
+    const btn = card.querySelector('.sc-load-btn');
+    if (btn) btn.innerHTML = active
+      ? '<i class="fa-solid fa-circle-check"></i> Loaded'
+      : '<i class="fa-solid fa-arrow-up-from-bracket"></i> Load into calculator';
+  });
+}
+
+function unloadSave() {
+  loadedSaveId = null;
+  document.getElementById('loaded-banner').style.display = 'none';
+  updateSaveTrigger();
+  // Remove active state from all cards
+  document.querySelectorAll('#saved-list .saved-card').forEach(card => {
+    card.classList.remove('is-active');
+    const btn = card.querySelector('.sc-load-btn');
+    if (btn) btn.innerHTML = '<i class="fa-solid fa-arrow-up-from-bracket"></i> Load into calculator';
+  });
+  showToast('Setup unloaded — your form values are kept', 'success');
+}
+
+function updateLoadedSave() {
+  const save = cachedSaves.find(s => s.id === loadedSaveId);
+  if (!save) { unloadSave(); return; }
+  // Enter edit mode for this save so confirmSave() does an UPDATE
+  editingId = loadedSaveId;
+  document.getElementById('edit-banner').style.display = 'none';
+  document.getElementById('loaded-banner').style.display = 'none';
+  // Show edit banner with the save name
+  const editBanner = document.getElementById('edit-banner');
+  const editBannerName = document.getElementById('edit-banner-name');
+  if (editBanner && editBannerName) { editBannerName.textContent = save.name; editBanner.style.display = 'block'; }
+  // Pre-fill save name input and open save row
+  const row = document.getElementById('save-name-row');
+  const btn = document.getElementById('save-trigger-btn');
+  const inp = document.getElementById('save-name-input');
+  if (row && btn && inp) {
+    inp.value = save.name;
+    row.classList.add('visible');
+    btn.style.display = 'none';
+    inp.focus();
+    inp.select();
+  }
+}
+
+function unloadTyreSave() {
+  loadedTyreSaveId = null;
+  document.getElementById('tyre-loaded-banner').style.display = 'none';
+  document.querySelectorAll('#saved-tyres-list .saved-card').forEach(card => {
+    card.classList.remove('is-active');
+    const btn = card.querySelector('.sc-load-btn');
+    if (btn) btn.innerHTML = '<i class="fa-solid fa-arrow-up-from-bracket"></i> Load into calculator';
+  });
+  showToast('Tyre setup unloaded — your form values are kept', 'success');
+}
 let pendingCalc = null;
 let currentUser = null;
 let cachedSaves = [];
@@ -2865,6 +3308,7 @@ function openSaveNameRow() {
   const inp = document.getElementById('save-name-input');
   inp.value = '';
   inp.focus();
+  inp.select();
 }
 function closeSaveNameRow() {
   document.getElementById('save-name-row').classList.remove('visible');
@@ -3007,19 +3451,26 @@ async function confirmSave() {
       return;
     }
 
+    const raw  = document.getElementById('save-name-input').value.trim();
+    const name = raw || 'Setup ' + (cachedSaves.length + 1);
     if (cachedSaves.length >= MAX_SAVES) {
-      showToast('All 3 slots are full — delete a setup to save another.', 'warning');
+      closeSaveNameRow();
+      openReplaceSheet(name, dbRow, async (replaceId) => {
+        const { error: rErr } = await withTimeout(
+          supabaseClient.from('saves').update({ ...dbRow, name, updated_at: new Date().toISOString() }).eq('id', replaceId), 8000
+        );
+        if (rErr) { showToast('Save failed: ' + rErr.message, 'error'); return; }
+        await renderSaves();
+        showToast(`"${name}" saved!`, 'success');
+      });
       return;
     }
-    const raw = document.getElementById('save-name-input').value.trim();
-    const name = raw || 'Setup ' + (cachedSaves.length + 1);
     const { error } = await withTimeout(supabaseClient.from('saves').insert({ ...dbRow, name }), 8000);
     if (error) throw error;
     closeSaveNameRow();
     await renderSaves();
     updateSaveTrigger();
-    const isNowFull = cachedSaves.length >= MAX_SAVES;
-    showToast(isNowFull ? `"${name}" saved — all 3 slots now full.` : `"${name}" saved!`, isNowFull ? 'warning' : 'success');
+    showToast(`"${name}" saved!`, 'success');
   } catch (err) {
     console.error('Save failed:', err);
     showSaveFeedback('Save failed: ' + (err.message || 'unknown error'), true);
@@ -3032,16 +3483,23 @@ function deleteSave(id) {
   const save = cachedSaves.find(s => s.id === id);
   const name = save?.name || 'this setup';
   openConfirm({
-    icon:  '<i class="fa-regular fa-trash-can" style="color:#e05555"></i>',
-    title: 'Delete setup',
-    body:  `"${name}" will be permanently removed. This cannot be undone.`,
+    icon:    '<i class="fa-regular fa-trash-can" style="color:#e05555"></i>',
+    title:   'Delete setup',
+    body:    `"${name}" will be permanently removed. This cannot be undone.`,
     okLabel: 'Delete',
     needsType: false,
     onConfirm: async () => {
+      // Optimistic: animate card out immediately
+      const card = document.getElementById(`sc-${id}`);
+      if (card) {
+        card.classList.add('removing');
+        await new Promise(r => setTimeout(r, 220));
+      }
       await withTimeout(supabaseClient.from('saves').delete().eq('id', id), 8000);
+      if (loadedSaveId === id) loadedSaveId = null;
       await renderSaves();
       updateSaveTrigger();
-      showToast('Setup deleted', 'success');
+      showToast(`"${name}" deleted`, 'success');
     }
   });
 }
@@ -3077,7 +3535,9 @@ function startEditName(id) {
 
 function cancelEdit() {
   editingId = null;
+  loadedSaveId = null;
   document.getElementById('edit-banner').style.display = 'none';
+  document.getElementById('loaded-banner').style.display = 'none';
   const btn = document.getElementById('save-trigger-btn');
   btn.innerHTML = '<i class="fa-regular fa-bookmark"></i> Save this calculation';
   btn.classList.remove('update-mode');
@@ -3100,15 +3560,10 @@ function loadSaveIntoForm(save) {
 }
 
 function updateSaveTrigger() {
-  const saves = cachedSaves;
   const btn = document.getElementById('save-trigger-btn');
-  if (saves.length >= MAX_SAVES) {
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fa-regular fa-bookmark"></i> Max 3 saves — delete one to save again';
-  } else {
-    btn.disabled = false;
-    btn.innerHTML = '<i class="fa-regular fa-bookmark"></i> Save this calculation';
-  }
+  if (!btn || editingId !== null) return;
+  btn.disabled = false;
+  btn.innerHTML = '<i class="fa-regular fa-bookmark"></i> Save this calculation';
 }
 
 function barPct(psi, chart) {
@@ -3126,14 +3581,17 @@ async function renderSaves() {
     if (list) list.innerHTML = `<div class="saved-empty-state"><div class="saved-empty-title" style="color:#ff6b6b">Could not load saves</div><div class="saved-empty-sub">${fetchError.message}</div></div>`;
     return;
   }
+
   const saves = (rows || []).map(row => {
     const forkModel  = row.fork_model  ? findModel(row.fork_brand,  row.fork_model,  'fork')  : null;
     const shockModel = row.shock_model ? findModel(row.shock_brand, row.shock_model, 'shock') : null;
     return {
-      id:       row.id,
-      name:     row.name,
-      weightKg: row.weight_kg,
+      id:        row.id,
+      name:      row.name,
+      weightKg:  row.weight_kg,
       rideStyle: row.ride_style,
+      createdAt: row.created_at,
+      updatedAt: row.updated_at,
       fork:  forkModel  ? { brand: row.fork_brand,  model: forkModel,  psi: row.damping_snapshot?.fork?.psi,  damping: row.damping_snapshot?.fork?.damping  } : null,
       shock: shockModel ? { brand: row.shock_brand, model: shockModel, psi: row.damping_snapshot?.shock?.psi, damping: row.damping_snapshot?.shock?.damping } : null,
     };
@@ -3141,30 +3599,41 @@ async function renderSaves() {
   cachedSaves = saves;
 
   const list     = document.getElementById('saved-list');
-  const badge    = document.getElementById('saved-count-badge');
   const navBadge = document.getElementById('saved-nav-badge');
+  if (!list) return;
 
-  if (!list || !badge) return;
-  badge.textContent = `${saves.length} / ${MAX_SAVES}`;
   if (navBadge) {
     navBadge.textContent = saves.length;
     navBadge.style.display = saves.length > 0 ? 'flex' : 'none';
   }
 
-  if (saves.length === 0) {
-    list.innerHTML = `<div class="saved-empty-state">
-      <div class="saved-empty-icon"><i class="fa-regular fa-bookmark"></i></div>
-      <div class="saved-empty-title">No saved setups yet</div>
-      <div class="saved-empty-sub">Calculate your settings and tap "Save this calculation" to save them here.</div>
-    </div>`;
-    return;
-  }
+  const BRAND = { rockshox: 'RockShox', fox: 'Fox', dvo: 'DVO', ohlins: 'Öhlins', manitou: 'Manitou' };
 
-  list.innerHTML = saves.map(s => {
-    const BRAND = { rockshox: 'RockShox', fox: 'Fox', dvo: 'DVO', ohlins: 'Öhlins', manitou: 'Manitou' };
+  const dampChips = (dampSnap) => {
+    if (!dampSnap) return '';
+    const chips = [];
+    if (dampSnap.rebound    != null) chips.push(['Rebound', dampSnap.rebound, 'clk']);
+    if (dampSnap.reboundLSR != null) chips.push(['R-LSR',   dampSnap.reboundLSR, 'clk']);
+    if (dampSnap.reboundHSR != null) chips.push(['R-HSR',   dampSnap.reboundHSR, 'clk']);
+    if (dampSnap.lsc        != null) chips.push(['LSC',     dampSnap.lsc, 'clk']);
+    if (dampSnap.hsc        != null) chips.push(['HSC',     dampSnap.hsc, 'clk']);
+    if (dampSnap.compressionMode) chips.push(['Mode', dampSnap.compressionMode, '']);
+    return chips.map(([lbl, val, unit]) =>
+      `<div class="sc-damp-chip">
+        <span class="sc-damp-chip-label">${lbl}</span>
+        <span class="sc-damp-chip-val">${val}<span class="sc-damp-chip-unit">${unit}</span></span>
+      </div>`
+    ).join('');
+  };
+
+  const RS_DISPLAY = { xc_trail: 'XC / Trail', all_mountain: 'All Mountain', enduro_dh: 'Enduro / DH' };
+
+  const cardHTML = saves.map(s => {
+    const isActive = s.id === loadedSaveId;
+    const ts = relativeTime(s.updatedAt || s.createdAt);
 
     const forkBox = s.fork ? (() => {
-      const bl = BRAND[s.fork.brand] || s.fork.brand;
+      const bl  = BRAND[s.fork.brand] || s.fork.brand;
       const pct = barPct(s.fork.psi, s.fork.model.pressure_chart);
       return `<div class="sc-result-box fork-box">
         <div class="sc-result-label">Fork</div>
@@ -3192,38 +3661,18 @@ async function renderSaves() {
       </div>`;
     })() : '';
 
-    // Damping summary chips
-    const dampChips = (dampSnap) => {
-      if (!dampSnap) return '';
-      const chips = [];
-      if (dampSnap.rebound    != null) chips.push(['Rebound', dampSnap.rebound, 'clk']);
-      if (dampSnap.reboundLSR != null) chips.push(['R-LSR',   dampSnap.reboundLSR, 'clk']);
-      if (dampSnap.reboundHSR != null) chips.push(['R-HSR',   dampSnap.reboundHSR, 'clk']);
-      if (dampSnap.lsc        != null) chips.push(['LSC',     dampSnap.lsc, 'clk']);
-      if (dampSnap.hsc        != null) chips.push(['HSC',     dampSnap.hsc, 'clk']);
-      if (dampSnap.compressionMode) chips.push(['Mode', dampSnap.compressionMode, '']);
-      return chips.map(([lbl, val, unit]) =>
-        `<div class="sc-damp-chip">
-          <span class="sc-damp-chip-label">${lbl}</span>
-          <span class="sc-damp-chip-val">${val}<span class="sc-damp-chip-unit">${unit}</span></span>
-        </div>`
-      ).join('');
-    };
-
-    const RS_DISPLAY = { xc_trail: 'XC / Trail', all_mountain: 'All Mountain', enduro_dh: 'Enduro / DH' };
     const rideStyleTag = s.rideStyle
       ? `<div class="sc-damp-style-tag">${RS_DISPLAY[s.rideStyle] || s.rideStyle}</div>` : '';
+    const forkDampRow  = s.fork  && s.fork.damping  ? `<div class="sc-damping-row">${dampChips(s.fork.damping)}${rideStyleTag}</div>`  : '';
+    const shockDampRow = s.shock && s.shock.damping ? `<div class="sc-damping-row">${dampChips(s.shock.damping)}</div>` : '';
 
-    const forkDampRow = s.fork && s.fork.damping
-      ? `<div class="sc-damping-row">${dampChips(s.fork.damping)}${rideStyleTag}</div>` : '';
-    const shockDampRow = s.shock && s.shock.damping
-      ? `<div class="sc-damping-row">${dampChips(s.shock.damping)}</div>` : '';
-
-    return `<div class="saved-card" id="sc-${s.id}">
+    return `<div class="saved-card${isActive ? ' is-active' : ''}" id="sc-${s.id}">
       <div class="saved-card-top">
         <div class="saved-card-name-wrap">
           <div class="saved-card-name">${s.name}</div>
           <div class="saved-card-weight">${s.weightKg} kg · ${Math.round(s.weightKg * 2.2046)} lbs</div>
+          ${ts ? `<div class="saved-card-ts">${ts}</div>` : ''}
+          ${isActive ? `<div class="saved-active-badge"><i class="fa-solid fa-circle-check"></i> Loaded</div>` : ''}
         </div>
         <div class="saved-card-actions">
           <button class="sc-action-btn edit-btn" title="Edit setup" onclick="startEditName('${s.id}')">
@@ -3235,17 +3684,29 @@ async function renderSaves() {
         </div>
       </div>
       <div class="saved-card-results">
-        <div>
-          ${forkBox}
-          ${forkDampRow}
-        </div>
-        <div>
-          ${shockBox}
-          ${shockDampRow}
-        </div>
+        <div>${forkBox}${forkDampRow}</div>
+        <div>${shockBox}${shockDampRow}</div>
       </div>
+      <button class="sc-load-btn" onclick="loadSaveNoEdit('${s.id}')">
+        ${isActive
+          ? '<i class="fa-solid fa-circle-check"></i> Loaded'
+          : '<i class="fa-solid fa-arrow-up-from-bracket"></i> Load into calculator'}
+      </button>
     </div>`;
-  }).join('');
+  });
+
+  // Fill remaining slots with dashed placeholders
+  for (let i = saves.length; i < MAX_SAVES; i++) {
+    cardHTML.push(`<div class="saved-slot-empty">
+      <div class="saved-slot-empty-num">${i + 1}</div>
+      <div>
+        <div class="saved-slot-empty-label">Empty slot</div>
+        <div class="saved-slot-empty-hint">Calculate a setup and tap "Save this calculation"</div>
+      </div>
+    </div>`);
+  }
+
+  list.innerHTML = cardHTML.join('');
 }
 
 // Press Enter in save name input
@@ -3534,8 +3995,8 @@ function buildTyreResultHTML(wheel, brandKey, model, result) {
 
 
   const modPills = [
-    tubeless   ? `<span class="mod-pill mod-tubeless"><i class="fa-solid fa-circle-dot"></i> Tubeless −${Math.abs(tubelessMod)} PSI</span>` : '',
-    wheelMod   ? `<span class="mod-pill"><i class="fa-solid fa-circle-notch"></i> ${result.wheelForCalc}" wheel ${wheelMod > 0 ? '+' : ''}${wheelMod} PSI</span>` : '',
+    tubeless   ? `<span class="mod-pill mod-tubeless"><i class="fa-regular fa-circle"></i> Tubeless −${Math.abs(tubelessMod)} PSI</span>` : '',
+    wheelMod   ? `<span class="mod-pill"><i class="fa-solid fa-circle-half-stroke"></i> ${result.wheelForCalc}" wheel ${wheelMod > 0 ? '+' : ''}${wheelMod} PSI</span>` : '',
     widthMod   ? `<span class="mod-pill"><i class="fa-solid fa-arrows-left-right"></i> ${width.toFixed(1)}" width ${widthMod > 0 ? '+' : ''}${widthMod.toFixed(1)} PSI</span>` : '',
     currentTerrain !== 'dry' ? `<span class="mod-pill mod-${currentTerrain}"><i class="fa-solid fa-${currentTerrain === 'wet' ? 'cloud-rain' : 'cloud-sun'}"></i> ${currentTerrain === 'wet' ? 'Wet' : 'Mixed'} −${Math.abs(terrainMod)} PSI</span>` : ''
   ].filter(Boolean).join('');
@@ -3543,7 +4004,7 @@ function buildTyreResultHTML(wheel, brandKey, model, result) {
   return `
     <div class="rc-top">
       <div class="rc-model">
-        <div class="rc-icon ${iconCls}"><i class="fa-solid fa-circle-dot"></i></div>
+        <div class="rc-icon ${iconCls}"><i class="fa-solid fa-bullseye"></i></div>
         <div>
           <div class="rc-model-name">${model.model}</div>
           <div class="rc-model-sub">${brandLabel} · ${model.series}</div>
@@ -3582,11 +4043,11 @@ function buildTyreResultHTML(wheel, brandKey, model, result) {
         <div class="chip-val">${width.toFixed(1)}"</div>
       </div>
       <div class="chip chip-wide">
-        <div class="chip-label"><i class="fa-solid fa-circle-dot"></i> Setup</div>
+        <div class="chip-label"><i class="fa-solid fa-gear"></i> Setup</div>
         <div class="chip-val">${tubeless ? 'Tubeless' : 'Tubed'} · ${currentTerrain.charAt(0).toUpperCase() + currentTerrain.slice(1)}</div>
       </div>
       <div class="chip">
-        <div class="chip-label"><i class="fa-solid fa-circle-notch"></i> Wheel</div>
+        <div class="chip-label"><i class="fa-solid fa-circle-half-stroke"></i> Wheel</div>
         <div class="chip-val">${result.wheelForCalc}"${currentWheelSize === 'mullet' ? ' (Mullet)' : ''}</div>
       </div>
     </div>
@@ -3690,6 +4151,7 @@ function openTyreSaveNameRow() {
   const inp = document.getElementById('tyre-save-name-input');
   inp.value = '';
   inp.focus();
+  inp.select();
 }
 
 function closeTyreSaveNameRow() {
@@ -3705,42 +4167,96 @@ function persistTyreSaves(saves) {
   localStorage.setItem('tyre_saves', JSON.stringify(saves));
 }
 
+let loadedTyreSaveId = null;
+
 function confirmTyreSave() {
   if (!pendingTyreCalc) { showToast('Calculate a tyre setup first.', 'warning'); return; }
   const saves = loadTyreSaves();
+  const raw   = document.getElementById('tyre-save-name-input').value.trim();
+  const name  = raw || 'Tyre Setup ' + (saves.length + 1);
   if (saves.length >= MAX_TYRE_SAVES) {
-    showToast('All 3 tyre slots are full — delete one to save another.', 'warning');
+    closeTyreSaveNameRow();
+    // Build a fake cachedSaves-like structure for the replace sheet
+    const tyreCachedSaves = saves;
+    document.getElementById('replace-sheet-overlay')?.remove();
+    const overlay = document.createElement('div');
+    overlay.id = 'replace-sheet-overlay';
+    overlay.className = 'replace-sheet-overlay';
+    const sheet = document.createElement('div');
+    sheet.className = 'replace-sheet';
+    sheet.innerHTML = `
+      <div class="replace-sheet-title">All 3 slots are full</div>
+      <div class="replace-sheet-sub">Choose which setup to replace with <strong>${name}</strong>:</div>
+      <div id="replace-sheet-items"></div>
+      <button class="replace-sheet-cancel">Cancel</button>
+    `;
+    overlay.appendChild(sheet);
+    document.body.appendChild(overlay);
+    tyreCachedSaves.forEach(s => {
+      const item = document.createElement('div');
+      item.className = 'replace-sheet-item';
+      item.innerHTML = `
+        <div>
+          <div class="replace-sheet-item-name">${s.name}</div>
+          <div class="replace-sheet-item-meta">${relativeTime(s.id)} · ${s.weightKg || '—'} kg</div>
+        </div>
+        <i class="fa-solid fa-chevron-right" style="color:var(--text-faint);font-size:0.8rem"></i>
+      `;
+      item.addEventListener('click', () => {
+        overlay.remove();
+        const updated = tyreCachedSaves.map(x => x.id === s.id ? { ...x, ...pendingTyreCalc, name, id: s.id } : x);
+        persistTyreSaves(updated);
+        renderTyreSaves();
+        showToast(`"${name}" saved!`, 'success');
+        document.getElementById('tyre-save-strip')?.classList.remove('visible');
+      });
+      sheet.querySelector('#replace-sheet-items').appendChild(item);
+    });
+    sheet.querySelector('.replace-sheet-cancel').addEventListener('click', () => overlay.remove());
+    overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
     return;
   }
-  const raw  = document.getElementById('tyre-save-name-input').value.trim();
-  const name = raw || 'Tyre Setup ' + (saves.length + 1);
   saves.push({ id: Date.now(), name, ...pendingTyreCalc });
   persistTyreSaves(saves);
   closeTyreSaveNameRow();
   renderTyreSaves();
   showToast(`"${name}" saved!`, 'success');
-  const strip = document.getElementById('tyre-save-strip');
-  if (strip) strip.style.display = 'none';
+  document.getElementById('tyre-save-strip')?.classList.remove('visible');
 }
 
 function deleteTyreSave(id) {
+  const saves = loadTyreSaves();
+  const save  = saves.find(s => s.id === id);
+  const name  = save?.name || 'this setup';
   openConfirm({
-    icon: '<i class="fa-regular fa-trash-can"></i>',
-    title: 'Delete tyre setup?',
-    body: 'This cannot be undone.',
+    icon:    '<i class="fa-regular fa-trash-can" style="color:#e05555"></i>',
+    title:   'Delete tyre setup',
+    body:    `"${name}" will be permanently removed. This cannot be undone.`,
     okLabel: 'Delete',
-    onConfirm: () => {
-      const saves = loadTyreSaves().filter(s => s.id !== id);
-      persistTyreSaves(saves);
+    needsType: false,
+    onConfirm: async () => {
+      const card = document.getElementById(`tsc-${id}`);
+      if (card) {
+        card.classList.add('removing');
+        await new Promise(r => setTimeout(r, 220));
+      }
+      if (loadedTyreSaveId === id) loadedTyreSaveId = null;
+      persistTyreSaves(loadTyreSaves().filter(s => s.id !== id));
       renderTyreSaves();
-      showToast('Tyre setup deleted.', 'success');
+      showToast(`"${name}" deleted`, 'success');
     }
   });
 }
 
 function loadTyreSaveById(id) {
   const save = loadTyreSaves().find(s => s.id === id);
-  if (save) loadTyreSaveIntoForm(save);
+  if (!save) return;
+  loadedTyreSaveId = id;
+  loadTyreSaveIntoForm(save);
+  // Show loaded banner
+  const banner = document.getElementById('tyre-loaded-banner');
+  const bannerName = document.getElementById('tyre-loaded-banner-name');
+  if (banner && bannerName) { bannerName.textContent = save.name; banner.style.display = 'block'; }
 }
 
 function loadTyreSaveIntoForm(save) {
@@ -3785,13 +4301,10 @@ function loadTyreSaveIntoForm(save) {
 }
 
 function renderTyreSaves() {
-  const list  = document.getElementById('saved-tyres-list');
-  const badge = document.getElementById('tyre-saved-count-badge');
+  const list = document.getElementById('saved-tyres-list');
   if (!list) return;
 
-  const saves = loadTyreSaves();
-  if (badge) badge.textContent = `${saves.length} / ${MAX_TYRE_SAVES}`;
-
+  const saves    = loadTyreSaves();
   const navBadge = document.getElementById('saved-nav-badge');
   if (navBadge) {
     const total = saves.length + (cachedSaves?.length ?? 0);
@@ -3799,22 +4312,13 @@ function renderTyreSaves() {
     navBadge.style.display = total > 0 ? 'flex' : 'none';
   }
 
-  if (saves.length === 0) {
-    list.innerHTML = `<div class="saved-empty-state">
-      <div class="saved-empty-icon"><i class="fa-solid fa-circle-dot"></i></div>
-      <div class="saved-empty-title">No saved tyre setups yet</div>
-      <div class="saved-empty-sub">Calculate your tyre pressures and tap "Save this setup" to save them here.</div>
-    </div>`;
-    return;
-  }
+  const BRAND = Object.fromEntries(Object.entries(tyreData.brands).map(([k, v]) => [k, v.label]));
 
-  const BRAND = Object.fromEntries(
-    Object.entries(tyreData.brands).map(([k, v]) => [k, v.label])
-  );
-
-  list.innerHTML = saves.map(s => {
+  const cardHTML = saves.map(s => {
+    const isActive     = s.id === loadedTyreSaveId;
     const terrainLabel = { dry: 'Dry', mixed: 'Mixed', wet: 'Wet' }[s.terrain] || s.terrain;
     const wsLabel      = s.wheelSize === 'mullet' ? 'Mullet' : `${s.wheelSize}"`;
+    const ts           = relativeTime(s.id); // id = Date.now() timestamp
 
     const frontBox = s.front ? `
       <div class="tyre-sc-box front-box">
@@ -3830,24 +4334,39 @@ function renderTyreSaves() {
         <div class="tyre-sc-psi rear-psi">${s.rear.psi}<span class="sc-unit">PSI</span></div>
       </div>` : '';
 
-    return `<div class="tyre-saved-card">
+    return `<div class="tyre-saved-card saved-card${isActive ? ' is-active' : ''}" id="tsc-${s.id}">
       <div class="tyre-saved-header">
         <div>
           <div class="tyre-saved-name">${s.name}</div>
           <div class="tyre-saved-meta">${s.weightKg} kg · ${wsLabel} · ${terrainLabel}</div>
+          ${ts ? `<div class="saved-card-ts">${ts}</div>` : ''}
+          ${isActive ? `<div class="saved-active-badge"><i class="fa-solid fa-circle-check"></i> Loaded</div>` : ''}
         </div>
-      </div>
-      <div class="tyre-saved-grid">${frontBox}${rearBox}</div>
-      <div class="tyre-saved-actions">
-        <button class="tyre-saved-load-btn" onclick="loadTyreSaveById(${s.id})">
-          <i class="fa-solid fa-arrow-up-from-bracket"></i> Load
-        </button>
-        <button class="tyre-saved-del-btn" onclick="deleteTyreSave(${s.id})">
+        <button class="sc-action-btn delete-btn" title="Delete" onclick="deleteTyreSave(${s.id})">
           <i class="fa-regular fa-trash-can"></i>
         </button>
       </div>
+      <div class="tyre-saved-grid">${frontBox}${rearBox}</div>
+      <button class="sc-load-btn" onclick="loadTyreSaveById(${s.id}); loadedTyreSaveId=${s.id}; renderTyreSaves();">
+        ${isActive
+          ? '<i class="fa-solid fa-circle-check"></i> Loaded'
+          : '<i class="fa-solid fa-arrow-up-from-bracket"></i> Load into calculator'}
+      </button>
     </div>`;
-  }).join('');
+  });
+
+  // Fill remaining slots with dashed placeholders
+  for (let i = saves.length; i < MAX_TYRE_SAVES; i++) {
+    cardHTML.push(`<div class="saved-slot-empty">
+      <div class="saved-slot-empty-num">${i + 1}</div>
+      <div>
+        <div class="saved-slot-empty-label">Empty slot</div>
+        <div class="saved-slot-empty-hint">Calculate a tyre setup and tap "Save this setup"</div>
+      </div>
+    </div>`);
+  }
+
+  list.innerHTML = cardHTML.join('');
 }
 
 function switchSetupSubTab(tab) {
