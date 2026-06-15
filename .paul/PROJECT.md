@@ -6,16 +6,16 @@ A mobile-first web application that calculates MTB suspension pressure and dampi
 
 ## Core Value
 
-Riders can know exactly what suspension settings to use depending on the terrain, their weight, and their suspension model.
+Riders can know exactly what suspension settings to use depending on the terrain, their weight, and their suspension model — and verify/correct their sag on the trail without guessing.
 
 ## Current State
 
 | Attribute | Value |
 |-----------|-------|
 | Type | Application |
-| Version | 0.0.0 |
-| Status | Prototype |
-| Last Updated | 2026-05-20 |
+| Version | 0.3.0 |
+| Status | In Progress (v0.3 Retention & Growth) |
+| Last Updated | 2026-06-15 |
 
 ## Requirements
 
@@ -26,34 +26,49 @@ Riders can know exactly what suspension settings to use depending on the terrain
 - Save up to 3 suspension setups per user profile
 - View, edit, and delete saved setups
 - Mobile-first UI, optimised for outdoor/trail use
+- Trail-side sag verification with PSI correction
 
 ### Validated (Shipped)
 
-- [x] Suspension pressure calculator (fork + shock, PSI/bar toggle)
-- [x] Custom dropdowns for model selection (RockShox, Fox, DVO, Öhlins, Manitou)
-- [x] Ride style selector (XC/Trail, All Mountain, Enduro/DH)
-- [x] Damping setup display per model
-- [x] Save up to 3 calculations locally (localStorage)
-- [x] Edit saved setups (name, weight, models, ride style)
-- [x] Light/dark theme toggle
-- [x] Saved weight feature
+- ✓ Suspension pressure calculator (fork + shock, PSI/bar toggle) — Phase 1
+- ✓ Custom dropdowns for model selection (RockShox, Fox, DVO, Öhlins, Manitou) — Phase 1
+- ✓ Ride style selector (XC/Trail, All Mountain, Enduro/DH) — Phase 1
+- ✓ Damping setup display per model — Phase 1
+- ✓ Save up to 3 calculations locally (localStorage) — Phase 1
+- ✓ Edit saved setups (name, weight, models, ride style) — Phase 1
+- ✓ Light/dark theme toggle — Phase 1
+- ✓ Saved weight feature — Phase 1
+- ✓ Tyre pressure calculator with brand/model selection and modifiers — Phase 4
+- ✓ User auth (Supabase email + password) — Phase 2
+- ✓ Cloud-synced saved settings (Supabase DB) — Phase 3
+- ✓ Email collection on signup — Phase 2
+- ✓ Target sag chip with mm range for forks (% and mm) — Phase 5
+- ✓ Sag verify guide modal (3-step, fork + shock) — Phase 5
+- ✓ PSI corrector in sag modal (live oninput, 1 PSI/1% deviation) — Phase 5
+- ✓ "Suspension Feel" tab — 6 symptom cards with component badges (Fork/Shock/Both) and ordered fixes — Phase 6
+- ✓ CLAUDE.md codebase guide, /suspension-data skill, /seo-pages skill — Phase 7
+- ✓ Ride history log per saved setup (PSI tried + feel rating, Supabase-backed) — Phase 8 (hidden pending soft launch)
+- ✓ Guest mode — try the full calculator without an account; save entry points gated with sign-in prompt — Phase 9
+- ✓ Onboarding overlay — 4-step animated walkthrough with weight/ride-style profile collection, shown once on first use — Phase 10
+- ✓ UX Polish — nav/auth/settings guest friction removed, save strip animation, actionable empty states — Phase 12
+- ✓ Suspension data expansion — 9 new models across 7 brands: Boxxer, Vivid, Vivid Coil, Fox DHX2, Marzocchi Bomber Z1/Z2/CR, Cane Creek Helm/DB Coil IL — Phase 13
 
 ### Active (In Progress)
 
-None yet.
+None.
 
 ### Planned (Next)
 
-- User auth (Supabase email + password)
-- Cloud-synced saved settings (Supabase DB)
-- Email collection on signup (for marketing)
-- Migrate existing localStorage saves to cloud
+- SEO Landing Pages per model — Phase 14
+- PWA + Offline Mode — Phase 11 (deferred)
+- Contextual suspension numbers in Fix It tab (pendingCalc injection) — optional Phase 6 enhancement (deferred)
 
 ### Out of Scope
 
 - iOS/Android native app
 - Social/sharing features
 - Paid tiers (for now)
+- Imperial Units Toggle — dropped from v0.3 scope (app uses kg/mm only)
 
 ## Target Users
 
@@ -69,7 +84,7 @@ None yet.
 - Free hosting only (Vercel)
 - Free database/auth tier (Supabase)
 - Mobile-only design priority
-- Suspension model data already embedded in index.html
+- Single-file app (vanilla JS, no build tools) — all logic in index.html
 
 ### Business Constraints
 
@@ -84,6 +99,19 @@ None yet.
 | Supabase for auth + DB | Free tier, no backend server needed, email export built-in | 2026-05-20 | Active |
 | Vercel for hosting | Free, deploys from GitHub, zero config | 2026-05-20 | Active |
 | Keep vanilla JS | Existing codebase is a single HTML file, no build tools | 2026-05-20 | Active |
+| Tyre saves in localStorage | No DB schema needed for tyre data | 2026-06-14 | Active |
+| Figma sprite for bike part icons | mask-image + currentColor approach | 2026-06-14 | Active |
+| Shocks: % only in sag chip | No stroke_mm in data; mm needs per-bike leverage ratio | 2026-06-15 | Active |
+| Fork sag mm uses travel_mm[last] | Max travel value — consistent for all riders | 2026-06-15 | Active |
+| Global modal for sag verify | Single #sag-modal-backdrop, data-* attrs carry per-type content | 2026-06-15 | Active |
+| PSI correction rate: 1 PSI/1% | Roadmap spec; rough but consistent and easy for riders | 2026-06-15 | Active |
+| Fix It title: "Suspension Feel" | More descriptive than "Fix It" — sets context before rider taps | 2026-06-15 | Active |
+| Component badge on symptom cards | Fork/Rear Shock/Both visible in collapsed state — rider knows which part before reading | 2026-06-15 | Active |
+| sessionStorage for guest flag | Intentional session scope — guest mode clears on browser close, no persistent anonymous state | 2026-06-15 | Active |
+| Account settings group hidden for guests | Log out and Delete account are meaningless for guests — hide the whole group, not just the user card | 2026-06-15 | Active |
+| Onboarding: 4 steps not 3 | Added weight/ride-style profile collection step — needed so applyOnbProfile() can personalise calculator on first open | 2026-06-15 | Active |
+| Onboarding: animated HTML mockups | CSS-animated real-data mockups (not static icons) build more trust and familiarise rider with the UI before first use | 2026-06-15 | Active |
+| Onboarding: Skip = completeOnboarding | Sets rr_onboarded so skipping also gates future shows — intentional | 2026-06-15 | Active |
 
 ## Success Metrics
 
@@ -97,7 +125,7 @@ None yet.
 
 | Layer | Technology | Notes |
 |-------|------------|-------|
-| Frontend | Vanilla JS + HTML/CSS | Existing single-file app |
+| Frontend | Vanilla JS + HTML/CSS | Single-file app |
 | Auth | Supabase Auth | Email/password, email collected on signup |
 | Database | Supabase PostgreSQL | Saved settings per user |
 | Hosting | Vercel | Free tier, GitHub deploy |
@@ -105,4 +133,4 @@ None yet.
 
 ---
 *PROJECT.md — Updated when requirements or context change*
-*Last updated: 2026-05-20*
+*Last updated: 2026-06-15 after Phase 10*
