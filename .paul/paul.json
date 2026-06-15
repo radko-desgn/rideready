@@ -1,14 +1,14 @@
 {
   "name": "RideReady",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "milestone": {
-    "name": "v0.3 Retention & Growth",
-    "version": "0.3.0",
+    "name": "v0.4 Polish & Growth",
+    "version": "0.4.0",
     "status": "in_progress"
   },
   "phase": {
-    "number": 11,
-    "name": "PWA + Offline Mode",
+    "number": 13,
+    "name": "Suspension Data Expansion",
     "status": "not_started"
   },
   "loop": {

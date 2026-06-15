@@ -1022,7 +1022,7 @@
       display: none;
       margin-top: 16px;
     }
-    .save-strip.visible { display: block; }
+    .save-strip.visible { display: block; animation: stripEnter 0.32s ease; }
 
     .save-trigger-btn {
       width: 100%;
@@ -1045,6 +1045,10 @@
     .save-trigger-btn:disabled {
       opacity: 0.35;
       cursor: not-allowed;
+    }
+    @keyframes stripEnter {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
     .save-name-row {
@@ -2069,8 +2073,15 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    opacity: 0.55;
+    opacity: 0.6;
+    cursor: pointer;
+    width: 100%;
+    background: transparent;
+    text-align: left;
+    font-family: inherit;
+    transition: opacity 0.15s, border-color 0.15s;
   }
+  .saved-slot-empty:hover { opacity: 1; border-color: var(--border-strong); }
   .saved-slot-empty-num {
     width: 28px; height: 28px;
     border-radius: 50%;
@@ -4331,6 +4342,8 @@ async function renderSaves() {
     navBadge.textContent = saves.length;
     navBadge.style.display = saves.length > 0 ? 'flex' : 'none';
   }
+  const savedTitle = document.querySelector('#tab-saved .saved-section-title');
+  if (savedTitle) savedTitle.textContent = `Saved · ${saves.length}/${MAX_SAVES}`;
 
   const BRAND = { rockshox: 'RockShox', fox: 'Fox', dvo: 'DVO', ohlins: 'Öhlins', manitou: 'Manitou' };
 
@@ -4425,13 +4438,14 @@ async function renderSaves() {
 
   // Fill remaining slots with dashed placeholders
   for (let i = saves.length; i < MAX_SAVES; i++) {
-    cardHTML.push(`<div class="saved-slot-empty">
+    cardHTML.push(`<button class="saved-slot-empty" onclick="switchTab('setup')">
       <div class="saved-slot-empty-num">${i + 1}</div>
-      <div>
+      <div style="flex:1">
         <div class="saved-slot-empty-label">Empty slot</div>
-        <div class="saved-slot-empty-hint">Calculate a setup and tap "Save this calculation"</div>
+        <div class="saved-slot-empty-hint">Tap to calculate a setup</div>
       </div>
-    </div>`);
+      <i class="fa-solid fa-chevron-right" style="font-size:0.72rem;color:var(--text-faint)"></i>
+    </button>`);
   }
 
   list.innerHTML = cardHTML.join('');

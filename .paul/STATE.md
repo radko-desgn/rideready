@@ -5,26 +5,26 @@
 See: .paul/PROJECT.md (updated 2026-06-15)
 
 **Core value:** Riders can know exactly what suspension settings to use depending on terrain, weight, and suspension model — and troubleshoot suspension feel on the trail without guessing.
-**Current focus:** v0.4 Polish & Growth — Phase 12 (UX Polish) in planning
+**Current focus:** v0.4 Polish & Growth — Phase 12 (UX Polish) ✅ complete, transitioning to Phase 13
 
 ## Current Position
 
 Milestone: v0.4 Polish & Growth
-Phase: 12 of 15 — UX Polish (Planning)
-Plan: 12-01 created, awaiting approval
-Status: PLAN created, ready for APPLY
-Last activity: 2026-06-15 — Created .paul/phases/12-ux-polish/12-01-PLAN.md
+Phase: 13 of 15 — Suspension Data Expansion (Not started)
+Plan: None — ready for /paul:plan
+Status: Phase 12 closed, ready to begin Phase 13
+Last activity: 2026-06-15 — Phase 12 UNIFY complete (Plan 12-02 closed)
 
 Progress:
-- v0.4 Polish & Growth: [░░░░░░░░░░] 0%
-- Phase 12: [░░░░░░░░░░] 0%
+- v0.4 Polish & Growth: [█████░░░░░] 50%
+- Phase 13: [░░░░░░░░░░] 0%
 
 ## Loop Position
 
 Current loop state:
 ```
 PLAN ──▶ APPLY ──▶ UNIFY
-  ✓        ○        ○     [Plan 12-01 created, awaiting approval]
+  ○        ○        ○     [Phase 13 not yet started]
 ```
 
 ## Accumulated Context
@@ -56,8 +56,12 @@ PLAN ──▶ APPLY ──▶ UNIFY
 | Onboarding: animated HTML mockups | Phase 10-01 | Real-data CSS animations build trust; rider familiar with UI before first use |
 | Onboarding: Skip = completeOnboarding() | Phase 10-01 | Sets rr_onboarded — prevents re-showing after skip |
 | Onboarding animation cycle: 6.3s | Phase 10-01 | Slowed from 4.5s so user can read each element as it appears |
-| Nav "Fix It" → "Feel" | Phase 12-01 | Aligns with "Suspension Feel" section header — less confusing for returning riders |
-| Auth guest entry: secondary button not text link | Phase 12-01 | Valid entry path should have visible affordance |
+| Nav "Feel" (was "Fix It") | Phase 12-01 | Aligns with "Suspension Feel" section header |
+| Auth logo 80px (not 140px) | Phase 12-01 | Auth card is compact; 140px is onboarding scale |
+| Auth guest row: divider text replaces border-top | Phase 12-01 | Cleaner visual separation; no duplicate border |
+| Settings guest: two equal CTAs (log in / create account) | Phase 12-01 | Both paths equally visible for guest conversion |
+| Save strip animation: CSS-only @keyframes | Phase 12-02 | No JS needed; class-toggle fires animation naturally |
+| Empty slots as <button> elements | Phase 12-02 | Semantic, keyboard-accessible, no extra JS needed |
 
 ### Deferred Issues
 
@@ -73,16 +77,15 @@ None.
 
 ### Git State
 
-Last commit: daa27ae (feat(10-onboarding))
+Last commit: c570ba8 (fix(12-ux-polish): nav naming, auth screen, settings guest UX)
 Branch: ux/improvements
-Note: Phase 12 Plan 01 changes pending — no new commits yet
 
 ## Session Continuity
 
 Last session: 2026-06-15
-Stopped at: Phase 12 Plan 01 created. UX audit completed; 6 issues identified, first 3 addressed in this plan.
-Next action: Review and approve plan, then run /paul:apply .paul/phases/12-ux-polish/12-01-PLAN.md
-Resume file: .paul/phases/12-ux-polish/12-01-PLAN.md
+Stopped at: Phase 12 fully complete (both plans done). Phase 13 Suspension Data Expansion is next.
+Next action: /paul:plan for Phase 13 — Suspension Data Expansion
+Resume file: .paul/phases/13-suspension-data/
 
 ---
 *STATE.md — Updated after every significant action*
