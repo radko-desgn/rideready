@@ -560,6 +560,76 @@
     .chip-spring .chip-label { color: var(--text-secondary); }
     .chip-travel .chip-label { color: #82aadc; }
     .chip-maxpsi .chip-label { color: #e07755; }
+    .chip-sag { position: relative; }
+    .chip-sag .chip-val { font-size: 0.88rem; white-space: nowrap; }
+    .sag-help-btn {
+      position: absolute; top: 12px; right: 14px;
+      background: none; border: none; padding: 0;
+      color: var(--shock-accent); cursor: pointer;
+      font-size: 14px; line-height: 1;
+      opacity: 0.75; transition: opacity 0.15s;
+    }
+    .sag-help-btn:hover { opacity: 1; }
+
+    /* Sag verify modal */
+    .sag-modal-backdrop {
+      display: none; position: fixed; inset: 0; z-index: 1000;
+      background: rgba(0,0,0,0.55); backdrop-filter: blur(3px);
+      align-items: center; justify-content: center; padding: 20px;
+    }
+    .sag-modal-backdrop.open { display: flex; }
+    .sag-modal {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 24px; width: 100%; max-width: 360px;
+      position: relative;
+    }
+    .sag-modal-title {
+      font-size: 15px; font-weight: 700; margin-bottom: 16px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .sag-modal-title i { color: var(--shock-accent); }
+    .sag-modal-close {
+      position: absolute; top: 16px; right: 16px;
+      background: none; border: none; color: var(--text-secondary);
+      font-size: 16px; cursor: pointer; padding: 4px;
+    }
+    .sag-modal-step { display: flex; gap: 12px; margin-bottom: 14px; }
+    .sag-modal-step:last-of-type { margin-bottom: 0; }
+    .sag-modal-num {
+      flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%;
+      background: var(--accent); color: #000;
+      font-size: 11px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .sag-modal-step-text { font-size: 13px; line-height: 1.6; color: var(--text-secondary); padding-top: 2px; }
+    .sag-modal-target {
+      margin-top: 16px; padding: 10px 12px; border-radius: 10px;
+      background: var(--damp-style-bg); font-size: 13px;
+      line-height: 1.5; color: var(--text);
+    }
+    .sag-corrector {
+      margin-top: 16px; padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+    .sag-corrector-label {
+      font-size: 11px; font-weight: 700; color: var(--text-secondary);
+      text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px;
+    }
+    .sag-corrector-input-row { display: flex; gap: 8px; align-items: center; }
+    .sag-corrector-input {
+      flex: 1; background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 10px 12px; font-size: 15px; font-weight: 600;
+      color: var(--text); outline: none;
+    }
+    .sag-corrector-input:focus { border-color: var(--accent); }
+    .sag-corrector-unit { font-size: 13px; color: var(--text-secondary); flex-shrink: 0; }
+    .sag-corrector-result {
+      margin-top: 10px; padding: 10px 12px; border-radius: 8px;
+      font-size: 13px; font-weight: 600; display: none;
+    }
+    .sag-corrector-result.show { display: block; }
+    .sag-corrector-result.good { background: rgba(74,222,128,0.1); color: #4ade80; }
+    .sag-corrector-result.adjust { background: rgba(232,168,74,0.1); color: var(--orange); }
 
     /* Unit toggle */
     .unit-toggle {
@@ -2079,6 +2149,27 @@
   </style>
 </head>
 <body>
+<!-- Sag verify modal -->
+<div class="sag-modal-backdrop" id="sag-modal-backdrop" onclick="closeSagVerify()">
+  <div class="sag-modal" onclick="event.stopPropagation()">
+    <button class="sag-modal-close" onclick="closeSagVerify()"><i class="fa-solid fa-xmark"></i></button>
+    <div class="sag-modal-title"><i class="fa-solid fa-ruler-vertical"></i> How to verify your sag</div>
+    <div class="sag-modal-step"><span class="sag-modal-num">1</span><span class="sag-modal-step-text">Slide the o-ring (or a zip-tie) all the way down against the seal.</span></div>
+    <div class="sag-modal-step"><span class="sag-modal-num">2</span><span class="sag-modal-step-text">Sit on the bike in your normal riding position — feet on pedals, hands on bars, full gear.</span></div>
+    <div class="sag-modal-step"><span class="sag-modal-num">3</span><span class="sag-modal-step-text">Step off carefully without compressing further. Measure where the o-ring stopped.</span></div>
+    <div class="sag-modal-target" id="sag-modal-body"></div>
+    <div class="sag-corrector">
+      <div class="sag-corrector-label">How much sag did you measure?</div>
+      <div class="sag-corrector-input-row">
+        <input type="number" id="sag-corrector-input" class="sag-corrector-input"
+          placeholder="e.g. 38" min="0" max="300" oninput="calcSagCorrection()">
+        <span class="sag-corrector-unit" id="sag-corrector-unit">mm</span>
+      </div>
+      <div class="sag-corrector-result" id="sag-corrector-result"></div>
+    </div>
+  </div>
+</div>
+
 <div id="app-content" style="display:none">
 <div class="container">
 
@@ -2752,6 +2843,16 @@ function buildResultHTML(brand, model, weightKg, type) {
   const airSpring = model.air_spring;
   const maxPsi    = model.max_pressure_psi;
 
+  const sagMmStr = model.travel_mm
+    ? `${Math.round(model.travel_mm[model.travel_mm.length - 1] * model.sag_percent.min / 100)}–${Math.round(model.travel_mm[model.travel_mm.length - 1] * model.sag_percent.max / 100)}mm`
+    : null;
+
+  const travelMax = model.travel_mm ? model.travel_mm[model.travel_mm.length - 1] : null;
+  const sagHelpBtn = `<button class="sag-help-btn" aria-label="How to verify sag"
+      data-sag-min="${model.sag_percent.min}" data-sag-max="${model.sag_percent.max}"
+      data-sag-mm="${sagMmStr || ''}" data-sag-travel-max="${travelMax || ''}"
+      onclick="openSagVerify(this)"><i class="fa-solid fa-circle-question"></i></button>`;
+
   return `
     <div class="rc-top">
       <div class="rc-model">
@@ -2790,7 +2891,8 @@ function buildResultHTML(brand, model, weightKg, type) {
     <div class="meta-chips">
       <div class="chip chip-sag">
         <div class="chip-label"><i class="fa-solid fa-percent"></i> Sag</div>
-        <div class="chip-val">${model.sag_percent.min}–${model.sag_percent.max}%</div>
+        <div class="chip-val">${model.sag_percent.min}–${model.sag_percent.max}%${sagMmStr ? ` · ${sagMmStr}` : ''}</div>
+        ${sagHelpBtn}
       </div>
       <div class="chip chip-range">
         <div class="chip-label"><i class="fa-solid fa-gauge"></i> PSI Range</div>
@@ -2813,6 +2915,62 @@ function buildResultHTML(brand, model, weightKg, type) {
     <div class="notes-box ${notesClass}">${model.setup_notes}</div>
   ${buildDampingHTML(model, weightKg, type)}
   `;
+}
+
+function openSagVerify(btn) {
+  const min       = btn.dataset.sagMin;
+  const max       = btn.dataset.sagMax;
+  const mm        = btn.dataset.sagMm;
+  const travelMax = btn.dataset.sagTravelMax ? parseFloat(btn.dataset.sagTravelMax) : null;
+  const target = mm
+    ? `Look for <strong>${mm}</strong> of sag on your stanchion o-ring.`
+    : `Look for <strong>${min}–${max}%</strong> of your shock stroke (measure the exposed shaft end).`;
+  document.getElementById('sag-modal-body').innerHTML = target;
+  const backdrop = document.getElementById('sag-modal-backdrop');
+  backdrop.dataset.sagMin       = min;
+  backdrop.dataset.sagMax       = max;
+  backdrop.dataset.sagTravelMax = travelMax || '';
+  document.getElementById('sag-corrector-unit').textContent = travelMax ? 'mm' : '%';
+  document.getElementById('sag-corrector-input').value = '';
+  const result = document.getElementById('sag-corrector-result');
+  result.className = 'sag-corrector-result';
+  result.textContent = '';
+  backdrop.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeSagVerify() {
+  document.getElementById('sag-modal-backdrop').classList.remove('open');
+  document.getElementById('sag-corrector-input').value = '';
+  const result = document.getElementById('sag-corrector-result');
+  result.className = 'sag-corrector-result';
+  result.textContent = '';
+  document.body.style.overflow = '';
+}
+function calcSagCorrection() {
+  const backdrop  = document.getElementById('sag-modal-backdrop');
+  const sagMin    = parseFloat(backdrop.dataset.sagMin);
+  const sagMax    = parseFloat(backdrop.dataset.sagMax);
+  const travelMax = backdrop.dataset.sagTravelMax ? parseFloat(backdrop.dataset.sagTravelMax) : null;
+  const input     = parseFloat(document.getElementById('sag-corrector-input').value);
+  const result    = document.getElementById('sag-corrector-result');
+  if (isNaN(input) || input <= 0) {
+    result.className = 'sag-corrector-result';
+    result.textContent = '';
+    return;
+  }
+  const measuredPct = travelMax ? (input / travelMax) * 100 : input;
+  const targetMid   = (sagMin + sagMax) / 2;
+  const correction  = Math.round(measuredPct - targetMid);
+  if (measuredPct >= sagMin && measuredPct <= sagMax) {
+    result.className = 'sag-corrector-result show good';
+    result.textContent = '✓ Sag looks good';
+  } else if (correction > 0) {
+    result.className = 'sag-corrector-result show adjust';
+    result.textContent = `↑ Add ${correction} PSI (sag is too deep)`;
+  } else {
+    result.className = 'sag-corrector-result show adjust';
+    result.textContent = `↓ Remove ${Math.abs(correction)} PSI (sag is too firm)`;
+  }
 }
 
 function setUnit(type, unit, btn) {

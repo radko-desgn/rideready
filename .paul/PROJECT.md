@@ -6,16 +6,16 @@ A mobile-first web application that calculates MTB suspension pressure and dampi
 
 ## Core Value
 
-Riders can know exactly what suspension settings to use depending on the terrain, their weight, and their suspension model.
+Riders can know exactly what suspension settings to use depending on the terrain, their weight, and their suspension model — and verify/correct their sag on the trail without guessing.
 
 ## Current State
 
 | Attribute | Value |
 |-----------|-------|
 | Type | Application |
-| Version | 0.0.0 |
-| Status | Prototype |
-| Last Updated | 2026-05-20 |
+| Version | 0.2.0 |
+| Status | In Progress (v0.2 Core Differentiators) |
+| Last Updated | 2026-06-15 |
 
 ## Requirements
 
@@ -26,28 +26,36 @@ Riders can know exactly what suspension settings to use depending on the terrain
 - Save up to 3 suspension setups per user profile
 - View, edit, and delete saved setups
 - Mobile-first UI, optimised for outdoor/trail use
+- Trail-side sag verification with PSI correction
 
 ### Validated (Shipped)
 
-- [x] Suspension pressure calculator (fork + shock, PSI/bar toggle)
-- [x] Custom dropdowns for model selection (RockShox, Fox, DVO, Öhlins, Manitou)
-- [x] Ride style selector (XC/Trail, All Mountain, Enduro/DH)
-- [x] Damping setup display per model
-- [x] Save up to 3 calculations locally (localStorage)
-- [x] Edit saved setups (name, weight, models, ride style)
-- [x] Light/dark theme toggle
-- [x] Saved weight feature
+- ✓ Suspension pressure calculator (fork + shock, PSI/bar toggle) — Phase 1
+- ✓ Custom dropdowns for model selection (RockShox, Fox, DVO, Öhlins, Manitou) — Phase 1
+- ✓ Ride style selector (XC/Trail, All Mountain, Enduro/DH) — Phase 1
+- ✓ Damping setup display per model — Phase 1
+- ✓ Save up to 3 calculations locally (localStorage) — Phase 1
+- ✓ Edit saved setups (name, weight, models, ride style) — Phase 1
+- ✓ Light/dark theme toggle — Phase 1
+- ✓ Saved weight feature — Phase 1
+- ✓ Tyre pressure calculator with brand/model selection and modifiers — Phase 4
+- ✓ User auth (Supabase email + password) — Phase 2
+- ✓ Cloud-synced saved settings (Supabase DB) — Phase 3
+- ✓ Email collection on signup — Phase 2
+- ✓ Target sag chip with mm range for forks (% and mm) — Phase 5
+- ✓ Sag verify guide modal (3-step, fork + shock) — Phase 5
+- ✓ PSI corrector in sag modal (live oninput, 1 PSI/1% deviation) — Phase 5
 
 ### Active (In Progress)
 
-None yet.
+- [ ] Troubleshoot Tab ("Fix It") — Phase 6 — symptom cards with ordered fixes, references rider's actual numbers if setup loaded
 
 ### Planned (Next)
 
-- User auth (Supabase email + password)
-- Cloud-synced saved settings (Supabase DB)
-- Email collection on signup (for marketing)
-- Migrate existing localStorage saves to cloud
+- Skills Foundation (CLAUDE.md, suspension-data skill, seo-pages skill) — Phase 7
+- Setup History & Bracketing Log — v0.3
+- PWA + Offline Mode — v0.3
+- Imperial Units Toggle — v0.3
 
 ### Out of Scope
 
@@ -69,7 +77,7 @@ None yet.
 - Free hosting only (Vercel)
 - Free database/auth tier (Supabase)
 - Mobile-only design priority
-- Suspension model data already embedded in index.html
+- Single-file app (vanilla JS, no build tools) — all logic in index.html
 
 ### Business Constraints
 
@@ -84,6 +92,12 @@ None yet.
 | Supabase for auth + DB | Free tier, no backend server needed, email export built-in | 2026-05-20 | Active |
 | Vercel for hosting | Free, deploys from GitHub, zero config | 2026-05-20 | Active |
 | Keep vanilla JS | Existing codebase is a single HTML file, no build tools | 2026-05-20 | Active |
+| Tyre saves in localStorage | No DB schema needed for tyre data | 2026-06-14 | Active |
+| Figma sprite for bike part icons | mask-image + currentColor approach | 2026-06-14 | Active |
+| Shocks: % only in sag chip | No stroke_mm in data; mm needs per-bike leverage ratio | 2026-06-15 | Active |
+| Fork sag mm uses travel_mm[last] | Max travel value — consistent for all riders | 2026-06-15 | Active |
+| Global modal for sag verify | Single #sag-modal-backdrop, data-* attrs carry per-type content | 2026-06-15 | Active |
+| PSI correction rate: 1 PSI/1% | Roadmap spec; rough but consistent and easy for riders | 2026-06-15 | Active |
 
 ## Success Metrics
 
@@ -97,7 +111,7 @@ None yet.
 
 | Layer | Technology | Notes |
 |-------|------------|-------|
-| Frontend | Vanilla JS + HTML/CSS | Existing single-file app |
+| Frontend | Vanilla JS + HTML/CSS | Single-file app |
 | Auth | Supabase Auth | Email/password, email collected on signup |
 | Database | Supabase PostgreSQL | Saved settings per user |
 | Hosting | Vercel | Free tier, GitHub deploy |
@@ -105,4 +119,4 @@ None yet.
 
 ---
 *PROJECT.md — Updated when requirements or context change*
-*Last updated: 2026-05-20*
+*Last updated: 2026-06-15 after Phase 5*
