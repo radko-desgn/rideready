@@ -22,8 +22,8 @@ Starting from a working single-file prototype, evolve RideReady into the best MT
 
 ## Milestone: v0.2 Core Differentiators 🚧
 
-**Status:** In Progress
-**Phases:** 2 of 3
+**Status:** Complete
+**Phases:** 3 of 3
 
 Theme: The features that make RideReady more than a calculator — sag verification riders can do on the trail, a cheat sheet for when something feels wrong, and Claude skill setup to speed up all future dev.
 
@@ -31,7 +31,7 @@ Theme: The features that make RideReady more than a calculator — sag verificat
 |-------|------|-------|--------|-----------|
 | 5 | Target Sag & Verification | 2/2 | ✅ Complete | 2026-06-15 |
 | 6 | Troubleshoot Tab | 1/1 | ✅ Complete | 2026-06-15 |
-| 7 | Skills Foundation | TBD | 🔵 Next | - |
+| 7 | Skills Foundation | 1/1 | ✅ Complete | 2026-06-15 |
 
 ### Phase 5: Target Sag & Verification ✅
 
@@ -44,10 +44,10 @@ Focus: "Suspension Feel" tab (4th nav item) with 6 expandable symptom cards — 
 Note: Contextual numbers (pendingCalc injection) deferred as optional enhancement.
 Plans: 1/1 complete
 
-### Phase 7: Skills Foundation
+### Phase 7: Skills Foundation ✅
 
 Focus: Create `suspension-data` Claude Code skill (formulas, sag targets, damping conventions, tyre data extracted from codebase), generate `CLAUDE.md` from final codebase, scaffold `seo-pages` skill for later. Done last so it reflects the finished product accurately.
-Plans: TBD (defined during /paul:plan)
+Plans: 1/1 complete
 
 ---
 
@@ -55,9 +55,12 @@ Plans: TBD (defined during /paul:plan)
 
 | Phase | Name | Status |
 |-------|------|--------|
-| 8 | Setup History & Bracketing Log | Not started |
-| 9 | PWA + Offline Mode | Not started |
-| 10 | Imperial Units Toggle | Not started |
+| 8 | Setup History & Bracketing Log | ✅ Complete |
+| 9 | Guest Mode | ✅ Complete |
+| 10 | Onboarding | Planning |
+| 11 | PWA + Offline Mode | Not started |
+
+> Imperial Units Toggle removed from scope — app uses kg/mm only.
 
 ---
 
@@ -67,6 +70,13 @@ Plans: TBD (defined during /paul:plan)
 |-------|------|--------|
 | 11 | SEO Landing Pages per Model | Not started |
 | 12 | Community Setups | Not started |
+
+---
+
+### Phase 9: Guest Mode ✅
+
+Focus: "Continue as guest" on the auth screen. Full calculator access without an account. Save entry points gated with sign-in prompts. Saved tab and Settings tab adapted for guest context. Session clears on browser close (sessionStorage).
+Plans: 1/1 complete
 
 ---
 

@@ -631,6 +631,93 @@
     .sag-corrector-result.good { background: rgba(74,222,128,0.1); color: #4ade80; }
     .sag-corrector-result.adjust { background: rgba(232,168,74,0.1); color: var(--orange); }
 
+    /* History modal */
+    .hist-backdrop {
+      display: none; position: fixed; inset: 0; z-index: 1000;
+      background: rgba(0,0,0,0.55); backdrop-filter: blur(3px);
+      align-items: flex-end; justify-content: center;
+    }
+    .hist-backdrop.open { display: flex; }
+    .hist-sheet {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 20px 20px 0 0; padding: 24px 20px;
+      width: 100%; max-width: 480px; max-height: 80vh;
+      overflow-y: auto; position: relative;
+    }
+    .hist-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .hist-title {
+      font-size: 15px; font-weight: 700; color: var(--text);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .hist-close {
+      background: none; border: none; color: var(--text-secondary);
+      font-size: 16px; cursor: pointer; padding: 4px;
+    }
+    .hist-log { display: flex; flex-direction: column; }
+    .hist-entry {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 0; border-bottom: 1px solid var(--border);
+    }
+    .hist-entry:last-child { border-bottom: none; }
+    .hist-entry-date { font-size: 11px; color: var(--text-muted); min-width: 68px; }
+    .hist-entry-psi { font-size: 15px; font-weight: 700; color: var(--text); min-width: 56px; }
+    .hist-entry-cmp { font-size: 11px; color: var(--text-secondary); flex: 1; }
+    .hist-feel-badge {
+      font-size: 11px; font-weight: 700;
+      padding: 3px 9px; border-radius: 20px; white-space: nowrap;
+    }
+    .hist-feel-badge.perfect   { background: rgba(74,222,128,0.15); color: #4ade80; }
+    .hist-feel-badge.too-stiff { background: rgba(232,168,74,0.15); color: var(--fork-accent); }
+    .hist-feel-badge.too-soft  { background: rgba(62,207,190,0.15); color: var(--shock-accent); }
+    .hist-empty {
+      text-align: center; padding: 20px 0;
+      color: var(--text-muted); font-size: 14px; line-height: 1.6;
+    }
+    .hist-divider { border: none; border-top: 1px solid var(--border); margin: 16px 0 14px; }
+    .hist-form-title {
+      font-size: 11px; font-weight: 700; color: var(--text-secondary);
+      margin-bottom: 10px; letter-spacing: 0.05em; text-transform: uppercase;
+    }
+    .hist-component-row { display: flex; gap: 8px; margin-bottom: 12px; }
+    .hist-component-btn {
+      flex: 1; padding: 8px 6px; border: 1px solid var(--border);
+      border-radius: 8px; background: var(--surface2);
+      color: var(--text-secondary); font-size: 12px; font-weight: 600; cursor: pointer;
+    }
+    .hist-component-btn.selected {
+      border-color: var(--fork-accent); color: var(--fork-accent);
+      background: rgba(232,168,74,0.08);
+    }
+    .hist-psi-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .hist-psi-label { font-size: 13px; color: var(--text-muted); }
+    .hist-psi-input {
+      width: 90px; padding: 8px 12px;
+      border: 1px solid var(--border); border-radius: 8px;
+      background: var(--surface2); color: var(--text); font-size: 16px;
+    }
+    .hist-feel-row { display: flex; gap: 8px; margin-bottom: 16px; }
+    .hist-feel-btn {
+      flex: 1; padding: 10px 6px; border: 1px solid var(--border);
+      border-radius: 8px; background: var(--surface2);
+      color: var(--text-secondary); font-size: 12px; font-weight: 600;
+      cursor: pointer; text-align: center;
+    }
+    .hist-feel-btn.selected {
+      border-color: var(--fork-accent); color: var(--fork-accent);
+      background: rgba(232,168,74,0.08);
+    }
+    .hist-save-btn {
+      width: 100%; padding: 13px; background: var(--fork-accent); color: #000;
+      border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer;
+    }
+    .hist-save-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    .hist-open-btn {
+      display: none; /* hidden until Phase 8 ships */
+    }
+
     /* Unit toggle */
     .unit-toggle {
       display: inline-flex;
@@ -1524,6 +1611,13 @@
   }
   .auth-message--error { background: rgba(186,0,0,0.12); color: #ff6b6b; }
   .auth-message--success { background: rgba(118,202,102,0.12); color: #76ca66; }
+  .auth-guest-row { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); }
+  .auth-guest-btn {
+    width: 100%; padding: 11px; background: transparent;
+    border: 1px solid var(--border-strong); border-radius: 10px;
+    color: var(--text-secondary); font-size: 14px; font-weight: 500; cursor: pointer;
+  }
+  .auth-guest-btn:hover { border-color: var(--text-secondary); color: var(--text); }
   /* ── Bottom navigation ── */
   .bottom-nav {
     position: fixed;
@@ -2206,6 +2300,17 @@
   </div>
 </div>
 
+<!-- History modal -->
+<div class="hist-backdrop" id="hist-backdrop" onclick="if(event.target===this)closeHistoryModal()">
+  <div class="hist-sheet" onclick="event.stopPropagation()">
+    <div class="hist-header">
+      <div class="hist-title"><i class="fa-solid fa-clock-rotate-left"></i> <span id="hist-modal-title">Ride History</span></div>
+      <button class="hist-close" onclick="closeHistoryModal()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div id="hist-modal-body"></div>
+  </div>
+</div>
+
 <div id="app-content" style="display:none">
 <div class="container">
 
@@ -2528,6 +2633,11 @@
   <!-- Tab: Settings -->
   <div id="tab-settings" class="tab-panel">
 
+    <div id="settings-guest-banner" style="display:none;margin-bottom:16px;padding:14px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;text-align:center;">
+      <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px">Browsing as guest</div>
+      <div style="font-size:13px;color:var(--text-muted)">Log in to save your setups and access them anywhere.</div>
+    </div>
+
     <div class="settings-user-card">
       <div class="settings-avatar" id="settings-avatar">?</div>
       <div>
@@ -2548,7 +2658,7 @@
       </div>
     </div>
 
-    <div class="settings-group">
+    <div class="settings-group" id="settings-account-group">
       <div class="settings-group-title">Account</div>
       <div class="settings-card">
         <div class="settings-btn-row">
@@ -3493,6 +3603,7 @@ function unloadTyreSave() {
 }
 let pendingCalc = null;
 let currentUser = null;
+let isGuest = false;
 
 const SYMPTOM_FIXES = [
   {
@@ -3572,6 +3683,7 @@ function findModel(brand, modelName, type) {
 }
 
 function openSaveNameRow() {
+  if (isGuest) { showGuestSavePrompt(); return; }
   if (editingId !== null) {
     // In edit mode: update immediately without name prompt
     confirmSave();
@@ -3866,8 +3978,9 @@ async function renderSaves() {
       rideStyle: row.ride_style,
       createdAt: row.created_at,
       updatedAt: row.updated_at,
-      fork:  forkModel  ? { brand: row.fork_brand,  model: forkModel,  psi: row.damping_snapshot?.fork?.psi,  damping: row.damping_snapshot?.fork?.damping  } : null,
-      shock: shockModel ? { brand: row.shock_brand, model: shockModel, psi: row.damping_snapshot?.shock?.psi, damping: row.damping_snapshot?.shock?.damping } : null,
+      fork:    forkModel  ? { brand: row.fork_brand,  model: forkModel,  psi: row.damping_snapshot?.fork?.psi,  damping: row.damping_snapshot?.fork?.damping  } : null,
+      shock:   shockModel ? { brand: row.shock_brand, model: shockModel, psi: row.damping_snapshot?.shock?.psi, damping: row.damping_snapshot?.shock?.damping } : null,
+      history: Array.isArray(row.history) ? row.history : [],
     };
   });
   cachedSaves = saves;
@@ -3966,6 +4079,9 @@ async function renderSaves() {
           ? '<i class="fa-solid fa-circle-check"></i> Loaded'
           : '<i class="fa-solid fa-arrow-up-from-bracket"></i> Load into calculator'}
       </button>
+      <button class="hist-open-btn" onclick="openHistoryModal('${s.id}')">
+        <i class="fa-solid fa-clock-rotate-left"></i> Ride history ${s.history.length > 0 ? `(${s.history.length})` : ''}
+      </button>
     </div>`;
   });
 
@@ -3981,6 +4097,110 @@ async function renderSaves() {
   }
 
   list.innerHTML = cardHTML.join('');
+}
+
+// ── History modal ──────────────────────────────────────────────────────
+const HIST_FEEL_LABELS = { perfect: 'Perfect', 'too-stiff': 'Too stiff', 'too-soft': 'Too soft' };
+const HIST_CMP_LABELS  = { fork: 'Fork', shock: 'Shock', both: 'Fork & Shock' };
+
+function openHistoryModal(saveId) {
+  const save = cachedSaves.find(s => s.id === saveId);
+  if (!save) return;
+  document.getElementById('hist-modal-title').textContent = save.name || 'Ride History';
+  document.getElementById('hist-backdrop').dataset.saveId = saveId;
+  renderHistModalBody(save);
+  document.getElementById('hist-backdrop').classList.add('open');
+}
+
+function closeHistoryModal() {
+  document.getElementById('hist-backdrop').classList.remove('open');
+}
+
+function renderHistModalBody(save) {
+  const entries  = save.history || [];
+  const hasFork  = !!save.fork;
+  const hasShock = !!save.shock;
+  const defCmp   = hasFork && hasShock ? 'both' : hasFork ? 'fork' : 'shock';
+
+  const listHTML = entries.length === 0
+    ? `<p class="hist-empty">No rides logged yet.<br>Log your first ride below.</p>`
+    : `<div class="hist-log">${[...entries].reverse().map(e =>
+        `<div class="hist-entry">
+          <span class="hist-entry-date">${relativeTime(e.date)}</span>
+          <span class="hist-entry-psi">${e.psi} PSI</span>
+          <span class="hist-entry-cmp">${HIST_CMP_LABELS[e.component] || ''}</span>
+          <span class="hist-feel-badge ${e.feel}">${HIST_FEEL_LABELS[e.feel] || e.feel}</span>
+        </div>`
+      ).join('')}</div>`;
+
+  const cmpBtns = [
+    hasFork  ? `<button class="hist-component-btn${defCmp==='fork'?' selected':''}" data-cmp="fork" onclick="selectHistCmp(this)">Fork</button>` : '',
+    hasShock ? `<button class="hist-component-btn${defCmp==='shock'?' selected':''}" data-cmp="shock" onclick="selectHistCmp(this)">Shock</button>` : '',
+    hasFork && hasShock ? `<button class="hist-component-btn${defCmp==='both'?' selected':''}" data-cmp="both" onclick="selectHistCmp(this)">Both</button>` : '',
+  ].join('');
+
+  document.getElementById('hist-modal-body').innerHTML = `
+    ${listHTML}
+    <hr class="hist-divider">
+    <p class="hist-form-title">Log this ride</p>
+    <div class="hist-component-row">${cmpBtns}</div>
+    <div class="hist-psi-row">
+      <label class="hist-psi-label">PSI tried</label>
+      <input id="hist-psi-input" class="hist-psi-input" type="number" min="20" max="300" placeholder="e.g. 85" inputmode="numeric">
+    </div>
+    <div class="hist-feel-row">
+      <button class="hist-feel-btn" data-feel="perfect"   onclick="selectHistFeel(this)">Perfect</button>
+      <button class="hist-feel-btn" data-feel="too-stiff" onclick="selectHistFeel(this)">Too stiff</button>
+      <button class="hist-feel-btn" data-feel="too-soft"  onclick="selectHistFeel(this)">Too soft</button>
+    </div>
+    <button class="hist-save-btn" onclick="submitHistEntry()">Save ride</button>`;
+}
+
+function selectHistCmp(btn) {
+  btn.closest('.hist-component-row').querySelectorAll('.hist-component-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+function selectHistFeel(btn) {
+  btn.closest('.hist-feel-row').querySelectorAll('.hist-feel-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+async function submitHistEntry() {
+  const backdrop = document.getElementById('hist-backdrop');
+  const saveId   = backdrop.dataset.saveId;
+  const psiVal   = parseInt(document.getElementById('hist-psi-input').value);
+  const feelBtn  = document.querySelector('.hist-feel-btn.selected');
+  const cmpBtn   = document.querySelector('.hist-component-btn.selected');
+
+  if (!psiVal || psiVal < 20 || psiVal > 300 || !feelBtn) return;
+
+  const entry = {
+    id:        crypto.randomUUID(),
+    date:      new Date().toISOString(),
+    psi:       psiVal,
+    feel:      feelBtn.dataset.feel,
+    component: cmpBtn ? cmpBtn.dataset.cmp : 'fork',
+  };
+
+  const save = cachedSaves.find(s => s.id === saveId);
+  if (!save) return;
+
+  const updatedHistory = [...save.history, entry];
+
+  const { error } = await withTimeout(
+    supabaseClient.from('saves').update({ history: updatedHistory }).eq('id', saveId),
+    8000
+  );
+  if (error) { console.error('History save error:', error); return; }
+
+  save.history = updatedHistory;
+
+  // Update the button count on the card without re-fetching
+  const cardBtn = document.querySelector(`#sc-${saveId} .hist-open-btn`);
+  if (cardBtn) cardBtn.innerHTML = `<i class="fa-solid fa-clock-rotate-left"></i> Ride history (${updatedHistory.length})`;
+
+  renderHistModalBody(save);
 }
 
 // Press Enter in save name input
@@ -4001,6 +4221,10 @@ supabaseClient.auth.onAuthStateChange(async (event, session) => {
     if (!overlay || !appContent) return;
     if (session) {
       currentUser = session.user;
+      exitGuestMode();
+      // Restore saved tab sub-tabs hidden during guest mode
+      const subTabRow = document.querySelector('#tab-saved .subtab-row');
+      if (subTabRow) subTabRow.style.display = '';
       overlay.style.display = 'none';
       appContent.style.display = '';
       const emailEl  = document.getElementById('settings-email');
@@ -4011,6 +4235,12 @@ supabaseClient.auth.onAuthStateChange(async (event, session) => {
     } else {
       currentUser = null;
       cachedSaves = [];
+      if (sessionStorage.getItem('rr_guest') === '1') {
+        isGuest = true;
+        overlay.style.display = 'none';
+        appContent.style.display = '';
+        return;
+      }
       overlay.style.display = 'flex';
       appContent.style.display = 'none';
     }
@@ -4022,13 +4252,76 @@ supabaseClient.auth.onAuthStateChange(async (event, session) => {
   }
 });
 
+// ── Guest mode ────────────────────────────────────────────────────────
+function enterGuestMode() {
+  isGuest = true;
+  cachedSaves = [];
+  sessionStorage.setItem('rr_guest', '1');
+  const overlay    = document.getElementById('auth-overlay');
+  const appContent = document.getElementById('app-content');
+  overlay.style.display = 'none';
+  appContent.style.display = '';
+  if (typeof showOnboarding === 'function') showOnboarding();
+}
+
+function exitGuestMode() {
+  isGuest = false;
+  sessionStorage.removeItem('rr_guest');
+}
+
+function openAuthFromGuest(tab = 'signup') {
+  exitGuestMode();
+  const overlay    = document.getElementById('auth-overlay');
+  const appContent = document.getElementById('app-content');
+  appContent.style.display = 'none';
+  overlay.style.display = 'flex';
+  authShowTab(tab);
+}
+
+function showGuestSavePrompt() {
+  showToast('Log in to save your settings', 'warning');
+}
+
+function renderGuestSavedMessage() {
+  // Hide sub-tabs — guests don't have suspension or tyre saves
+  const subTabRow = document.querySelector('#tab-saved .subtab-row');
+  if (subTabRow) subTabRow.style.display = 'none';
+  const tyrePanel = document.getElementById('saved-tyres-panel');
+  if (tyrePanel) tyrePanel.style.display = 'none';
+  const suspPanel = document.getElementById('saved-suspension-panel');
+  if (suspPanel) suspPanel.style.display = '';
+
+  const list = document.getElementById('saved-list');
+  if (!list) return;
+  list.innerHTML = `
+    <div class="saved-empty-state">
+      <div class="saved-empty-icon"><i class="fa-regular fa-bookmark"></i></div>
+      <div class="saved-empty-title">Log in to save your settings</div>
+      <div class="saved-empty-sub">Create an account or log in to save up to 3 setups and access them anywhere.</div>
+      <button class="save-trigger-btn" style="margin-top:16px" onclick="openAuthFromGuest('login')">
+        <i class="fa-solid fa-right-to-bracket"></i> Log in
+      </button>
+    </div>`;
+}
+
 function switchTab(tab) {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-' + tab).classList.add('active');
   document.getElementById('nav-' + tab).classList.add('active');
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  if (tab === 'saved' && currentUser) renderSaves();
+  if (tab === 'saved') {
+    if (isGuest) renderGuestSavedMessage();
+    else if (currentUser) renderSaves();
+  }
+  if (tab === 'settings') {
+    const guestBanner    = document.getElementById('settings-guest-banner');
+    const userCard       = document.querySelector('.settings-user-card');
+    const accountGroup   = document.getElementById('settings-account-group');
+    if (guestBanner)  guestBanner.style.display  = isGuest ? 'block' : 'none';
+    if (userCard)     userCard.style.display      = isGuest ? 'none'  : '';
+    if (accountGroup) accountGroup.style.display  = isGuest ? 'none'  : '';
+  }
   if (tab === 'fixit') renderFixitTab();
 }
 
@@ -4474,6 +4767,7 @@ function resetTyres() {
 }
 
 function openTyreSaveNameRow() {
+  if (isGuest) { showGuestSavePrompt(); return; }
   document.getElementById('tyre-save-name-row').classList.add('visible');
   document.getElementById('tyre-save-trigger-btn').style.display = 'none';
   const inp = document.getElementById('tyre-save-name-input');
@@ -4749,6 +5043,11 @@ renderTyreSaves();
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
         Continue with Google
       </button>
+    </div>
+
+    <!-- Guest entry -->
+    <div class="auth-guest-row">
+      <button class="auth-guest-btn" onclick="enterGuestMode()">Continue as guest</button>
     </div>
 
     <!-- Sign Up Form -->

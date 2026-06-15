@@ -1,14 +1,14 @@
 {
   "name": "RideReady",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "milestone": {
-    "name": "v0.2 Core Differentiators",
-    "version": "0.2.0",
+    "name": "v0.3 Retention & Growth",
+    "version": "0.3.0",
     "status": "in_progress"
   },
   "phase": {
-    "number": 7,
-    "name": "Skills Foundation",
+    "number": 10,
+    "name": "Onboarding",
     "status": "not_started"
   },
   "loop": {

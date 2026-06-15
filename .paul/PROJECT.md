@@ -13,8 +13,8 @@ Riders can know exactly what suspension settings to use depending on the terrain
 | Attribute | Value |
 |-----------|-------|
 | Type | Application |
-| Version | 0.2.0 |
-| Status | In Progress (v0.2 Core Differentiators) |
+| Version | 0.3.0 |
+| Status | In Progress (v0.3 Retention & Growth) |
 | Last Updated | 2026-06-15 |
 
 ## Requirements
@@ -46,23 +46,26 @@ Riders can know exactly what suspension settings to use depending on the terrain
 - ✓ Sag verify guide modal (3-step, fork + shock) — Phase 5
 - ✓ PSI corrector in sag modal (live oninput, 1 PSI/1% deviation) — Phase 5
 - ✓ "Suspension Feel" tab — 6 symptom cards with component badges (Fork/Shock/Both) and ordered fixes — Phase 6
+- ✓ CLAUDE.md codebase guide, /suspension-data skill, /seo-pages skill — Phase 7
+- ✓ Ride history log per saved setup (PSI tried + feel rating, Supabase-backed) — Phase 8 (hidden pending soft launch)
+- ✓ Guest mode — try the full calculator without an account; save entry points gated with sign-in prompt — Phase 9
 
 ### Active (In Progress)
 
-- [ ] Skills Foundation (CLAUDE.md, suspension-data skill, seo-pages skill) — Phase 7
+None.
 
 ### Planned (Next)
 
-- Contextual suspension numbers in Fix It tab (pendingCalc injection) — optional Phase 6 enhancement
-- Setup History & Bracketing Log — v0.3
-- PWA + Offline Mode — v0.3
-- Imperial Units Toggle — v0.3
+- Onboarding overlay (3-step, shown once on first use) — Phase 10
+- PWA + Offline Mode — Phase 11
+- Contextual suspension numbers in Fix It tab (pendingCalc injection) — optional Phase 6 enhancement (deferred)
 
 ### Out of Scope
 
 - iOS/Android native app
 - Social/sharing features
 - Paid tiers (for now)
+- Imperial Units Toggle — dropped from v0.3 scope (app uses kg/mm only)
 
 ## Target Users
 
@@ -101,6 +104,8 @@ Riders can know exactly what suspension settings to use depending on the terrain
 | PSI correction rate: 1 PSI/1% | Roadmap spec; rough but consistent and easy for riders | 2026-06-15 | Active |
 | Fix It title: "Suspension Feel" | More descriptive than "Fix It" — sets context before rider taps | 2026-06-15 | Active |
 | Component badge on symptom cards | Fork/Rear Shock/Both visible in collapsed state — rider knows which part before reading | 2026-06-15 | Active |
+| sessionStorage for guest flag | Intentional session scope — guest mode clears on browser close, no persistent anonymous state | 2026-06-15 | Active |
+| Account settings group hidden for guests | Log out and Delete account are meaningless for guests — hide the whole group, not just the user card | 2026-06-15 | Active |
 
 ## Success Metrics
 
@@ -122,4 +127,4 @@ Riders can know exactly what suspension settings to use depending on the terrain
 
 ---
 *PROJECT.md — Updated when requirements or context change*
-*Last updated: 2026-06-15 after Phase 5*
+*Last updated: 2026-06-15 after Phase 9*
