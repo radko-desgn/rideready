@@ -50,6 +50,8 @@ Riders can know exactly what suspension settings to use depending on the terrain
 - ✓ Ride history log per saved setup (PSI tried + feel rating, Supabase-backed) — Phase 8 (hidden pending soft launch)
 - ✓ Guest mode — try the full calculator without an account; save entry points gated with sign-in prompt — Phase 9
 - ✓ Onboarding overlay — 4-step animated walkthrough with weight/ride-style profile collection, shown once on first use — Phase 10
+- ✓ UX Polish — nav/auth/settings guest friction removed, save strip animation, actionable empty states — Phase 12
+- ✓ Suspension data expansion — 9 new models across 7 brands: Boxxer, Vivid, Vivid Coil, Fox DHX2, Marzocchi Bomber Z1/Z2/CR, Cane Creek Helm/DB Coil IL — Phase 13
 
 ### Active (In Progress)
 
@@ -57,7 +59,8 @@ None.
 
 ### Planned (Next)
 
-- PWA + Offline Mode — Phase 11
+- SEO Landing Pages per model — Phase 14
+- PWA + Offline Mode — Phase 11 (deferred)
 - Contextual suspension numbers in Fix It tab (pendingCalc injection) — optional Phase 6 enhancement (deferred)
 
 ### Out of Scope

@@ -69,7 +69,7 @@ Plans: 1/1 complete
 | Phase | Name | Status |
 |-------|------|--------|
 | 12 | UX Polish | ✅ Complete |
-| 13 | Suspension Data Expansion | Planning |
+| 13 | Suspension Data Expansion | ✅ Complete |
 
 > SEO Landing Pages and Community Setups deferred — focusing on UX and data quality first.
 
