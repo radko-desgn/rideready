@@ -1782,11 +1782,23 @@
   }
   .auth-message--error { background: rgba(186,0,0,0.12); color: #ff6b6b; }
   .auth-message--success { background: rgba(118,202,102,0.12); color: #76ca66; }
-  .auth-guest-row { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); }
+  .auth-guest-row { margin-top: 4px; }
   .auth-guest-btn {
-    width: 100%; padding: 11px; background: transparent;
-    border: 1px solid var(--border-strong); border-radius: 10px;
-    color: var(--text-secondary); font-size: 14px; font-weight: 500; cursor: pointer;
+    width: 100%;
+    background: transparent;
+    border: 1.5px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    padding: 13px 16px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
   }
   .auth-guest-btn:hover { border-color: var(--text-secondary); color: var(--text); }
   /* ── Bottom navigation ── */
@@ -1881,6 +1893,51 @@
   .tab-panel.active { display: block; }
 
   /* ── Settings tab ── */
+  .settings-guest-banner {
+    margin-bottom: 16px;
+    padding: 20px 18px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+  .settings-guest-banner-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .settings-guest-banner-sub {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-bottom: 14px;
+    line-height: 1.5;
+  }
+  .settings-guest-cta {
+    display: flex;
+    gap: 8px;
+  }
+  .settings-guest-cta-btn {
+    flex: 1;
+    padding: 11px 12px;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid var(--border-strong);
+    background: transparent;
+    color: var(--text);
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    font-family: inherit;
+    text-align: center;
+  }
+  .settings-guest-cta-btn:hover { border-color: var(--orange); color: var(--orange); }
+  .settings-guest-cta-btn.primary {
+    background: var(--orange);
+    border-color: var(--orange);
+    color: #000;
+  }
+  .settings-guest-cta-btn.primary:hover { opacity: 0.88; }
+
   .settings-group { margin-bottom: 24px; }
   .settings-group-title {
     font-size: 0.7rem;
@@ -2910,9 +2967,13 @@
   <!-- Tab: Settings -->
   <div id="tab-settings" class="tab-panel">
 
-    <div id="settings-guest-banner" style="display:none;margin-bottom:16px;padding:14px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;text-align:center;">
-      <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px">Browsing as guest</div>
-      <div style="font-size:13px;color:var(--text-muted)">Log in to save your setups and access them anywhere.</div>
+    <div id="settings-guest-banner" class="settings-guest-banner" style="display:none">
+      <div class="settings-guest-banner-title">Browsing as guest</div>
+      <div class="settings-guest-banner-sub">Create an account to save your setups and access them from any device.</div>
+      <div class="settings-guest-cta">
+        <button class="settings-guest-cta-btn" onclick="openAuthFromGuest('login')">Log in</button>
+        <button class="settings-guest-cta-btn primary" onclick="openAuthFromGuest('signup')">Create account</button>
+      </div>
     </div>
 
     <div class="settings-user-card">
@@ -2974,7 +3035,7 @@
   </button>
   <button class="nav-btn" id="nav-fixit" onclick="switchTab('fixit')">
     <i class="fa-solid fa-screwdriver-wrench"></i>
-    <span>Fix It</span>
+    <span>Feel</span>
   </button>
   <button class="nav-btn" id="nav-settings" onclick="switchTab('settings')">
     <i class="fa-solid fa-gear"></i>
@@ -5474,7 +5535,7 @@ renderTyreSaves();
 <div id="auth-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:1000;align-items:center;justify-content:center;padding:20px;">
   <div class="auth-card">
     <div class="auth-logo">
-      <img src="logo.png" alt="RideReady" style="width:48px;height:48px;border-radius:12px;margin-bottom:8px;">
+      <img src="logo.png" alt="RideReady" style="width:80px;height:80px;border-radius:16px;margin-bottom:10px;">
       <div class="auth-app-name">RideReady</div>
       <div class="auth-app-sub">Suspension setup for every trail</div>
     </div>
@@ -5500,8 +5561,11 @@ renderTyreSaves();
     </div>
 
     <!-- Guest entry -->
+    <div class="auth-divider" style="margin: 4px 0"><span>or continue without an account</span></div>
     <div class="auth-guest-row">
-      <button class="auth-guest-btn" onclick="enterGuestMode()">Continue as guest</button>
+      <button class="auth-guest-btn" onclick="enterGuestMode()">
+        <i class="fa-solid fa-person-biking"></i> Browse as guest
+      </button>
     </div>
 
     <!-- Sign Up Form -->

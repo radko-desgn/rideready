@@ -58,18 +58,29 @@ Plans: 1/1 complete
 | 8 | Setup History & Bracketing Log | ✅ Complete |
 | 9 | Guest Mode | ✅ Complete |
 | 10 | Onboarding | ✅ Complete |
-| 11 | PWA + Offline Mode | Not started |
+| 11 | PWA + Offline Mode | ⏸ Deferred |
 
 > Imperial Units Toggle removed from scope — app uses kg/mm only.
 
 ---
 
-## Milestone: v0.4 Discovery & Community (Planned)
+## Milestone: v0.4 Polish & Growth (Active)
 
 | Phase | Name | Status |
 |-------|------|--------|
-| 11 | SEO Landing Pages per Model | Not started |
-| 12 | Community Setups | Not started |
+| 12 | UX Polish | Planning |
+| 13 | Suspension Data Expansion | Not started |
+
+> SEO Landing Pages and Community Setups deferred — focusing on UX and data quality first.
+
+---
+
+## Milestone: v0.5 Discovery (Planned)
+
+| Phase | Name | Status |
+|-------|------|--------|
+| 14 | SEO Landing Pages per Model | Not started |
+| 15 | Community Setups | Not started |
 
 ---
 

@@ -5,26 +5,26 @@
 See: .paul/PROJECT.md (updated 2026-06-15)
 
 **Core value:** Riders can know exactly what suspension settings to use depending on terrain, weight, and suspension model — and troubleshoot suspension feel on the trail without guessing.
-**Current focus:** v0.3 Retention & Growth — Phase 10 complete, Phase 11 (PWA + Offline Mode) next
+**Current focus:** v0.4 Polish & Growth — Phase 12 (UX Polish) in planning
 
 ## Current Position
 
-Milestone: v0.3 Retention & Growth
-Phase: 11 of 11 — PWA + Offline Mode (not yet started)
-Plan: Not started
-Status: Ready to plan Phase 11
-Last activity: 2026-06-15 — Phase 10 (Onboarding) complete and unified
+Milestone: v0.4 Polish & Growth
+Phase: 12 of 15 — UX Polish (Planning)
+Plan: 12-01 created, awaiting approval
+Status: PLAN created, ready for APPLY
+Last activity: 2026-06-15 — Created .paul/phases/12-ux-polish/12-01-PLAN.md
 
 Progress:
-- v0.3 Retention & Growth: [████████░░] 80%
-- Phase 10: [██████████] 100% ✅
+- v0.4 Polish & Growth: [░░░░░░░░░░] 0%
+- Phase 12: [░░░░░░░░░░] 0%
 
 ## Loop Position
 
 Current loop state:
 ```
 PLAN ──▶ APPLY ──▶ UNIFY
-  ✓        ✓        ✓     [Phase 10 complete — ready for Phase 11]
+  ✓        ○        ○     [Plan 12-01 created, awaiting approval]
 ```
 
 ## Accumulated Context
@@ -56,6 +56,8 @@ PLAN ──▶ APPLY ──▶ UNIFY
 | Onboarding: animated HTML mockups | Phase 10-01 | Real-data CSS animations build trust; rider familiar with UI before first use |
 | Onboarding: Skip = completeOnboarding() | Phase 10-01 | Sets rr_onboarded — prevents re-showing after skip |
 | Onboarding animation cycle: 6.3s | Phase 10-01 | Slowed from 4.5s so user can read each element as it appears |
+| Nav "Fix It" → "Feel" | Phase 12-01 | Aligns with "Suspension Feel" section header — less confusing for returning riders |
+| Auth guest entry: secondary button not text link | Phase 12-01 | Valid entry path should have visible affordance |
 
 ### Deferred Issues
 
@@ -63,6 +65,7 @@ PLAN ──▶ APPLY ──▶ UNIFY
 - History for tyre saves — localStorage only, not in scope for Phase 8
 - History entry limit (no cap currently) — consider capping at 20 entries in future
 - History soft launch — button hidden; unhide `#hist-open-btn` when ready
+- PWA + Offline Mode — deferred from v0.3
 
 ### Blockers/Concerns
 
@@ -70,15 +73,16 @@ None.
 
 ### Git State
 
-Last commit: 2445753 (feat(09-guest-mode))
+Last commit: daa27ae (feat(10-onboarding))
 Branch: ux/improvements
-Note: Phase 10 changes staged, commit pending
+Note: Phase 12 Plan 01 changes pending — no new commits yet
 
 ## Session Continuity
 
 Last session: 2026-06-15
-Stopped at: Phase 10 UNIFY complete. Phase 11 plan not yet created.
-Next action: /paul:plan (Phase 11 — PWA + Offline Mode)
+Stopped at: Phase 12 Plan 01 created. UX audit completed; 6 issues identified, first 3 addressed in this plan.
+Next action: Review and approve plan, then run /paul:apply .paul/phases/12-ux-polish/12-01-PLAN.md
+Resume file: .paul/phases/12-ux-polish/12-01-PLAN.md
 
 ---
 *STATE.md — Updated after every significant action*
