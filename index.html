@@ -13,8 +13,8 @@
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
   <link rel="preconnect" href="https://vhvfbsqivfmqcmqhibpq.supabase.co" crossorigin>
-  <!-- Inter — only the 4 weights actually used (was 6) -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <!-- Inter (UI) + Barlow Condensed (data numbers) — only weights used -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet">
   <!-- Font Awesome — non-blocking preload so it never delays first paint -->
   <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
@@ -23,8 +23,8 @@
 
     :root {
       /* Brand colours — never change */
-      --orange:    #e8a84a;
-      --orange-dk: #c8881e;
+      --orange:    #f97316;
+      --orange-dk: #e06500;
       --radius:    20px;
       --radius-sm: 12px;
       --radius-xs: 8px;
@@ -42,9 +42,9 @@
       --text-muted:      rgba(255,255,255,0.35);
       --text-faint:      rgba(255,255,255,0.22);
 
-      --fork-accent:     #e8a84a;
+      --fork-accent:     #f97316;
       --shock-accent:    #3ecfbe;
-      --fork-accent-dk:  #e8a84a;
+      --fork-accent-dk:  #f97316;
       --shock-accent-dk: #3ecfbe;
       --tyre-front:      #7c6af7;
       --tyre-rear:       #4ade80;
@@ -81,9 +81,9 @@
       --text-muted:      rgba(0,0,0,0.45);
       --text-faint:      rgba(0,0,0,0.28);
 
-      --fork-accent:     #c87a00;
+      --fork-accent:     #d95800;
       --shock-accent:    #0d9488;
-      --fork-accent-dk:  #c87a00;
+      --fork-accent-dk:  #d95800;
       --shock-accent-dk: #0d9488;
       --tyre-front:      #6b5ce6;
       --tyre-rear:       #16a34a;
@@ -118,6 +118,8 @@
 
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-variant-numeric: tabular-nums;
+      font-optical-sizing: auto;
       background: var(--bg);
       color: var(--text);
       transition: background 0.25s, color 0.25s;
@@ -154,7 +156,8 @@
 
     /* ── Input panel (orange) ── */
     .input-panel {
-      background: var(--orange);
+      background: var(--surface);
+      border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 24px 20px 20px;
       margin-bottom: 16px;
@@ -165,7 +168,7 @@
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.1em;
-      color: rgba(0,0,0,0.8);
+      color: var(--text-muted);
       margin-bottom: 10px;
     }
 
@@ -179,19 +182,19 @@
     @media (max-width: 460px) { .selectors-grid { grid-template-columns: 1fr; } }
 
     .selector-box {
-      background: rgba(0,0,0,0.75);
-      border: 1.5px solid rgba(0,0,0,0.35);
+      background: var(--surface2);
+      border: 1.5px solid var(--border);
       border-radius: var(--radius-sm);
       padding: 14px 14px 12px;
       transition: border-color 0.15s;
     }
-    .selector-box:has(.cs-wrap.open) { border-color: rgba(255,255,255,0.5); }
+    .selector-box:has(.cs-wrap.open) { border-color: var(--orange); }
     .selector-box .box-label {
       font-size: 0.72rem;
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.09em;
-      color: rgba(255,255,255,0.55);
+      color: var(--text-muted);
       margin-bottom: 7px;
     }
     /* ── Custom dropdown ── */
@@ -208,7 +211,7 @@
       gap: 8px;
       cursor: pointer;
       padding: 0;
-      color: #fff;
+      color: var(--text);
       text-align: left;
     }
     .cs-value {
@@ -218,9 +221,9 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      color: #fff;
+      color: var(--text);
     }
-    .cs-value.placeholder { color: rgba(255,255,255,0.42); }
+    .cs-value.placeholder { color: var(--text-faint); }
     .cs-chevron {
       width: 18px;
       height: 18px;
@@ -229,7 +232,7 @@
       align-items: center;
       justify-content: center;
       transition: transform 0.2s;
-      color: rgba(255,255,255,0.6);
+      color: var(--text-secondary);
     }
     .cs-wrap.open .cs-chevron { transform: rotate(180deg); }
 
@@ -272,7 +275,7 @@
     }
     .cs-option:hover { background: rgba(255,255,255,0.07); color: #fff; }
     .cs-option.selected {
-      background: rgba(232,168,74,0.15);
+      background: rgba(249,115,22,0.15);
       color: var(--orange);
       font-weight: 700;
     }
@@ -282,13 +285,13 @@
       margin-left: auto;
       white-space: nowrap;
     }
-    .cs-option.selected .cs-opt-series { color: rgba(232,168,74,0.5); }
+    .cs-option.selected .cs-opt-series { color: rgba(249,115,22,0.5); }
 
     /* Weight input row */
     .weight-section { }
     .weight-inner {
-      background: rgba(0,0,0,0.75);
-      border: 1.5px solid rgba(0,0,0,0.35);
+      background: var(--surface2);
+      border: 1.5px solid var(--border);
       border-radius: var(--radius-sm);
       padding: 14px 16px;
       display: flex;
@@ -297,22 +300,22 @@
       margin-bottom: 14px;
       transition: border-color 0.15s;
     }
-    .weight-inner:focus-within { border-color: rgba(255,255,255,0.5); }
+    .weight-inner:focus-within { border-color: var(--orange); }
     .weight-inner input {
       flex: 1;
       background: transparent;
       border: none;
       outline: none;
-      color: #fff;
+      color: var(--text);
       font-size: 2rem;
       font-weight: 700;
       letter-spacing: -0.02em;
       width: 0; /* flex will size it */
     }
-    .weight-inner input::placeholder { color: rgba(255,255,255,0.38); }
+    .weight-inner input::placeholder { color: var(--text-faint); }
     .weight-inner .kg-badge {
-      background: rgba(255,255,255,0.12);
-      color: rgba(255,255,255,0.75);
+      background: var(--chip-bg);
+      color: var(--text-secondary);
       font-size: 0.75rem;
       font-weight: 700;
       padding: 5px 10px;
@@ -326,8 +329,8 @@
       padding: 15px;
       border-radius: var(--radius-sm);
       border: none;
-      background: #111;
-      color: #fff;
+      background: var(--orange);
+      color: #111;
       font-size: 0.9rem;
       font-weight: 800;
       letter-spacing: 0.1em;
@@ -337,7 +340,7 @@
       -webkit-tap-highlight-color: transparent;
       touch-action: manipulation;
     }
-    .calc-btn:hover  { background: #000; }
+    .calc-btn:hover  { background: var(--orange-dk); }
     .calc-btn:active { transform: scale(0.98); }
 
     .btn-row {
@@ -350,9 +353,9 @@
     .reset-btn {
       padding: 13px 20px;
       border-radius: var(--radius-xs);
-      border: 2px solid #000;
-      background: #000;
-      color: #fff;
+      border: 1.5px solid var(--border-strong);
+      background: transparent;
+      color: var(--text-secondary);
       font-size: 0.9rem;
       font-weight: 700;
       cursor: pointer;
@@ -361,8 +364,9 @@
       letter-spacing: 0.03em;
     }
     .reset-btn:hover {
-      background: #1a1a1a;
-      border-color: #1a1a1a;
+      background: var(--surface2);
+      border-color: var(--border-strong);
+      color: var(--text);
     }
 
     /* ── Results ── */
@@ -401,8 +405,8 @@
       flex-shrink: 0;
       overflow: hidden;
     }
-    .rc-icon.fork-icon  { background: var(--orange); color: var(--text-dk); }
-    .rc-icon.shock-icon { background: var(--green);  color: var(--text-dk); }
+    .rc-icon.fork-icon  { background: var(--orange);       color: #111; }
+    .rc-icon.shock-icon { background: var(--shock-accent); color: #111; }
 
     /* ── Bike part sprite icons — result cards (36px, white on coloured circles) ── */
     .bike-part-icon {
@@ -475,14 +479,16 @@
       margin: 18px 0 6px;
     }
     .rc-psi .psi-num {
-      font-size: 3.6rem;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 3.8rem;
       font-weight: 800;
-      letter-spacing: -0.04em;
+      letter-spacing: -0.01em;
       line-height: 1;
     }
     .fork-color  { color: var(--fork-accent); }
     .shock-color { color: var(--shock-accent); }
     .rc-psi .psi-unit {
+      font-family: 'Inter', -apple-system, sans-serif;
       font-size: 1.1rem;
       font-weight: 600;
       color: var(--text-muted);
@@ -513,7 +519,6 @@
     .range-bar-fill {
       height: 100%;
       border-radius: 99px;
-      transition: width 0.45s ease;
     }
     .fork-fill  { background: var(--fork-accent); }
     .shock-fill { background: var(--shock-accent); }
@@ -524,7 +529,6 @@
       width: 11px; height: 11px;
       border-radius: 50%;
       border: 2px solid var(--dot-border);
-      transition: left 0.45s ease;
     }
     .fork-dot  { background: var(--fork-accent); }
     .shock-dot { background: var(--shock-accent); }
@@ -597,7 +601,7 @@
     .sag-modal-step:last-of-type { margin-bottom: 0; }
     .sag-modal-num {
       flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%;
-      background: var(--accent); color: #000;
+      background: var(--shock-accent); color: #000;
       font-size: 11px; font-weight: 700;
       display: flex; align-items: center; justify-content: center;
     }
@@ -621,7 +625,7 @@
       border-radius: 8px; padding: 10px 12px; font-size: 15px; font-weight: 600;
       color: var(--text); outline: none;
     }
-    .sag-corrector-input:focus { border-color: var(--accent); }
+    .sag-corrector-input:focus { border-color: var(--shock-accent); }
     .sag-corrector-unit { font-size: 13px; color: var(--text-secondary); flex-shrink: 0; }
     .sag-corrector-result {
       margin-top: 10px; padding: 10px 12px; border-radius: 8px;
@@ -629,7 +633,7 @@
     }
     .sag-corrector-result.show { display: block; }
     .sag-corrector-result.good { background: rgba(74,222,128,0.1); color: #4ade80; }
-    .sag-corrector-result.adjust { background: rgba(232,168,74,0.1); color: var(--orange); }
+    .sag-corrector-result.adjust { background: rgba(249,115,22,0.1); color: var(--orange); }
 
     /* History modal */
     .hist-backdrop {
@@ -670,7 +674,7 @@
       padding: 3px 9px; border-radius: 20px; white-space: nowrap;
     }
     .hist-feel-badge.perfect   { background: rgba(74,222,128,0.15); color: #4ade80; }
-    .hist-feel-badge.too-stiff { background: rgba(232,168,74,0.15); color: var(--fork-accent); }
+    .hist-feel-badge.too-stiff { background: rgba(249,115,22,0.15); color: var(--fork-accent); }
     .hist-feel-badge.too-soft  { background: rgba(62,207,190,0.15); color: var(--shock-accent); }
     .hist-empty {
       text-align: center; padding: 20px 0;
@@ -689,7 +693,7 @@
     }
     .hist-component-btn.selected {
       border-color: var(--fork-accent); color: var(--fork-accent);
-      background: rgba(232,168,74,0.08);
+      background: rgba(249,115,22,0.08);
     }
     .hist-psi-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
     .hist-psi-label { font-size: 13px; color: var(--text-muted); }
@@ -707,7 +711,7 @@
     }
     .hist-feel-btn.selected {
       border-color: var(--fork-accent); color: var(--fork-accent);
-      background: rgba(232,168,74,0.08);
+      background: rgba(249,115,22,0.08);
     }
     .hist-save-btn {
       width: 100%; padding: 13px; background: var(--fork-accent); color: #000;
@@ -772,8 +776,8 @@
     }
     .onb-vis-sag {
       display: inline-flex; align-items: center; gap: 5px;
-      background: rgba(232,168,74,0.1); color: var(--fork-accent);
-      border: 1px solid rgba(232,168,74,0.25);
+      background: rgba(249,115,22,0.1); color: var(--fork-accent);
+      border: 1px solid rgba(249,115,22,0.25);
       border-radius: 6px; padding: 4px 8px; font-size: 11px; font-weight: 600;
       margin-bottom: 8px; opacity: 0; transform: translateY(4px);
       transition: opacity 0.4s, transform 0.4s;
@@ -865,7 +869,7 @@
     }
     .onb-style-btn.selected {
       border-color: var(--fork-accent); color: var(--fork-accent);
-      background: rgba(232,168,74,0.08);
+      background: rgba(249,115,22,0.08);
     }
     .onb-title {
       font-size: 22px; font-weight: 800; color: var(--text); line-height: 1.2;
@@ -877,10 +881,13 @@
       display: flex; gap: 8px; margin-top: 28px; justify-content: center;
     }
     .onb-dot {
-      width: 8px; height: 8px; border-radius: 50%;
-      background: var(--border); transition: background 0.2s, width 0.2s;
+      width: 24px; height: 8px;
+      background: var(--border);
+      transform: scaleX(0.333); transform-origin: center;
+      border-radius: 4px;
+      transition: transform 0.2s ease, background 0.2s ease;
     }
-    .onb-dot.active { background: var(--fork-accent); width: 24px; border-radius: 4px; }
+    .onb-dot.active { background: var(--fork-accent); transform: scaleX(1); }
     .onb-cta {
       padding: 16px 24px 40px; flex-shrink: 0;
     }
@@ -918,15 +925,15 @@
     /* Notes */
     .notes-box {
       background: var(--notes-bg);
+      border: 1px solid var(--border);
       border-radius: var(--radius-xs);
       padding: 14px 16px;
       font-size: 0.85rem;
       color: var(--text-secondary);
       line-height: 1.6;
-      border-left: 3px solid var(--border-strong);
     }
-    .fork-notes  { border-color: var(--fork-accent); }
-    .shock-notes { border-color: var(--shock-accent); }
+    .fork-notes  { border-color: rgba(249,115,22,0.25); }
+    .shock-notes { border-color: rgba(62,207,190,0.25); }
 
     /* Formula pill */
     .formula-pill {
@@ -993,10 +1000,10 @@
       align-items: center;
       gap: 6px;
       padding: 7px 14px;
-      border: 1.5px solid rgba(0,0,0,0.18);
+      border: 1.5px solid var(--border);
       border-radius: var(--radius-xs);
-      background: rgba(0,0,0,0.08);
-      color: rgba(0,0,0,0.6);
+      background: transparent;
+      color: var(--text-secondary);
       font-size: 0.75rem;
       font-weight: 800;
       letter-spacing: 0.04em;
@@ -1005,15 +1012,15 @@
       -webkit-tap-highlight-color: transparent;
       touch-action: manipulation;
       user-select: none;
-      min-height: 36px;
+      min-height: 44px;
       transition: all 0.15s;
     }
-    .weight-pin-btn:hover { background: rgba(0,0,0,0.14); border-color: rgba(0,0,0,0.28); }
+    .weight-pin-btn:hover { background: var(--surface2); border-color: var(--border-strong); color: var(--text); }
     .weight-pin-btn:active { transform: scale(0.96); }
     .weight-pin-btn.pinned {
-      background: #111;
-      border-color: #111;
-      color: #fff;
+      background: rgba(249,115,22,0.1);
+      border-color: var(--orange);
+      color: var(--orange);
     }
     .weight-pin-btn i { font-size: 0.75rem; }
 
@@ -1028,8 +1035,8 @@
       width: 100%;
       padding: 13px;
       border-radius: var(--radius-sm);
-      border: 1.5px dashed rgba(232,168,74,0.4);
-      background: rgba(232,168,74,0.06);
+      border: 1.5px dashed rgba(249,115,22,0.4);
+      background: rgba(249,115,22,0.06);
       color: var(--orange);
       font-size: 0.85rem;
       font-weight: 700;
@@ -1039,8 +1046,8 @@
       transition: all 0.15s;
     }
     .save-trigger-btn:hover {
-      background: rgba(232,168,74,0.12);
-      border-color: rgba(232,168,74,0.7);
+      background: rgba(249,115,22,0.12);
+      border-color: rgba(249,115,22,0.7);
     }
     .save-trigger-btn:disabled {
       opacity: 0.35;
@@ -1116,8 +1123,8 @@
     .saved-count-badge {
       font-size: 0.68rem;
       font-weight: 700;
-      color: rgba(232,168,74,0.7);
-      background: rgba(232,168,74,0.1);
+      color: rgba(249,115,22,0.7);
+      background: rgba(249,115,22,0.1);
       padding: 2px 8px;
       border-radius: 6px;
     }
@@ -1315,8 +1322,8 @@
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      background: rgba(232,168,74,0.12);
-      border: 1.5px solid rgba(232,168,74,0.4);
+      background: rgba(249,115,22,0.12);
+      border: 1.5px solid rgba(249,115,22,0.4);
       border-radius: var(--radius-sm);
       padding: 12px 16px;
     }
@@ -1458,7 +1465,7 @@
       display: flex;
       align-items: center;
       padding: 6px 10px;
-      background: rgba(232,168,74,0.1);
+      background: rgba(249,115,22,0.1);
       border-radius: var(--radius-xs);
       font-size: 0.72rem;
       font-weight: 700;
@@ -1470,8 +1477,8 @@
 
     /* Save strip update mode */
     .save-trigger-btn.update-mode {
-      border-color: rgba(232,168,74,0.7);
-      background: rgba(232,168,74,0.14);
+      border-color: rgba(249,115,22,0.7);
+      background: rgba(249,115,22,0.14);
     }
 
     /* ── Ride style selector ── */
@@ -1484,9 +1491,9 @@
     .rs-btn {
       padding: 10px 6px;
       border-radius: var(--radius-xs);
-      border: 2px solid rgba(0,0,0,0.2);
-      background: rgba(0,0,0,0.1);
-      color: rgba(0,0,0,0.65);
+      border: 1.5px solid var(--border);
+      background: var(--surface2);
+      color: var(--text-secondary);
       font-size: 0.72rem;
       font-weight: 800;
       letter-spacing: 0.04em;
@@ -1500,9 +1507,9 @@
     }
     .rs-btn:active { transform: scale(0.96); }
     .rs-btn.active {
-      background: #000;
-      border-color: #000;
-      color: #fff;
+      background: var(--orange);
+      border-color: var(--orange);
+      color: #111;
     }
     .rs-btn .rs-icon {
       display: block;
@@ -1590,10 +1597,12 @@
       flex-shrink: 0;
     }
     .damp-clicks {
-      font-size: 2rem;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 2.1rem;
       font-weight: 800;
       color: var(--text-lt);
       line-height: 1;
+      letter-spacing: -0.01em;
     }
     .damp-clicks-unit {
       font-size: 0.78rem;
@@ -1627,7 +1636,6 @@
     .damp-bar-fill {
       height: 100%;
       border-radius: 99px;
-      transition: width 0.4s ease;
     }
     .fork-damp .damp-bar-fill { background: var(--fork-accent-dk); }
     .shock-damp .damp-bar-fill { background: var(--shock-accent-dk); }
@@ -2116,7 +2124,7 @@
     text-transform: uppercase;
     letter-spacing: 0.07em;
     color: var(--orange);
-    background: rgba(232,168,74,0.15);
+    background: rgba(249,115,22,0.15);
     border-radius: 4px;
     padding: 2px 6px;
     margin-top: 4px;
@@ -2151,13 +2159,13 @@
     gap: 7px;
   }
   .sc-load-btn:hover {
-    background: rgba(232,168,74,0.08);
+    background: rgba(249,115,22,0.08);
     border-color: var(--orange);
     color: var(--text);
   }
   .saved-card.is-active .sc-load-btn {
     border-color: var(--orange);
-    background: rgba(232,168,74,0.1);
+    background: rgba(249,115,22,0.1);
     color: var(--orange);
   }
 
@@ -2210,7 +2218,7 @@
   }
   .replace-sheet-item:hover, .replace-sheet-item:active {
     border-color: var(--orange);
-    background: rgba(232,168,74,0.08);
+    background: rgba(249,115,22,0.08);
   }
   .replace-sheet-item-name {
     font-size: 0.88rem;
@@ -2403,9 +2411,9 @@
     .tyre-front-icon  { background: rgba(124,106,247,0.45); color: var(--tyre-front); overflow: hidden; }
     .tyre-rear-icon   { background: rgba(74,222,128,0.45);  color: var(--tyre-rear);  overflow: hidden; }
 
-    /* ── Tyre section divider inside orange panel ── */
+    /* ── Tyre section divider inside panel ── */
     .tyre-wheel-section {
-      border-top: 1px solid rgba(0,0,0,0.12);
+      border-top: 1px solid var(--border);
       padding-top: 14px;
       margin-top: 14px;
     }
@@ -2422,7 +2430,7 @@
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      color: rgba(0,0,0,0.75);
+      color: var(--text-secondary);
     }
     .toggle-switch {
       position: relative;
@@ -2436,7 +2444,7 @@
       position: absolute;
       cursor: pointer;
       inset: 0;
-      background: rgba(0,0,0,0.2);
+      background: var(--border-strong);
       border-radius: 24px;
       transition: background 0.2s;
     }
@@ -2451,7 +2459,7 @@
       border-radius: 50%;
       transition: transform 0.2s;
     }
-    .toggle-switch input:checked + .toggle-slider { background: #111; }
+    .toggle-switch input:checked + .toggle-slider { background: var(--orange); }
     .toggle-switch input:checked + .toggle-slider:before { transform: translateX(18px); }
 
     /* ── Wheel size row (4 buttons) ── */
@@ -2464,10 +2472,10 @@
     .mullet-info {
       display: none;
       font-size: 0.75rem;
-      color: rgba(0,0,0,0.65);
+      color: var(--text-secondary);
       margin-top: 8px;
       padding: 6px 10px;
-      background: rgba(0,0,0,0.08);
+      background: var(--surface3);
       border-radius: var(--radius-xs);
       line-height: 1.4;
     }
@@ -2492,7 +2500,7 @@
     }
     .mod-pill.mod-tubeless { background: rgba(62,207,190,0.12); color: var(--shock-accent); }
     .mod-pill.mod-wet      { background: rgba(100,180,255,0.12); color: #64b4ff; }
-    .mod-pill.mod-mixed    { background: rgba(232,168,74,0.12);  color: var(--orange); }
+    .mod-pill.mod-mixed    { background: rgba(249,115,22,0.12);  color: var(--orange); }
 
     /* ── Tyre saved cards ── */
     .tyre-saved-card { background: var(--saved-card-bg); border-radius: var(--radius); padding: 18px; margin-bottom: 12px; border: 1px solid var(--border); transition: border-color 0.15s; }
@@ -2515,6 +2523,25 @@
     .tyre-saved-load-btn:hover { opacity: 0.8; }
     .tyre-saved-del-btn { padding: 9px 12px; border-radius: var(--radius-xs); background: transparent; border: 1.5px solid var(--border-strong); color: var(--text-muted); font-size: 0.8rem; cursor: pointer; font-family: inherit; transition: color 0.15s, border-color 0.15s; }
     .tyre-saved-del-btn:hover { color: #ff6b6b; border-color: #ff6b6b; }
+
+    /* Ride style hint */
+    .ride-style-hint {
+      font-size: 0.72rem;
+      color: var(--text-faint);
+      text-align: center;
+      margin-top: 8px;
+      margin-bottom: 0;
+      line-height: 1.4;
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -2524,7 +2551,7 @@
     <button class="sag-modal-close" onclick="closeSagVerify()"><i class="fa-solid fa-xmark"></i></button>
     <div class="sag-modal-title"><i class="fa-solid fa-ruler-vertical"></i> How to verify your sag</div>
     <div class="sag-modal-step"><span class="sag-modal-num">1</span><span class="sag-modal-step-text">Slide the o-ring (or a zip-tie) all the way down against the seal.</span></div>
-    <div class="sag-modal-step"><span class="sag-modal-num">2</span><span class="sag-modal-step-text">Sit on the bike in your normal riding position — feet on pedals, hands on bars, full gear.</span></div>
+    <div class="sag-modal-step"><span class="sag-modal-num">2</span><span class="sag-modal-step-text">Sit on the bike in your normal riding position: feet on pedals, hands on bars, full gear.</span></div>
     <div class="sag-modal-step"><span class="sag-modal-num">3</span><span class="sag-modal-step-text">Step off carefully without compressing further. Measure where the o-ring stopped.</span></div>
     <div class="sag-modal-target" id="sag-modal-body"></div>
     <div class="sag-corrector">
@@ -2582,7 +2609,7 @@
         </div>
       </div>
       <h2 class="onb-title">Dial in your suspension</h2>
-      <p class="onb-body">RideReady calculates the right air pressure, sag, and damping clicks for your fork and shock — based on your weight and riding style.</p>
+      <p class="onb-body">RideReady calculates the right air pressure, sag, and damping clicks for your fork and shock, based on your weight and riding style.</p>
     </div>
 
     <div class="onb-step" id="onb-step-2">
@@ -2603,7 +2630,7 @@
         </div>
       </div>
       <h2 class="onb-title">Make it yours</h2>
-      <p class="onb-body">Your weight and riding style shape every recommendation. Set them once — the calculator uses them every time.</p>
+      <p class="onb-body">Your weight and riding style shape every recommendation. Set them once. The calculator uses them every time.</p>
     </div>
 
     <div class="onb-step" id="onb-step-3">
@@ -2619,7 +2646,7 @@
         </div>
       </div>
       <h2 class="onb-title">Three inputs, one result</h2>
-      <p class="onb-body">Pick your fork or shock model, enter your weight, and choose your terrain. You get a pressure recommendation and damping starting points — ready for the trail.</p>
+      <p class="onb-body">Pick your fork or shock model, enter your weight, and choose your terrain. You get a pressure recommendation and damping starting points, ready to ride.</p>
     </div>
 
     <div class="onb-step" id="onb-step-4">
@@ -2640,7 +2667,7 @@
         </div>
       </div>
       <h2 class="onb-title">Save and come back</h2>
-      <p class="onb-body" id="onb-step-4-body">Sign up free to save your setups and access them anywhere — even at the trailhead.</p>
+      <p class="onb-body" id="onb-step-4-body">Sign up free to save your setups and access them from your phone, even at the trailhead.</p>
     </div>
 
   </div>
@@ -2748,6 +2775,7 @@
         <span class="rs-icon"><i class="fa-solid fa-flag-checkered"></i></span>Enduro / DH
       </button>
     </div>
+    <p class="ride-style-hint">Sets damping clicks. Not sure? All Mountain is a safe starting point.</p>
 
     <div class="weight-section">
       <div class="panel-row-label">Rider Weight</div>
@@ -2818,7 +2846,7 @@
       <button class="rs-btn" id="ws-mullet" onclick="setWheelSize('mullet')">Mullet</button>
     </div>
     <div class="mullet-info" id="mullet-info">
-      <i class="fa-solid fa-circle-info"></i> <strong>Mullet</strong> = 29" front + 27.5" rear. The larger front wheel rolls over obstacles better and improves stability, while the smaller rear sits lower for quicker handling and a more agile feel — popular in enduro and trail riding.
+      <i class="fa-solid fa-circle-info"></i> <strong>Mullet</strong> = 29" front + 27.5" rear. The larger front wheel rolls over obstacles better and improves stability, while the smaller rear sits lower for quicker handling and a more agile feel, popular in enduro and trail riding.
     </div>
 
     <!-- Front Tyre -->
@@ -3804,24 +3832,25 @@ function toggleSavedWeight() {
 }
 
 function onWeightInput() {
+  const kg = document.getElementById('weight-input').value.trim();
+  // Keep tyre weight in sync — same rider, same weight
+  const tyreW = document.getElementById('tyre-weight-input');
+  if (tyreW) tyreW.value = kg;
   // If a weight is pinned, update it live
   if (localStorage.getItem('suspension_saved_kg')) {
-    const kg = document.getElementById('weight-input').value.trim();
     if (kg && !isNaN(parseFloat(kg))) {
       localStorage.setItem('suspension_saved_kg', kg);
     }
   }
   // Always unpin visual if field cleared
-  if (!document.getElementById('weight-input').value.trim()) {
-    setPinState(false);
-  }
+  if (!kg) setPinState(false);
 }
 
 function setPinState(pinned) {
   const btn   = document.getElementById('weight-pin-btn');
   const label = document.getElementById('weight-pin-label');
   btn.classList.toggle('pinned', pinned);
-  label.textContent = pinned ? 'Weight saved — tap to forget' : 'Remember my weight';
+  label.textContent = pinned ? 'Weight saved · tap to forget' : 'Remember my weight';
 }
 
 
@@ -3913,7 +3942,7 @@ function unloadSave() {
     const btn = card.querySelector('.sc-load-btn');
     if (btn) btn.innerHTML = '<i class="fa-solid fa-arrow-up-from-bracket"></i> Load into calculator';
   });
-  showToast('Setup unloaded — your form values are kept', 'success');
+  showToast('Setup unloaded. Your form values are kept.', 'success');
 }
 
 function updateLoadedSave() {
@@ -3948,7 +3977,7 @@ function unloadTyreSave() {
     const btn = card.querySelector('.sc-load-btn');
     if (btn) btn.innerHTML = '<i class="fa-solid fa-arrow-up-from-bracket"></i> Load into calculator';
   });
-  showToast('Tyre setup unloaded — your form values are kept', 'success');
+  showToast('Tyre setup unloaded. Your form values are kept.', 'success');
 }
 let pendingCalc = null;
 let currentUser = null;
@@ -4057,7 +4086,7 @@ function showToast(msg, type) {
   const msgEl   = document.getElementById('toast-msg');
   const cfg = {
     success: { icon: 'fa-solid fa-circle-check',          color: '#76ca66', bg: 'rgba(62,207,94,0.10)',  border: 'rgba(62,207,94,0.28)'  },
-    warning: { icon: 'fa-solid fa-triangle-exclamation',  color: '#e8a84a', bg: 'rgba(232,168,74,0.10)', border: 'rgba(232,168,74,0.28)' },
+    warning: { icon: 'fa-solid fa-triangle-exclamation',  color: '#f97316', bg: 'rgba(249,115,22,0.10)', border: 'rgba(249,115,22,0.28)' },
     error:   { icon: 'fa-solid fa-circle-xmark',          color: '#ff6b6b', bg: 'rgba(186,0,0,0.12)',    border: 'rgba(186,0,0,0.3)'     },
   };
   const c = cfg[type] || cfg.success;
@@ -4136,7 +4165,7 @@ document.addEventListener('keydown', e => {
 function withTimeout(promise, ms) {
   return Promise.race([
     promise,
-    new Promise((_, reject) => setTimeout(() => reject(new Error('Timed out — check your connection')), ms))
+    new Promise((_, reject) => setTimeout(() => reject(new Error('Timed out. Check your connection.')), ms))
   ]);
 }
 
@@ -4152,7 +4181,7 @@ function showSaveFeedback(msg, isError) {
 }
 
 async function confirmSave() {
-  if (!currentUser) { showSaveFeedback('Not signed in — please log in again.', true); return; }
+  if (!currentUser) { showSaveFeedback('Not signed in. Please log in again.', true); return; }
   if (!pendingCalc)  { showSaveFeedback('Calculate a setup first, then save.', true); return; }
 
   const btn = document.getElementById('save-confirm-btn');
@@ -4649,8 +4678,8 @@ function renderGuestSavedMessage() {
   list.innerHTML = `
     <div class="saved-empty-state">
       <div class="saved-empty-icon"><i class="fa-regular fa-bookmark"></i></div>
-      <div class="saved-empty-title">Log in to save your settings</div>
-      <div class="saved-empty-sub">Create an account or log in to save up to 3 setups and access them anywhere.</div>
+      <div class="saved-empty-title">Log in to save your setups</div>
+      <div class="saved-empty-sub">Create an account to save up to 3 setups and access them from any device.</div>
       <button class="save-trigger-btn" style="margin-top:16px" onclick="openAuthFromGuest('login')">
         <i class="fa-solid fa-right-to-bracket"></i> Log in
       </button>
@@ -4775,6 +4804,8 @@ function applyOnbProfile() {
   const w = parseInt(document.getElementById('onb-weight-input')?.value) || 0;
   if (w >= 30 && w <= 200) {
     document.getElementById('weight-input').value = w;
+    const tyreW = document.getElementById('tyre-weight-input');
+    if (tyreW) tyreW.value = w;
     localStorage.setItem('suspension_saved_kg', w);
   }
   setRideStyle(onbSelectedStyle);
@@ -4787,8 +4818,8 @@ function showOnboarding() {
   const step4body = document.getElementById('onb-step-4-body');
   if (step4body) {
     step4body.textContent = isGuest
-      ? 'Sign up free to save your setups and access them anywhere — even at the trailhead.'
-      : 'Your setups are saved to your account — access them anywhere, even at the trailhead.';
+      ? 'Sign up free to save your setups and access them from your phone, even at the trailhead.'
+      : 'Your setups are saved to your account. Access them from any device, even at the trailhead.';
   }
   // Reset profile form
   const wi = document.getElementById('onb-weight-input');
@@ -4862,7 +4893,7 @@ function renderFixitTab() {
   inner.innerHTML = `
     <div class="fixit-header">
       <h2 class="fixit-title">Suspension Feel</h2>
-      <p class="fixit-desc">Something feels off on the trail? Pick the symptom below — each card shows ordered fixes for your fork or shock, starting with the quickest trailside adjustment.</p>
+      <p class="fixit-desc">Something feels off on the trail? Pick a symptom below. Each card shows ordered fixes for your fork or shock, starting with the quickest trailside adjustment.</p>
     </div>
     <div class="fixit-cards">
       ${SYMPTOM_FIXES.map(s => `
