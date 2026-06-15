@@ -45,14 +45,15 @@ Riders can know exactly what suspension settings to use depending on the terrain
 - ✓ Target sag chip with mm range for forks (% and mm) — Phase 5
 - ✓ Sag verify guide modal (3-step, fork + shock) — Phase 5
 - ✓ PSI corrector in sag modal (live oninput, 1 PSI/1% deviation) — Phase 5
+- ✓ "Suspension Feel" tab — 6 symptom cards with component badges (Fork/Shock/Both) and ordered fixes — Phase 6
 
 ### Active (In Progress)
 
-- [ ] Troubleshoot Tab ("Fix It") — Phase 6 — symptom cards with ordered fixes, references rider's actual numbers if setup loaded
+- [ ] Skills Foundation (CLAUDE.md, suspension-data skill, seo-pages skill) — Phase 7
 
 ### Planned (Next)
 
-- Skills Foundation (CLAUDE.md, suspension-data skill, seo-pages skill) — Phase 7
+- Contextual suspension numbers in Fix It tab (pendingCalc injection) — optional Phase 6 enhancement
 - Setup History & Bracketing Log — v0.3
 - PWA + Offline Mode — v0.3
 - Imperial Units Toggle — v0.3
@@ -98,6 +99,8 @@ Riders can know exactly what suspension settings to use depending on the terrain
 | Fork sag mm uses travel_mm[last] | Max travel value — consistent for all riders | 2026-06-15 | Active |
 | Global modal for sag verify | Single #sag-modal-backdrop, data-* attrs carry per-type content | 2026-06-15 | Active |
 | PSI correction rate: 1 PSI/1% | Roadmap spec; rough but consistent and easy for riders | 2026-06-15 | Active |
+| Fix It title: "Suspension Feel" | More descriptive than "Fix It" — sets context before rider taps | 2026-06-15 | Active |
+| Component badge on symptom cards | Fork/Rear Shock/Both visible in collapsed state — rider knows which part before reading | 2026-06-15 | Active |
 
 ## Success Metrics
 

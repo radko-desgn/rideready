@@ -1559,6 +1559,42 @@
   }
   .nav-btn i { font-size: 1.15rem; }
   .nav-btn.active { color: var(--orange); }
+
+  /* ── Fix It tab ── */
+  .fixit-inner { padding: 20px 16px 100px; }
+  .fixit-header { margin-bottom: 20px; }
+  .fixit-title { font-size: 1.4rem; font-weight: 800; color: var(--text); margin: 0 0 8px; }
+  .fixit-desc { font-size: 0.8rem; color: var(--text-secondary); margin: 0; line-height: 1.5; }
+
+  .fixit-cards { display: flex; flex-direction: column; gap: 10px; }
+  .fixit-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .fixit-card-trigger {
+    width: 100%; display: flex; align-items: center; gap: 12px;
+    padding: 14px 16px; background: none; border: none;
+    color: var(--text); text-align: left; cursor: pointer;
+    -webkit-tap-highlight-color: transparent; font-family: inherit;
+    touch-action: manipulation;
+  }
+  .fixit-card-icon { font-size: 1.05rem; color: var(--orange); flex-shrink: 0; width: 20px; text-align: center; }
+  .fixit-card-meta { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .fixit-card-label { font-size: 0.88rem; font-weight: 700; color: var(--text); }
+  .fixit-card-component { font-size: 0.7rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .fixit-chevron { font-size: 0.75rem; color: var(--text-muted); flex-shrink: 0; transition: transform 0.2s; }
+  .fixit-chevron.open { transform: rotate(90deg); }
+
+  .fixit-card-body { display: none; padding: 0 16px 16px; border-top: 1px solid var(--border); }
+  .fixit-card-body.open { display: block; }
+
+  .fixit-fix-list { margin: 12px 0 0; padding-left: 20px; display: flex; flex-direction: column; gap: 12px; }
+  .fixit-fix-item { }
+  .fixit-fix-title { font-size: 0.85rem; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+  .fixit-fix-detail { font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5; }
+
   .nav-btn-badge {
     position: absolute;
     top: 10px;
@@ -2482,6 +2518,13 @@
     </div>
   </div>
 
+  <!-- Tab: Fix It -->
+  <div id="tab-fixit" class="tab-panel">
+    <div class="fixit-inner" id="fixit-inner">
+      <!-- populated by renderFixitTab() on first open -->
+    </div>
+  </div>
+
   <!-- Tab: Settings -->
   <div id="tab-settings" class="tab-panel">
 
@@ -2541,6 +2584,10 @@
     <i class="fa-regular fa-bookmark"></i>
     <span class="nav-btn-badge" id="saved-nav-badge" style="display:none">0</span>
     <span>Saved</span>
+  </button>
+  <button class="nav-btn" id="nav-fixit" onclick="switchTab('fixit')">
+    <i class="fa-solid fa-screwdriver-wrench"></i>
+    <span>Fix It</span>
   </button>
   <button class="nav-btn" id="nav-settings" onclick="switchTab('settings')">
     <i class="fa-solid fa-gear"></i>
@@ -3446,6 +3493,75 @@ function unloadTyreSave() {
 }
 let pendingCalc = null;
 let currentUser = null;
+
+const SYMPTOM_FIXES = [
+  {
+    id: 'harsh-bumps',
+    label: 'Harsh on small bumps',
+    icon: 'fa-road-spikes',
+    component: 'Fork & Shock',
+    fixes: [
+      { title: 'Reduce high-speed compression (HSC)', detail: 'Back off HSC 2–3 clicks toward open. This lets the damper move faster on small, sharp impacts like roots and rocks.' },
+      { title: 'Drop tyre pressure 2–3 PSI', detail: 'Softer tyres absorb high-frequency chatter before it reaches the suspension — try both ends.' },
+      { title: 'Check your sag', detail: 'Too little sag (suspension sitting too high in the stroke) makes the ride harsh. Aim for 25–30% fork / 28–32% shock.' },
+    ],
+  },
+  {
+    id: 'bottoms-out',
+    label: 'Bottoms out',
+    icon: 'fa-arrow-down-to-line',
+    component: 'Fork & Shock',
+    fixes: [
+      { title: 'Add 5–10 PSI air pressure', detail: 'More air = more mid-stroke and end-stroke support. Add 5 PSI at a time and test before adding more.' },
+      { title: 'Increase low-speed compression (LSC)', detail: 'Add 2–3 clicks of LSC to support big hits — drops, compressions, and pump sections.' },
+      { title: 'Add a volume spacer (if still bottoming)', detail: 'Volume spacers reduce the air chamber so pressure ramps up faster at end of stroke. Workshop job, but the most effective long-term fix.' },
+    ],
+  },
+  {
+    id: 'braking-dive',
+    label: 'Dives under braking',
+    icon: 'fa-hand-back-fist',
+    component: 'Fork',
+    fixes: [
+      { title: 'Increase low-speed compression (LSC)', detail: 'Add 2–3 clicks of LSC. Braking forces are slow and sustained — more LSC resists the dive without harshening the ride over bumps.' },
+      { title: 'Add 5 PSI to the fork', detail: 'More pressure gives the fork more support throughout the stroke, reducing how far it drops under hard braking.' },
+      { title: 'Check the brake arch port (fork-specific)', detail: 'Some forks (e.g. Fox 36, 38) have a dedicated brake dive adjuster on the lower leg — check your user manual.' },
+    ],
+  },
+  {
+    id: 'feels-dead',
+    label: 'Feels dead / packs down',
+    icon: 'fa-gauge-simple-low',
+    component: 'Fork & Shock',
+    fixes: [
+      { title: 'Speed up rebound', detail: 'Turn the rebound adjuster toward fast (fewer clicks / toward open). If rebound is too slow, the suspension can\'t extend between hits and packs down into the stroke.' },
+      { title: 'Reduce low-speed compression (LSC)', detail: 'Loosen LSC 1–2 clicks. Compression that\'s too stiff creates a dead, deflecting feel over repeated small hits.' },
+      { title: 'Check sag isn\'t too deep', detail: 'Excess sag sits you low in the stroke where air spring pressure rises steeply — the suspension runs out of room and goes dead. Reduce pressure by 5 PSI.' },
+    ],
+  },
+  {
+    id: 'rear-kicks',
+    label: 'Rear kicks on square edges',
+    icon: 'fa-person-falling',
+    component: 'Rear Shock',
+    fixes: [
+      { title: 'Slow down rear shock rebound', detail: 'Add 2–3 clicks of rebound damping (toward slow/closed). Fast rebound causes the shock to extend and flick the rear wheel off square-edge hits.' },
+      { title: 'Check rear sag', detail: 'Too little rear sag means the shock is running high in the stroke where it\'s already stiff — the wheel has nowhere to go but up. Aim for 28–32% stroke.' },
+      { title: 'Drop rear tyre pressure 2–3 PSI', detail: 'A softer rear tyre deforms around square edges instead of bouncing off them — quick to try trailside.' },
+    ],
+  },
+  {
+    id: 'vague-front',
+    label: 'Vague front end in corners',
+    icon: 'fa-circle-exclamation',
+    component: 'Fork',
+    fixes: [
+      { title: 'Add 5–10 PSI to the fork', detail: 'More pressure gives the fork more support and mid-stroke stiffness. A vague front end often means the fork is compressing under cornering load and losing steering precision.' },
+      { title: 'Speed up fork rebound', detail: 'Fewer rebound clicks / toward fast. Slow rebound keeps the fork compressed between bumps — it needs to extend and push the tyre into the ground to corner properly.' },
+      { title: 'Check front sag', detail: 'Too much front sag (>30%) lowers the front of the bike, slackens the head angle, and kills cornering confidence. Add 5 PSI and recheck.' },
+    ],
+  },
+];
 let cachedSaves = [];
 
 function findModel(brand, modelName, type) {
@@ -3913,6 +4029,60 @@ function switchTab(tab) {
   document.getElementById('nav-' + tab).classList.add('active');
   window.scrollTo({ top: 0, behavior: 'smooth' });
   if (tab === 'saved' && currentUser) renderSaves();
+  if (tab === 'fixit') renderFixitTab();
+}
+
+let fixitRendered = false;
+function renderFixitTab() {
+  if (fixitRendered) return;
+  fixitRendered = true;
+  const inner = document.getElementById('fixit-inner');
+  inner.innerHTML = `
+    <div class="fixit-header">
+      <h2 class="fixit-title">Suspension Feel</h2>
+      <p class="fixit-desc">Something feels off on the trail? Pick the symptom below — each card shows ordered fixes for your fork or shock, starting with the quickest trailside adjustment.</p>
+    </div>
+    <div class="fixit-cards">
+      ${SYMPTOM_FIXES.map(s => `
+        <div class="fixit-card" id="fixit-card-${s.id}">
+          <button class="fixit-card-trigger" onclick="toggleSymptom('${s.id}')">
+            <i class="fa-solid ${s.icon} fixit-card-icon"></i>
+            <div class="fixit-card-meta">
+              <span class="fixit-card-label">${s.label}</span>
+              <span class="fixit-card-component">${s.component}</span>
+            </div>
+            <i class="fa-solid fa-chevron-right fixit-chevron" id="fixit-chev-${s.id}"></i>
+          </button>
+          <div class="fixit-card-body" id="fixit-body-${s.id}">
+            <ol class="fixit-fix-list">
+              ${s.fixes.map(f => `
+                <li class="fixit-fix-item">
+                  <div class="fixit-fix-title">${f.title}</div>
+                  <div class="fixit-fix-detail">${f.detail}</div>
+                </li>
+              `).join('')}
+            </ol>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+let openSymptomId = null;
+function toggleSymptom(id) {
+  const body = document.getElementById('fixit-body-' + id);
+  const chev = document.getElementById('fixit-chev-' + id);
+  const isOpen = body.classList.contains('open');
+
+  if (openSymptomId && openSymptomId !== id) {
+    document.getElementById('fixit-body-' + openSymptomId).classList.remove('open');
+    document.getElementById('fixit-chev-' + openSymptomId).classList.remove('open');
+  }
+
+  body.classList.toggle('open', !isOpen);
+  chev.classList.toggle('open', !isOpen);
+  openSymptomId = isOpen ? null : id;
 }
 
 function handleDeleteAccount() {
