@@ -49,6 +49,7 @@ Riders can know exactly what suspension settings to use depending on the terrain
 - ✓ CLAUDE.md codebase guide, /suspension-data skill, /seo-pages skill — Phase 7
 - ✓ Ride history log per saved setup (PSI tried + feel rating, Supabase-backed) — Phase 8 (hidden pending soft launch)
 - ✓ Guest mode — try the full calculator without an account; save entry points gated with sign-in prompt — Phase 9
+- ✓ Onboarding overlay — 4-step animated walkthrough with weight/ride-style profile collection, shown once on first use — Phase 10
 
 ### Active (In Progress)
 
@@ -56,7 +57,6 @@ None.
 
 ### Planned (Next)
 
-- Onboarding overlay (3-step, shown once on first use) — Phase 10
 - PWA + Offline Mode — Phase 11
 - Contextual suspension numbers in Fix It tab (pendingCalc injection) — optional Phase 6 enhancement (deferred)
 
@@ -106,6 +106,9 @@ None.
 | Component badge on symptom cards | Fork/Rear Shock/Both visible in collapsed state — rider knows which part before reading | 2026-06-15 | Active |
 | sessionStorage for guest flag | Intentional session scope — guest mode clears on browser close, no persistent anonymous state | 2026-06-15 | Active |
 | Account settings group hidden for guests | Log out and Delete account are meaningless for guests — hide the whole group, not just the user card | 2026-06-15 | Active |
+| Onboarding: 4 steps not 3 | Added weight/ride-style profile collection step — needed so applyOnbProfile() can personalise calculator on first open | 2026-06-15 | Active |
+| Onboarding: animated HTML mockups | CSS-animated real-data mockups (not static icons) build more trust and familiarise rider with the UI before first use | 2026-06-15 | Active |
+| Onboarding: Skip = completeOnboarding | Sets rr_onboarded so skipping also gates future shows — intentional | 2026-06-15 | Active |
 
 ## Success Metrics
 
@@ -127,4 +130,4 @@ None.
 
 ---
 *PROJECT.md — Updated when requirements or context change*
-*Last updated: 2026-06-15 after Phase 9*
+*Last updated: 2026-06-15 after Phase 10*

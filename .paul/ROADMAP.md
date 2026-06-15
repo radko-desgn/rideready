@@ -57,7 +57,7 @@ Plans: 1/1 complete
 |-------|------|--------|
 | 8 | Setup History & Bracketing Log | ✅ Complete |
 | 9 | Guest Mode | ✅ Complete |
-| 10 | Onboarding | Planning |
+| 10 | Onboarding | ✅ Complete |
 | 11 | PWA + Offline Mode | Not started |
 
 > Imperial Units Toggle removed from scope — app uses kg/mm only.

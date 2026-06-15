@@ -718,6 +718,177 @@
       display: none; /* hidden until Phase 8 ships */
     }
 
+    /* Onboarding overlay */
+    .onb-overlay {
+      display: none; position: fixed; inset: 0; z-index: 1100;
+      background: var(--bg); flex-direction: column; align-items: stretch;
+    }
+    .onb-overlay.open { display: flex; }
+    .onb-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 20px; flex-shrink: 0;
+    }
+    .onb-back-btn {
+      background: none; border: none; color: var(--text-muted);
+      font-size: 18px; cursor: pointer; padding: 4px 8px; width: 48px;
+      display: flex; align-items: center;
+    }
+    .onb-back-btn:disabled { opacity: 0; pointer-events: none; }
+    .onb-logo-wrap { display: flex; justify-content: center; padding: 4px 24px 16px; flex-shrink: 0; }
+    .onb-logo-img { height: 140px; object-fit: contain; }
+    .onb-skip {
+      background: none; border: none; color: var(--text-muted);
+      font-size: 13px; cursor: pointer; padding: 4px 0;
+      width: 48px; text-align: right;
+    }
+    .onb-skip:hover { color: var(--text-secondary); }
+    .onb-body-area {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 0 24px; overflow: hidden; min-height: 0;
+    }
+    .onb-steps { width: 100%; max-width: 340px; text-align: center; }
+    .onb-step { display: none; flex-direction: column; align-items: center; gap: 12px; }
+    .onb-step.active { display: flex; }
+    .onb-visual { width: 100%; max-width: 320px; text-align: left; }
+    /* Step 1: result card */
+    .onb-vis-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; padding: 14px 16px;
+    }
+    .onb-vis-tag {
+      font-size: 10px; font-weight: 700; color: var(--text-muted);
+      letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 6px;
+      opacity: 0; transform: translateY(4px); transition: opacity 0.4s, transform 0.4s;
+    }
+    .onb-vis-psi-row { display: flex; align-items: baseline; gap: 5px; margin-bottom: 8px; }
+    .onb-vis-psi-num {
+      font-size: 40px; font-weight: 800; color: var(--fork-accent); line-height: 1;
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .onb-vis-psi-unit {
+      font-size: 15px; font-weight: 700; color: var(--text-muted);
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .onb-vis-sag {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: rgba(232,168,74,0.1); color: var(--fork-accent);
+      border: 1px solid rgba(232,168,74,0.25);
+      border-radius: 6px; padding: 4px 8px; font-size: 11px; font-weight: 600;
+      margin-bottom: 8px; opacity: 0; transform: translateY(4px);
+      transition: opacity 0.4s, transform 0.4s;
+    }
+    .onb-vis-damp { display: flex; gap: 14px; opacity: 0; transition: opacity 0.4s; }
+    .onb-vis-damp span { font-size: 11px; color: var(--text-secondary); }
+    .onb-vis-damp b { color: var(--text); }
+    /* Step 2: input chips flow */
+    .onb-vis-flow {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; padding: 12px 14px;
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .onb-vis-chip {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 8px 12px;
+      font-size: 12px; font-weight: 600; color: var(--text);
+      opacity: 0; transform: translateX(-10px);
+      transition: opacity 0.35s, transform 0.35s;
+    }
+    .onb-vis-chip i { color: var(--fork-accent); width: 12px; text-align: center; }
+    .onb-vis-flow-arrow {
+      text-align: center; font-size: 13px; color: var(--text-muted);
+      opacity: 0; transition: opacity 0.3s; padding: 2px 0;
+    }
+    .onb-vis-result-pill {
+      display: flex; align-items: baseline; justify-content: center; gap: 4px;
+      background: var(--fork-accent); border-radius: 8px; padding: 7px 12px;
+      opacity: 0; transform: translateY(5px);
+      transition: opacity 0.35s, transform 0.35s;
+    }
+    .onb-vis-result-pill .rn { font-size: 20px; font-weight: 800; color: #000; }
+    .onb-vis-result-pill .ru { font-size: 12px; font-weight: 700; color: rgba(0,0,0,0.55); }
+    /* Step 3: save card */
+    .onb-vis-save {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; padding: 14px 16px;
+      opacity: 0; transform: translateY(10px);
+      transition: opacity 0.4s, transform 0.4s;
+    }
+    .onb-vis-save-hdr {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 10px;
+    }
+    .onb-vis-save-name { font-size: 13px; font-weight: 700; color: var(--text); opacity: 0; transition: opacity 0.3s; }
+    .onb-vis-bm { font-size: 13px; color: var(--fork-accent); opacity: 0; transition: opacity 0.3s; }
+    @keyframes onb-bm-pulse {
+      0%   { transform: scale(1); }
+      40%  { transform: scale(1.6); }
+      70%  { transform: scale(0.85); }
+      100% { transform: scale(1); }
+    }
+    .onb-vis-bm.pumping { animation: onb-bm-pulse 0.55s ease forwards; }
+    .onb-vis-save-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 7px 0; border-top: 1px solid var(--border);
+      opacity: 0; transition: opacity 0.35s;
+    }
+    .onb-vis-save-lbl { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .onb-vis-save-val { font-size: 12px; color: var(--text-secondary); font-weight: 600; }
+    .onb-vis-save-psi { color: var(--fork-accent); }
+    /* Step 2: profile form */
+    .onb-profile-form {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; padding: 14px 16px; width: 100%; max-width: 320px;
+    }
+    .onb-form-lbl {
+      font-size: 10px; font-weight: 700; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px;
+    }
+    .onb-weight-row { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+    .onb-weight-input {
+      flex: 1; padding: 10px 14px; background: var(--surface2);
+      border: 1px solid var(--border); border-radius: 10px;
+      color: var(--text); font-size: 22px; font-weight: 700;
+      outline: none; -moz-appearance: textfield; width: 0;
+    }
+    .onb-weight-input::-webkit-outer-spin-button,
+    .onb-weight-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+    .onb-weight-input:focus { border-color: var(--fork-accent); }
+    .onb-weight-unit { font-size: 14px; font-weight: 700; color: var(--text-muted); }
+    .onb-style-row { display: flex; gap: 6px; }
+    .onb-style-btn {
+      flex: 1; padding: 9px 4px; background: var(--surface2);
+      border: 1px solid var(--border); border-radius: 8px;
+      color: var(--text-secondary); font-size: 11px; font-weight: 600;
+      cursor: pointer; text-align: center; transition: border-color 0.15s, color 0.15s, background 0.15s;
+    }
+    .onb-style-btn.selected {
+      border-color: var(--fork-accent); color: var(--fork-accent);
+      background: rgba(232,168,74,0.08);
+    }
+    .onb-title {
+      font-size: 22px; font-weight: 800; color: var(--text); line-height: 1.2;
+    }
+    .onb-body {
+      font-size: 15px; color: var(--text-secondary); line-height: 1.6;
+    }
+    .onb-dots {
+      display: flex; gap: 8px; margin-top: 28px; justify-content: center;
+    }
+    .onb-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--border); transition: background 0.2s, width 0.2s;
+    }
+    .onb-dot.active { background: var(--fork-accent); width: 24px; border-radius: 4px; }
+    .onb-cta {
+      padding: 16px 24px 40px; flex-shrink: 0;
+    }
+    .onb-next-btn {
+      width: 100%; padding: 15px; background: var(--fork-accent); color: #000;
+      border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer;
+    }
+
     /* Unit toggle */
     .unit-toggle {
       display: inline-flex;
@@ -2308,6 +2479,112 @@
       <button class="hist-close" onclick="closeHistoryModal()"><i class="fa-solid fa-xmark"></i></button>
     </div>
     <div id="hist-modal-body"></div>
+  </div>
+</div>
+
+<!-- Onboarding overlay -->
+<div class="onb-overlay" id="onb-overlay">
+  <div class="onb-header">
+    <button class="onb-back-btn" id="onb-back-btn" onclick="prevOnboardingStep()" disabled>
+      <i class="fa-solid fa-chevron-left"></i>
+    </button>
+    <button class="onb-skip" onclick="completeOnboarding()">Skip</button>
+  </div>
+  <div class="onb-logo-wrap">
+    <img src="logo.png" class="onb-logo-img" alt="RideReady">
+  </div>
+  <div class="onb-body-area">
+  <div class="onb-steps">
+
+    <div class="onb-step active" id="onb-step-1">
+      <div class="onb-visual">
+        <div class="onb-vis-card">
+          <div class="onb-vis-tag" id="onb-v1-tag">Fork · RockShox Lyrik</div>
+          <div class="onb-vis-psi-row">
+            <span class="onb-vis-psi-num" id="onb-v1-num">75</span>
+            <span class="onb-vis-psi-unit" id="onb-v1-unit">PSI</span>
+          </div>
+          <div class="onb-vis-sag" id="onb-v1-sag">
+            <i class="fa-solid fa-circle-info" style="font-size:9px"></i> 25–30% · 37–45 mm
+          </div>
+          <div class="onb-vis-damp" id="onb-v1-damp">
+            <span>Rebound <b>8 clicks</b></span>
+            <span>LSC <b>5 clicks</b></span>
+          </div>
+        </div>
+      </div>
+      <h2 class="onb-title">Dial in your suspension</h2>
+      <p class="onb-body">RideReady calculates the right air pressure, sag, and damping clicks for your fork and shock — based on your weight and riding style.</p>
+    </div>
+
+    <div class="onb-step" id="onb-step-2">
+      <div class="onb-visual">
+        <div class="onb-profile-form">
+          <div class="onb-form-lbl">Your weight</div>
+          <div class="onb-weight-row">
+            <input type="number" id="onb-weight-input" class="onb-weight-input"
+                   placeholder="75" min="30" max="200" inputmode="decimal">
+            <span class="onb-weight-unit">kg</span>
+          </div>
+          <div class="onb-form-lbl">Riding style</div>
+          <div class="onb-style-row">
+            <button class="onb-style-btn" data-style="xc_trail" onclick="onbSelectStyle(this)">XC / Trail</button>
+            <button class="onb-style-btn selected" data-style="all_mountain" onclick="onbSelectStyle(this)">All Mountain</button>
+            <button class="onb-style-btn" data-style="enduro_dh" onclick="onbSelectStyle(this)">Enduro / DH</button>
+          </div>
+        </div>
+      </div>
+      <h2 class="onb-title">Make it yours</h2>
+      <p class="onb-body">Your weight and riding style shape every recommendation. Set them once — the calculator uses them every time.</p>
+    </div>
+
+    <div class="onb-step" id="onb-step-3">
+      <div class="onb-visual">
+        <div class="onb-vis-flow">
+          <div class="onb-vis-chip" id="onb-v2-c1"><i class="fa-solid fa-bicycle"></i> RockShox · Lyrik</div>
+          <div class="onb-vis-chip" id="onb-v2-c2"><i class="fa-solid fa-weight-scale"></i> <span id="onb-v2-kg">75</span> kg</div>
+          <div class="onb-vis-chip" id="onb-v2-c3"><i class="fa-solid fa-mountain-sun"></i> <span id="onb-v2-style">All Mountain</span></div>
+          <div class="onb-vis-flow-arrow" id="onb-v2-arrow"><i class="fa-solid fa-arrow-down"></i></div>
+          <div class="onb-vis-result-pill" id="onb-v2-result">
+            <span class="rn">95</span><span class="ru">PSI</span>
+          </div>
+        </div>
+      </div>
+      <h2 class="onb-title">Three inputs, one result</h2>
+      <p class="onb-body">Pick your fork or shock model, enter your weight, and choose your terrain. You get a pressure recommendation and damping starting points — ready for the trail.</p>
+    </div>
+
+    <div class="onb-step" id="onb-step-4">
+      <div class="onb-visual">
+        <div class="onb-vis-save" id="onb-vis-4">
+          <div class="onb-vis-save-hdr">
+            <span class="onb-vis-save-name" id="onb-v3-name">Trail Setup</span>
+            <i class="fa-solid fa-bookmark onb-vis-bm" id="onb-v3-bm"></i>
+          </div>
+          <div class="onb-vis-save-row" id="onb-v3-fork">
+            <span class="onb-vis-save-lbl">Fork</span>
+            <span class="onb-vis-save-val">Lyrik · <span class="onb-vis-save-psi">95 PSI</span></span>
+          </div>
+          <div class="onb-vis-save-row" id="onb-v3-shock">
+            <span class="onb-vis-save-lbl">Shock</span>
+            <span class="onb-vis-save-val">Super Deluxe · <span class="onb-vis-save-psi">185 PSI</span></span>
+          </div>
+        </div>
+      </div>
+      <h2 class="onb-title">Save and come back</h2>
+      <p class="onb-body" id="onb-step-4-body">Sign up free to save your setups and access them anywhere — even at the trailhead.</p>
+    </div>
+
+  </div>
+  <div class="onb-dots">
+    <div class="onb-dot active" id="onb-dot-1"></div>
+    <div class="onb-dot" id="onb-dot-2"></div>
+    <div class="onb-dot" id="onb-dot-3"></div>
+    <div class="onb-dot" id="onb-dot-4"></div>
+  </div>
+  </div><!-- end .onb-body-area -->
+  <div class="onb-cta">
+    <button class="onb-next-btn" id="onb-next-btn" onclick="nextOnboardingStep()">Next</button>
   </div>
 </div>
 
@@ -4232,6 +4509,7 @@ supabaseClient.auth.onAuthStateChange(async (event, session) => {
       if (emailEl)  emailEl.textContent  = currentUser.email;
       if (avatarEl) avatarEl.textContent = (currentUser.email || '?')[0].toUpperCase();
       await renderSaves();
+      showOnboarding();
     } else {
       currentUser = null;
       cachedSaves = [];
@@ -4302,6 +4580,182 @@ function renderGuestSavedMessage() {
         <i class="fa-solid fa-right-to-bracket"></i> Log in
       </button>
     </div>`;
+}
+
+// ── Onboarding ────────────────────────────────────────────────────────
+let onbCurrentStep = 1;
+const ONB_TOTAL = 4;
+let onbAnimTimers = [];
+let onbAnimIntervals = [];
+let onbSelectedStyle = 'all_mountain';
+
+function clearOnbAnimations() {
+  onbAnimTimers.forEach(clearTimeout);
+  onbAnimTimers = [];
+  onbAnimIntervals.forEach(clearInterval);
+  onbAnimIntervals = [];
+}
+
+function onbT(fn, ms) { const id = setTimeout(fn, ms); onbAnimTimers.push(id); }
+function onbI(fn, ms) { const id = setInterval(fn, ms); onbAnimIntervals.push(id); return id; }
+
+function onbSelectStyle(btn) {
+  document.querySelectorAll('.onb-style-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  onbSelectedStyle = btn.dataset.style;
+}
+
+function runOnbAnim1() {
+  const tag  = document.getElementById('onb-v1-tag');
+  const num  = document.getElementById('onb-v1-num');
+  const unit = document.getElementById('onb-v1-unit');
+  const sag  = document.getElementById('onb-v1-sag');
+  const damp = document.getElementById('onb-v1-damp');
+  if (!tag) return;
+  tag.style.opacity = '0';  tag.style.transform = 'translateY(4px)';
+  num.textContent = '75';   num.style.opacity = '0';
+  unit.style.opacity = '0';
+  sag.style.opacity = '0';  sag.style.transform = 'translateY(4px)';
+  damp.style.opacity = '0';
+  onbT(() => { tag.style.opacity = '1'; tag.style.transform = 'translateY(0)'; }, 200);
+  onbT(() => {
+    num.style.opacity = '1'; unit.style.opacity = '1';
+    let v = 75;
+    const iv = onbI(() => { if (v < 95) { num.textContent = ++v; } else { clearInterval(iv); } }, 80);
+  }, 900);
+  onbT(() => { sag.style.opacity = '1'; sag.style.transform = 'translateY(0)'; }, 2900);
+  onbT(() => { damp.style.opacity = '1'; }, 3800);
+  onbT(() => { [tag, num, unit, sag, damp].forEach(el => { el.style.opacity = '0'; }); }, 5500);
+  onbT(runOnbAnim1, 6300);
+}
+
+function runOnbAnim3() {
+  const c1     = document.getElementById('onb-v2-c1');
+  const c2     = document.getElementById('onb-v2-c2');
+  const c3     = document.getElementById('onb-v2-c3');
+  const arrow  = document.getElementById('onb-v2-arrow');
+  const result = document.getElementById('onb-v2-result');
+  if (!c1) return;
+  const enteredKg = parseInt(document.getElementById('onb-weight-input')?.value) || 75;
+  const kgEl = document.getElementById('onb-v2-kg');
+  const styleEl = document.getElementById('onb-v2-style');
+  if (kgEl) kgEl.textContent = enteredKg;
+  if (styleEl) styleEl.textContent = RS_LABELS[onbSelectedStyle] || 'All Mountain';
+  [c1, c2, c3].forEach(el => { el.style.opacity = '0'; el.style.transform = 'translateX(-10px)'; });
+  arrow.style.opacity = '0';
+  result.style.opacity = '0'; result.style.transform = 'translateY(5px)';
+  onbT(() => { c1.style.opacity = '1'; c1.style.transform = 'translateX(0)'; }, 200);
+  onbT(() => { c2.style.opacity = '1'; c2.style.transform = 'translateX(0)'; }, 900);
+  onbT(() => { c3.style.opacity = '1'; c3.style.transform = 'translateX(0)'; }, 1600);
+  onbT(() => { arrow.style.opacity = '1'; }, 2300);
+  onbT(() => { result.style.opacity = '1'; result.style.transform = 'translateY(0)'; }, 2900);
+  onbT(() => { [c1, c2, c3, arrow, result].forEach(el => { el.style.opacity = '0'; }); }, 5500);
+  onbT(runOnbAnim3, 6300);
+}
+
+function runOnbAnim4() {
+  const wrap  = document.getElementById('onb-vis-4');
+  const name  = document.getElementById('onb-v3-name');
+  const bm    = document.getElementById('onb-v3-bm');
+  const fork  = document.getElementById('onb-v3-fork');
+  const shock = document.getElementById('onb-v3-shock');
+  if (!wrap) return;
+  wrap.style.opacity = '0'; wrap.style.transform = 'translateY(10px)';
+  name.style.opacity = '0';
+  bm.style.opacity = '0'; bm.classList.remove('pumping');
+  fork.style.opacity = '0';
+  shock.style.opacity = '0';
+  onbT(() => { wrap.style.opacity = '1'; wrap.style.transform = 'translateY(0)'; }, 200);
+  onbT(() => { name.style.opacity = '1'; }, 900);
+  onbT(() => { fork.style.opacity = '1'; }, 1600);
+  onbT(() => { shock.style.opacity = '1'; }, 2200);
+  onbT(() => { bm.style.opacity = '1'; }, 2900);
+  onbT(() => { bm.classList.add('pumping'); }, 2980);
+  onbT(() => { bm.classList.remove('pumping'); }, 3600);
+  onbT(() => { wrap.style.opacity = '0'; }, 5500);
+  onbT(runOnbAnim4, 6300);
+}
+
+function updateOnbBackBtn() {
+  const btn = document.getElementById('onb-back-btn');
+  if (btn) btn.disabled = onbCurrentStep <= 1;
+}
+
+function prevOnboardingStep() {
+  if (onbCurrentStep <= 1) return;
+  document.getElementById('onb-step-' + onbCurrentStep).classList.remove('active');
+  document.getElementById('onb-dot-' + onbCurrentStep).classList.remove('active');
+  onbCurrentStep--;
+  document.getElementById('onb-step-' + onbCurrentStep).classList.add('active');
+  document.getElementById('onb-dot-' + onbCurrentStep).classList.add('active');
+  document.getElementById('onb-next-btn').textContent = onbCurrentStep === ONB_TOTAL ? 'Done' : 'Next';
+  updateOnbBackBtn();
+  clearOnbAnimations();
+  if (onbCurrentStep === 1) runOnbAnim1();
+  else if (onbCurrentStep === 3) runOnbAnim3();
+  else if (onbCurrentStep === 4) runOnbAnim4();
+}
+
+function applyOnbProfile() {
+  const w = parseInt(document.getElementById('onb-weight-input')?.value) || 0;
+  if (w >= 30 && w <= 200) {
+    document.getElementById('weight-input').value = w;
+    localStorage.setItem('suspension_saved_kg', w);
+  }
+  setRideStyle(onbSelectedStyle);
+}
+
+function showOnboarding() {
+  if (localStorage.getItem('rr_onboarded')) return;
+  onbCurrentStep = 1;
+  onbSelectedStyle = 'all_mountain';
+  const step4body = document.getElementById('onb-step-4-body');
+  if (step4body) {
+    step4body.textContent = isGuest
+      ? 'Sign up free to save your setups and access them anywhere — even at the trailhead.'
+      : 'Your setups are saved to your account — access them anywhere, even at the trailhead.';
+  }
+  // Reset profile form
+  const wi = document.getElementById('onb-weight-input');
+  if (wi) wi.value = '';
+  document.querySelectorAll('.onb-style-btn').forEach(b => {
+    b.classList.toggle('selected', b.dataset.style === 'all_mountain');
+  });
+  document.querySelectorAll('.onb-step').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.onb-dot').forEach(d => d.classList.remove('active'));
+  document.getElementById('onb-step-1').classList.add('active');
+  document.getElementById('onb-dot-1').classList.add('active');
+  document.getElementById('onb-next-btn').textContent = 'Next';
+  document.getElementById('onb-overlay').classList.add('open');
+  updateOnbBackBtn();
+  clearOnbAnimations();
+  runOnbAnim1();
+}
+
+function nextOnboardingStep() {
+  if (onbCurrentStep < ONB_TOTAL) {
+    document.getElementById('onb-step-' + onbCurrentStep).classList.remove('active');
+    document.getElementById('onb-dot-' + onbCurrentStep).classList.remove('active');
+    onbCurrentStep++;
+    document.getElementById('onb-step-' + onbCurrentStep).classList.add('active');
+    document.getElementById('onb-dot-' + onbCurrentStep).classList.add('active');
+    if (onbCurrentStep === ONB_TOTAL) {
+      document.getElementById('onb-next-btn').textContent = 'Done';
+    }
+    updateOnbBackBtn();
+    clearOnbAnimations();
+    if (onbCurrentStep === 3) runOnbAnim3();
+    else if (onbCurrentStep === 4) runOnbAnim4();
+  } else {
+    completeOnboarding();
+  }
+}
+
+function completeOnboarding() {
+  clearOnbAnimations();
+  applyOnbProfile();
+  localStorage.setItem('rr_onboarded', '1');
+  document.getElementById('onb-overlay').classList.remove('open');
 }
 
 function switchTab(tab) {

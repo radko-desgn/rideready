@@ -5,26 +5,26 @@
 See: .paul/PROJECT.md (updated 2026-06-15)
 
 **Core value:** Riders can know exactly what suspension settings to use depending on terrain, weight, and suspension model — and troubleshoot suspension feel on the trail without guessing.
-**Current focus:** v0.3 Retention & Growth — Phase 9 complete, Phase 10 (Onboarding) next
+**Current focus:** v0.3 Retention & Growth — Phase 10 complete, Phase 11 (PWA + Offline Mode) next
 
 ## Current Position
 
 Milestone: v0.3 Retention & Growth
-Phase: 10 of 11 — Onboarding (not yet started)
+Phase: 11 of 11 — PWA + Offline Mode (not yet started)
 Plan: Not started
-Status: Ready to plan Phase 10
-Last activity: 2026-06-15 — Phase 9 (Guest Mode) complete and unified
+Status: Ready to plan Phase 11
+Last activity: 2026-06-15 — Phase 10 (Onboarding) complete and unified
 
 Progress:
-- v0.3 Retention & Growth: [██████░░░░] 60%
-- Phase 9: [██████████] 100% ✅
+- v0.3 Retention & Growth: [████████░░] 80%
+- Phase 10: [██████████] 100% ✅
 
 ## Loop Position
 
 Current loop state:
 ```
 PLAN ──▶ APPLY ──▶ UNIFY
-  ✓        ✓        ✓     [Phase 9 complete — ready for Phase 10]
+  ✓        ✓        ✓     [Phase 10 complete — ready for Phase 11]
 ```
 
 ## Accumulated Context
@@ -52,6 +52,10 @@ PLAN ──▶ APPLY ──▶ UNIFY
 | sessionStorage for guest flag | Phase 9-01 | Guest mode clears on browser close — intentional session scope |
 | Account settings group hidden for guests | Phase 9-01 | Log out + Delete account hidden; Appearance stays |
 | cachedSaves cleared on guest entry | Phase 9-01 | Prevents prior account data leaking into guest view |
+| Onboarding: 4 steps not 3 | Phase 10-01 | Weight/ride-style collection step needed for applyOnbProfile() personalisation |
+| Onboarding: animated HTML mockups | Phase 10-01 | Real-data CSS animations build trust; rider familiar with UI before first use |
+| Onboarding: Skip = completeOnboarding() | Phase 10-01 | Sets rr_onboarded — prevents re-showing after skip |
+| Onboarding animation cycle: 6.3s | Phase 10-01 | Slowed from 4.5s so user can read each element as it appears |
 
 ### Deferred Issues
 
@@ -66,15 +70,15 @@ None.
 
 ### Git State
 
-Last commit: 88df3d8
-Branch: main
-Note: Phase 9 + History (Phase 8) changes not yet committed
+Last commit: 2445753 (feat(09-guest-mode))
+Branch: ux/improvements
+Note: Phase 10 changes staged, commit pending
 
 ## Session Continuity
 
 Last session: 2026-06-15
-Stopped at: Phase 9 complete. Phase 10 plan exists at .paul/phases/10-onboarding/10-01-PLAN.md
-Next action: /paul:apply .paul/phases/10-onboarding/10-01-PLAN.md
+Stopped at: Phase 10 UNIFY complete. Phase 11 plan not yet created.
+Next action: /paul:plan (Phase 11 — PWA + Offline Mode)
 
 ---
 *STATE.md — Updated after every significant action*

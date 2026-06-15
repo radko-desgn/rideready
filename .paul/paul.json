@@ -7,8 +7,8 @@
     "status": "in_progress"
   },
   "phase": {
-    "number": 10,
-    "name": "Onboarding",
+    "number": 11,
+    "name": "PWA + Offline Mode",
     "status": "not_started"
   },
   "loop": {

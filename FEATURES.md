@@ -1,16 +1,16 @@
 # RideReady — What's Built
 
-> Last updated: 2026-06-15  
-> Version: 0.2.0  
-> Status: In Progress (v0.2 Core Differentiators)
+> Last updated: 2026-06-15
+> Version: 0.3.0 (Phase 10 complete)
+> Status: In Progress (v0.3 Retention & Growth)
 
 ## What is RideReady?
 
-RideReady is a mobile-first web app that calculates MTB suspension pressure and damping settings based on your weight, suspension model, and riding style. It takes the guesswork out of setup — instead of sifting through manuals or asking around, you pick your fork and shock, enter your weight, and get the numbers in seconds. Riders can save up to 3 setups to their account and access them anywhere, including on the trail.
+RideReady is a mobile-first MTB suspension calculator that takes your weight, fork or shock model, and riding style and gives you a recommended air pressure, target sag, and damping starting points — no guesswork, no spreadsheets. It covers the five major suspension brands (RockShox, Fox, DVO, Öhlins, Manitou) and is designed to be useful on the trail, not just at a desk. The core idea: riders who know exactly what settings to run ride faster and with more confidence.
 
 ## Who is it for?
 
-Trail, all-mountain, and enduro riders who own quality suspension (RockShox, Fox, DVO, Öhlins, Manitou) and want correct settings without guessing. If you ride regularly, use your phone on the trail, and have ever wondered whether your sag or damping clicks are right — RideReady is built for you.
+MTB riders who ride regularly, own quality suspension, and are done guessing at settings. The target rider is somewhere between trail and enduro — they care about dialing in their bike, they have their phone on the trail, and they want correct numbers fast. RideReady works equally well for riders setting up a new fork for the first time and for experienced riders who want a calibrated starting point after changing their weight or terrain.
 
 ---
 
@@ -18,62 +18,60 @@ Trail, all-mountain, and enduro riders who own quality suspension (RockShox, Fox
 
 ### Suspension Calculator
 
-- Select fork and/or shock by brand and model
-- Enter rider weight → get recommended air pressure (PSI or bar)
-- Ride style selector: XC/Trail, All Mountain, Enduro/DH
-- Damping setup display per model (rebound, compression clicks)
-- PSI/bar toggle
+- Select fork and/or shock by brand and model (RockShox, Fox, DVO, Öhlins, Manitou)
+- Enter rider weight → get recommended air pressure (PSI)
+- Ride style selector: XC / Trail, All Mountain, Enduro / DH
+- Damping starting points (rebound, LSC, HSC clicks) per model and ride style
+- Click adjusters automatically adapt to rider weight
+- Damping settings shift based on selected ride style delta
 
 ### Tyre Pressure
 
 - Tyre pressure calculator with brand and model selection
-- Modifiers: terrain, rider style, tyre insert, mullet setup
+- Pressure modifiers: terrain type, rider style, tyre inserts, mullet setup
 - Front and rear pressures calculated separately
 
 ### Saves & Account
 
-- Email/password account (Supabase Auth)
-- Save up to 3 suspension setups per account, synced to cloud
-- Save up to 3 tyre setups locally
-- Edit saved setups (name, weight, models, ride style)
-- View and delete saves from the Saved tab
-- Email collected on signup for future communications
+- Email + password sign-up and login (Supabase Auth)
+- Google Sign-In
+- Cloud-synced suspension setups — save up to 3 per account
+- View, edit, and delete saved setups
+- Saved weight carried across sessions
+- Tyre pressure saves (stored locally per device)
+- Ride history log per saved setup: PSI tried and feel rating (Perfect / Too stiff / Too soft) — built, hidden pending soft launch
 
 ### Trail-Side Tools
 
-- **Target sag chip** — fork result shows sag as % and mm (e.g. "25–30% · 37–45mm"), shock shows % only
+- **Target sag chip** — fork results show sag as % and mm (e.g. 25–30% · 37–45 mm), shock shows % only
 - **Sag verify guide** — tap `?` on any sag chip to open a 3-step measurement guide for fork or shock
-- **PSI corrector** — inside the verify guide, enter your measured sag to get instant "↑ Add X PSI" or "↓ Remove X PSI" feedback
-- **Suspension Feel tab** — 4th nav tab with 6 expandable symptom cards:
-  - Harsh on small bumps *(Fork & Shock)*
-  - Bottoms out *(Fork & Shock)*
-  - Dives under braking *(Fork)*
-  - Feels dead / packs down *(Fork & Shock)*
-  - Rear kicks on square edges *(Rear Shock)*
-  - Vague front end in corners *(Fork)*
-  
-  Each card shows 3 ordered fixes, starting with the quickest trailside adjustment. Works fully offline.
+- **PSI corrector** — inside the verify guide, enter your measured sag to get instant "↑ Add X PSI" or "↓ Remove X PSI" feedback (~1 PSI per 1% deviation)
+- **Suspension Feel tab** — 6 expandable symptom cards, each with 3 ordered fixes and a component badge (Fork / Rear Shock / Fork & Shock):
+  - Harsh on small bumps
+  - Bottoms out
+  - Dives under braking
+  - Feels dead / packs down
+  - Rear kicks on square edges
+  - Vague front end in corners
 
-### Appearance & UX
+  Quickest trailside fix is always listed first. Works fully offline.
 
-- Light/dark theme toggle
-- Saved weight — remembered across sessions
-- Mobile-first layout optimised for one-handed trail use
+### Access & UX
+
+- **Guest mode** — full calculator access without creating an account; save entry points show a sign-in prompt
+- **Onboarding** — 4-step animated overlay shown once on first use (login or guest entry): intro with live PSI animation → weight + ride style profile setup → chip flow demo → save walkthrough. Profile values written to calculator on completion. Skippable, never shown again.
+- Light / dark theme toggle
+- Mobile-first layout, optimised for one-handed trail use
 
 ---
-
-## In Progress
-
-- **Skills Foundation** (Phase 7) — creating `CLAUDE.md` and Claude Code skills (`suspension-data`, `seo-pages`) so future development sessions start with full context
 
 ---
 
 ## Coming Next
 
-- Contextual fix numbers in Suspension Feel tab — if a setup is loaded, fixes reference actual PSI/clicks from your calculation
-- Setup History & Bracketing Log (v0.3)
-- PWA + Offline Mode (v0.3)
-- Imperial Units Toggle (v0.3)
+- **PWA + Offline Mode** (Phase 11) — installable as a home screen app, key calculator features available without a network connection
+- Contextual suspension numbers in Suspension Feel tab (inject current pendingCalc values into fix suggestions) — deferred from Phase 6
+- Ride history soft launch — unhide the history entry point on save cards
 - SEO Landing Pages per Model (v0.4)
 - Community Setups (v0.4)
 
@@ -84,9 +82,10 @@ Trail, all-mountain, and enduro riders who own quality suspension (RockShox, Fox
 | Layer | Technology |
 |-------|------------|
 | Frontend | Vanilla JS + HTML/CSS — single file (`index.html`) |
-| Auth | Supabase Auth (email/password) |
-| Database | Supabase PostgreSQL (saved setups) |
+| Auth | Supabase Auth (email/password + Google OAuth) |
+| Database | Supabase PostgreSQL (cloud saves, ride history) |
 | Hosting | Vercel (free tier, GitHub deploy) |
+| Icons | Font Awesome (CDN) |
 
 ---
 
