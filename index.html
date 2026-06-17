@@ -6,15 +6,15 @@
   <meta name="description" content="MTB suspension setup calculator — find the right PSI and damping for your fork and shock." />
   <meta name="theme-color" content="#0f0f0f" />
   <title>RideReady</title>
-  <link rel="icon" type="image/png" href="logo.png" />
+  <link rel="icon" type="image/png" href="logo-new.png" />
   <!-- Preconnect to every external host so DNS+TCP is ready before the requests fire -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
   <link rel="preconnect" href="https://vhvfbsqivfmqcmqhibpq.supabase.co" crossorigin>
-  <!-- Inter (UI) + Barlow Condensed (data numbers) — only weights used -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet">
+  <!-- Barlow (UI) + Barlow Condensed (data numbers) — athletic paired family -->
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet">
   <!-- Font Awesome — non-blocking preload so it never delays first paint -->
   <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
@@ -23,8 +23,8 @@
 
     :root {
       /* Brand colours — never change */
-      --orange:    #f97316;
-      --orange-dk: #e06500;
+      --orange:    #e03010;
+      --orange-dk: #c02a0a;
       --radius:    20px;
       --radius-sm: 12px;
       --radius-xs: 8px;
@@ -42,9 +42,9 @@
       --text-muted:      rgba(255,255,255,0.35);
       --text-faint:      rgba(255,255,255,0.22);
 
-      --fork-accent:     #f97316;
+      --fork-accent:     #e03010;
       --shock-accent:    #3ecfbe;
-      --fork-accent-dk:  #f97316;
+      --fork-accent-dk:  #e03010;
       --shock-accent-dk: #3ecfbe;
       --tyre-front:      #7c6af7;
       --tyre-rear:       #4ade80;
@@ -81,9 +81,10 @@
       --text-muted:      rgba(0,0,0,0.45);
       --text-faint:      rgba(0,0,0,0.28);
 
-      --fork-accent:     #d95800;
+      --orange:          #c02a0a;
+      --fork-accent:     #c02a0a;
       --shock-accent:    #0d9488;
-      --fork-accent-dk:  #d95800;
+      --fork-accent-dk:  #c02a0a;
       --shock-accent-dk: #0d9488;
       --tyre-front:      #6b5ce6;
       --tyre-rear:       #16a34a;
@@ -117,9 +118,10 @@
     body.light-theme .cs-opt-series { color: var(--text-faint); }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: 'Barlow', -apple-system, BlinkMacSystemFont, sans-serif;
       font-variant-numeric: tabular-nums;
       font-optical-sizing: auto;
+      overscroll-behavior-y: contain;
       background: var(--bg);
       color: var(--text);
       transition: background 0.25s, color 0.25s;
@@ -169,8 +171,10 @@
       text-transform: uppercase;
       letter-spacing: 0.1em;
       color: var(--text-muted);
+      margin-top: 18px;
       margin-bottom: 10px;
     }
+    .weight-section .panel-row-label { margin-top: 0; }
 
     /* Selector boxes */
     .selectors-grid {
@@ -275,7 +279,7 @@
     }
     .cs-option:hover { background: rgba(255,255,255,0.07); color: #fff; }
     .cs-option.selected {
-      background: rgba(249,115,22,0.15);
+      background: rgba(224,48,16,0.15);
       color: var(--orange);
       font-weight: 700;
     }
@@ -285,7 +289,7 @@
       margin-left: auto;
       white-space: nowrap;
     }
-    .cs-option.selected .cs-opt-series { color: rgba(249,115,22,0.5); }
+    .cs-option.selected .cs-opt-series { color: rgba(224,48,16,0.5); }
 
     /* Weight input row */
     .weight-section { }
@@ -347,6 +351,7 @@
       display: flex;
       gap: 10px;
       align-items: center;
+      margin-top: 18px;
     }
     .btn-row .calc-btn { flex: 1; }
 
@@ -488,7 +493,7 @@
     .fork-color  { color: var(--fork-accent); }
     .shock-color { color: var(--shock-accent); }
     .rc-psi .psi-unit {
-      font-family: 'Inter', -apple-system, sans-serif;
+      font-family: 'Barlow', -apple-system, sans-serif;
       font-size: 1.1rem;
       font-weight: 600;
       color: var(--text-muted);
@@ -633,7 +638,7 @@
     }
     .sag-corrector-result.show { display: block; }
     .sag-corrector-result.good { background: rgba(74,222,128,0.1); color: #4ade80; }
-    .sag-corrector-result.adjust { background: rgba(249,115,22,0.1); color: var(--orange); }
+    .sag-corrector-result.adjust { background: rgba(224,48,16,0.1); color: var(--orange); }
 
     /* History modal */
     .hist-backdrop {
@@ -674,7 +679,7 @@
       padding: 3px 9px; border-radius: 20px; white-space: nowrap;
     }
     .hist-feel-badge.perfect   { background: rgba(74,222,128,0.15); color: #4ade80; }
-    .hist-feel-badge.too-stiff { background: rgba(249,115,22,0.15); color: var(--fork-accent); }
+    .hist-feel-badge.too-stiff { background: rgba(224,48,16,0.15); color: var(--fork-accent); }
     .hist-feel-badge.too-soft  { background: rgba(62,207,190,0.15); color: var(--shock-accent); }
     .hist-empty {
       text-align: center; padding: 20px 0;
@@ -693,7 +698,7 @@
     }
     .hist-component-btn.selected {
       border-color: var(--fork-accent); color: var(--fork-accent);
-      background: rgba(249,115,22,0.08);
+      background: rgba(224,48,16,0.08);
     }
     .hist-psi-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
     .hist-psi-label { font-size: 13px; color: var(--text-muted); }
@@ -711,7 +716,7 @@
     }
     .hist-feel-btn.selected {
       border-color: var(--fork-accent); color: var(--fork-accent);
-      background: rgba(249,115,22,0.08);
+      background: rgba(224,48,16,0.08);
     }
     .hist-save-btn {
       width: 100%; padding: 13px; background: var(--fork-accent); color: #000;
@@ -727,123 +732,266 @@
       display: none; position: fixed; inset: 0; z-index: 1100;
       background: var(--bg); flex-direction: column; align-items: stretch;
     }
-    .onb-overlay.open { display: flex; }
+    .onb-overlay.open { display: flex; animation: onbOverlayIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both; }
+    @keyframes onbOverlayIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
     .onb-header {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 14px 20px; flex-shrink: 0;
+      display: flex; align-items: center;
+      padding: 14px 20px; flex-shrink: 0; gap: 10px;
     }
     .onb-back-btn {
       background: none; border: none; color: var(--text-muted);
-      font-size: 18px; cursor: pointer; padding: 4px 8px; width: 48px;
-      display: flex; align-items: center;
+      font-size: 18px; cursor: pointer; padding: 4px 8px; width: 36px;
+      display: flex; align-items: center; flex-shrink: 0;
     }
     .onb-back-btn:disabled { opacity: 0; pointer-events: none; }
-    .onb-logo-wrap { display: flex; justify-content: center; padding: 4px 24px 16px; flex-shrink: 0; }
-    .onb-logo-img { height: 140px; object-fit: contain; }
+    .onb-logo-wrap { display: none; }
     .onb-skip {
       background: none; border: none; color: var(--text-muted);
       font-size: 13px; cursor: pointer; padding: 4px 0;
-      width: 48px; text-align: right;
+      flex-shrink: 0; text-align: right;
     }
     .onb-skip:hover { color: var(--text-secondary); }
     .onb-body-area {
       flex: 1; display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      padding: 0 24px; overflow: hidden; min-height: 0;
+      align-items: stretch; justify-content: flex-start;
+      padding: 0 20px 8px; overflow: hidden; min-height: 0;
     }
-    .onb-steps { width: 100%; max-width: 340px; text-align: center; }
-    .onb-step { display: none; flex-direction: column; align-items: center; gap: 12px; }
-    .onb-step.active { display: flex; }
-    .onb-visual { width: 100%; max-width: 320px; text-align: left; }
+    .onb-steps { width: 100%; height: 100%; text-align: center; }
+    .onb-step { display: none; flex-direction: column; align-items: stretch; gap: 0; height: 100%; }
+    .onb-step.active {
+      display: flex;
+      animation: onbStepIn 0.38s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    .onb-step[data-onb-dir="back"].active { animation-name: onbStepInBack; }
+    @keyframes onbStepIn {
+      from { opacity: 0; transform: translateX(28px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes onbStepInBack {
+      from { opacity: 0; transform: translateX(-28px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes onbTextIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .onb-cta-title.anim  { animation: onbTextIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both; }
+    .onb-cta-body.anim   { animation: onbTextIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.08s both; }
+    .onb-step.active .onb-profile-form {
+      animation: onbCardSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.05s both;
+    }
+    @keyframes onbCardSlideIn {
+      from { opacity: 0; transform: translateY(18px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes onbInputHint {
+      0%, 100% { border-color: var(--border); box-shadow: none; }
+      50%      { border-color: rgba(224,48,16,0.55); box-shadow: 0 0 0 3px rgba(224,48,16,0.12); }
+    }
+    .onb-step.active .onb-weight-input:not(:focus) {
+      animation: onbInputHint 2s ease 1.2s 2;
+    }
+    .onb-visual { width: 100%; flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    /* App screen mockup */
+    .onb-mock-screen {
+      width: 100%; background: var(--bg);
+      border-radius: 20px; border: 1px solid var(--border-strong);
+      overflow: hidden; box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+    }
+    .onb-mock-bar {
+      display: flex; align-items: center; justify-content: center;
+      padding: 11px 16px; border-bottom: 1px solid var(--border);
+    }
+    .onb-mock-bar-title { font-size: 13px; font-weight: 700; color: var(--text); letter-spacing: 0.01em; }
+    .onb-mock-body { padding: 14px 16px; }
     /* Step 1: result card */
-    .onb-vis-card {
+    .onb-mock-result-card {
       background: var(--surface); border: 1px solid var(--border);
-      border-radius: 14px; padding: 14px 16px;
+      border-radius: 14px; padding: 16px 18px;
     }
-    .onb-vis-tag {
+    .onb-mock-tag {
       font-size: 10px; font-weight: 700; color: var(--text-muted);
-      letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 6px;
-      opacity: 0; transform: translateY(4px); transition: opacity 0.4s, transform 0.4s;
+      letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 8px;
+      opacity: 0; transform: translateY(8px);
+      transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .onb-vis-psi-row { display: flex; align-items: baseline; gap: 5px; margin-bottom: 8px; }
-    .onb-vis-psi-num {
-      font-size: 40px; font-weight: 800; color: var(--fork-accent); line-height: 1;
-      opacity: 0; transition: opacity 0.3s;
+    .onb-mock-psi-row { display: flex; align-items: baseline; gap: 6px; margin-bottom: 10px; }
+    .onb-mock-psi-num {
+      font-size: 54px; font-weight: 800; color: var(--fork-accent); line-height: 1;
+      opacity: 0; transition: opacity 0.3s, filter 0.1s;
     }
-    .onb-vis-psi-unit {
-      font-size: 15px; font-weight: 700; color: var(--text-muted);
-      opacity: 0; transition: opacity 0.3s;
+    .onb-mock-psi-unit {
+      font-size: 18px; font-weight: 700; color: var(--text-muted);
+      opacity: 0; transition: opacity 0.3s 0.12s;
     }
-    .onb-vis-sag {
+    .onb-mock-sag-badge {
       display: inline-flex; align-items: center; gap: 5px;
-      background: rgba(249,115,22,0.1); color: var(--fork-accent);
-      border: 1px solid rgba(249,115,22,0.25);
-      border-radius: 6px; padding: 4px 8px; font-size: 11px; font-weight: 600;
-      margin-bottom: 8px; opacity: 0; transform: translateY(4px);
-      transition: opacity 0.4s, transform 0.4s;
+      background: rgba(224,48,16,0.1); color: var(--fork-accent);
+      border: 1px solid rgba(224,48,16,0.25);
+      border-radius: 6px; padding: 4px 10px; font-size: 11px; font-weight: 600;
+      margin-bottom: 10px;
+      opacity: 0; transform: translateY(6px) scale(0.9);
+      transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .onb-vis-damp { display: flex; gap: 14px; opacity: 0; transition: opacity 0.4s; }
-    .onb-vis-damp span { font-size: 11px; color: var(--text-secondary); }
-    .onb-vis-damp b { color: var(--text); }
-    /* Step 2: input chips flow */
-    .onb-vis-flow {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 14px; padding: 12px 14px;
-      display: flex; flex-direction: column; gap: 6px;
+    .onb-mock-damp-row {
+      display: flex; gap: 18px;
+      opacity: 0; transform: translateY(6px);
+      transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .onb-vis-chip {
-      display: flex; align-items: center; gap: 8px;
+    .onb-mock-damp-item { display: flex; flex-direction: column; gap: 2px; }
+    .onb-mock-damp-lbl { font-size: 9px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .onb-mock-damp-val { font-size: 13px; font-weight: 700; color: var(--text); }
+    /* Step 3: calculator flow */
+    .onb-mock-selector {
+      display: flex; align-items: center;
       background: var(--surface2); border: 1px solid var(--border);
-      border-radius: 8px; padding: 8px 12px;
+      border-radius: 10px; padding: 10px 12px; margin-bottom: 8px;
+      opacity: 0; transform: translateY(8px);
+      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s;
+    }
+    .onb-mock-selector.filled { border-color: rgba(224,48,16,0.4); }
+    .onb-mock-sel-lbl { font-size: 9px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; width: 44px; flex-shrink: 0; }
+    .onb-mock-sel-val { font-size: 13px; font-weight: 600; color: var(--text); flex: 1; }
+    .onb-mock-sel-val.placeholder { color: var(--text-muted); font-weight: 400; font-size: 12px; }
+    .onb-mock-sel-chev { font-size: 9px; color: var(--text-muted); flex-shrink: 0; }
+    .onb-mock-weight-chip {
+      display: flex; align-items: center; gap: 6px;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 8px 12px; margin-bottom: 8px;
       font-size: 12px; font-weight: 600; color: var(--text);
-      opacity: 0; transform: translateX(-10px);
-      transition: opacity 0.35s, transform 0.35s;
+      opacity: 0; transform: translateY(8px);
+      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .onb-vis-chip i { color: var(--fork-accent); width: 12px; text-align: center; }
-    .onb-vis-flow-arrow {
-      text-align: center; font-size: 13px; color: var(--text-muted);
-      opacity: 0; transition: opacity 0.3s; padding: 2px 0;
+    .onb-mock-weight-chip i { color: var(--fork-accent); font-size: 11px; }
+    .onb-mock-calc-btn {
+      width: 100%; padding: 11px; background: var(--fork-accent); color: #fff;
+      border: none; border-radius: 10px; font-size: 13px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; gap: 7px;
+      margin-bottom: 10px;
+      opacity: 0; transform: translateY(8px);
+      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: default;
     }
-    .onb-vis-result-pill {
-      display: flex; align-items: baseline; justify-content: center; gap: 4px;
-      background: var(--fork-accent); border-radius: 8px; padding: 7px 12px;
-      opacity: 0; transform: translateY(5px);
-      transition: opacity 0.35s, transform 0.35s;
+    .onb-mock-result-reveal {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 12px 14px;
+      display: flex; align-items: baseline; gap: 6px;
+      opacity: 0; transform: translateY(10px) scale(0.94);
+      transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .onb-vis-result-pill .rn { font-size: 20px; font-weight: 800; color: #000; }
-    .onb-vis-result-pill .ru { font-size: 12px; font-weight: 700; color: rgba(0,0,0,0.55); }
-    /* Step 3: save card */
-    .onb-vis-save {
+    .onb-mock-result-num { font-size: 30px; font-weight: 800; color: var(--fork-accent); line-height: 1; }
+    .onb-mock-result-unit { font-size: 13px; font-weight: 700; color: var(--text-muted); }
+    /* Step 4: saves screen */
+    .onb-mock-save-card {
       background: var(--surface); border: 1px solid var(--border);
       border-radius: 14px; padding: 14px 16px;
-      opacity: 0; transform: translateY(10px);
-      transition: opacity 0.4s, transform 0.4s;
+      opacity: 0; transform: translateY(12px) scale(0.97);
+      transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .onb-vis-save-hdr {
+    .onb-mock-save-hdr {
       display: flex; justify-content: space-between; align-items: center;
       margin-bottom: 10px;
     }
-    .onb-vis-save-name { font-size: 13px; font-weight: 700; color: var(--text); opacity: 0; transition: opacity 0.3s; }
-    .onb-vis-bm { font-size: 13px; color: var(--fork-accent); opacity: 0; transition: opacity 0.3s; }
+    .onb-mock-save-name {
+      font-size: 13px; font-weight: 700; color: var(--text);
+      opacity: 0; transform: translateY(5px);
+      transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .onb-mock-bm { font-size: 13px; color: var(--fork-accent); opacity: 0; transition: opacity 0.4s; }
     @keyframes onb-bm-pulse {
-      0%   { transform: scale(1); }
-      40%  { transform: scale(1.6); }
-      70%  { transform: scale(0.85); }
-      100% { transform: scale(1); }
+      0%   { transform: scale(1) rotate(0deg); }
+      20%  { transform: scale(1.65) rotate(-18deg); }
+      48%  { transform: scale(0.82) rotate(6deg); }
+      68%  { transform: scale(1.12) rotate(-3deg); }
+      84%  { transform: scale(0.96); }
+      100% { transform: scale(1) rotate(0deg); }
     }
-    .onb-vis-bm.pumping { animation: onb-bm-pulse 0.55s ease forwards; }
-    .onb-vis-save-row {
+    .onb-mock-bm.pumping { animation: onb-bm-pulse 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .onb-mock-save-row {
       display: flex; justify-content: space-between; align-items: center;
-      padding: 7px 0; border-top: 1px solid var(--border);
-      opacity: 0; transition: opacity 0.35s;
+      padding: 8px 0; border-top: 1px solid var(--border);
+      opacity: 0; transform: translateY(5px);
+      transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .onb-vis-save-lbl { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
-    .onb-vis-save-val { font-size: 12px; color: var(--text-secondary); font-weight: 600; }
-    .onb-vis-save-psi { color: var(--fork-accent); }
-    /* Step 2: profile form */
+    .onb-mock-save-lbl { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .onb-mock-save-val { font-size: 12px; font-weight: 600; color: var(--text-secondary); }
+    .onb-mock-save-psi { color: var(--fork-accent); }
+    /* Step 2: tyre mockup */
+    .onb-mock-bar-tabs { display: flex; gap: 16px; }
+    .onb-mock-bar-tab {
+      font-size: 12px; font-weight: 600; color: var(--text-muted);
+      padding-bottom: 3px; border-bottom: 2px solid transparent; cursor: default;
+    }
+    .onb-mock-bar-tab.active { color: var(--text); border-bottom-color: var(--fork-accent); }
+    .onb-mock-terrain-row {
+      display: flex; gap: 6px; margin-bottom: 10px;
+      opacity: 0; transform: translateY(8px);
+      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .onb-mock-terrain-chip {
+      flex: 1; padding: 8px 4px; text-align: center;
+      font-size: 11px; font-weight: 600; color: var(--text-secondary);
+      background: var(--surface2); border: 1px solid var(--border); border-radius: 7px;
+      transition: border-color 0.25s, color 0.25s, background 0.25s;
+    }
+    .onb-mock-terrain-chip.selected {
+      border-color: var(--fork-accent); color: var(--fork-accent);
+      background: rgba(224,48,16,0.08);
+    }
+    .onb-mock-tyre-result {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; padding: 10px 16px;
+      opacity: 0; transform: translateY(10px) scale(0.96);
+      transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .onb-mock-tyre-row {
+      display: flex; justify-content: space-between; align-items: center; padding: 7px 0;
+    }
+    .onb-mock-tyre-row + .onb-mock-tyre-row { border-top: 1px solid var(--border); }
+    .onb-mock-tyre-lbl {
+      font-size: 11px; font-weight: 700; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .onb-mock-tyre-psi { font-size: 30px; font-weight: 800; color: var(--fork-accent); line-height: 1; }
+    .onb-mock-tyre-unit { font-size: 13px; font-weight: 700; color: var(--text-muted); margin-left: 3px; }
+    /* Step 4: feel/fixit mockup */
+    .onb-mock-symptom {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 11px 14px; margin-bottom: 7px;
+      opacity: 0; transform: translateY(8px);
+      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .onb-mock-symptom-hdr { display: flex; align-items: center; gap: 9px; }
+    .onb-mock-symptom-icon { font-size: 13px; color: var(--fork-accent); flex-shrink: 0; }
+    .onb-mock-symptom-lbl { font-size: 12px; font-weight: 700; color: var(--text); flex: 1; }
+    .onb-mock-symptom-badge {
+      font-size: 9px; font-weight: 700; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.04em;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 4px; padding: 2px 6px; flex-shrink: 0;
+    }
+    .onb-mock-fixes {
+      overflow: hidden; max-height: 0;
+      transition: max-height 0.45s cubic-bezier(0.16, 1, 0.3, 1), margin-top 0.3s;
+    }
+    .onb-mock-symptom.expanded .onb-mock-fixes { max-height: 110px; margin-top: 10px; }
+    .onb-mock-fix {
+      font-size: 11px; font-weight: 600; color: var(--text-secondary);
+      display: flex; align-items: center; gap: 7px; padding: 3px 0;
+      opacity: 0; transform: translateY(4px);
+      transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .onb-mock-symptom.expanded .onb-mock-fix { opacity: 1; transform: translateY(0); }
+    .onb-mock-symptom.expanded .onb-mock-fixes .onb-mock-fix:nth-child(2) { transition-delay: 0.1s; }
+    .onb-mock-symptom.expanded .onb-mock-fixes .onb-mock-fix:nth-child(3) { transition-delay: 0.2s; }
+    .onb-mock-fix i { color: var(--fork-accent); width: 11px; text-align: center; font-size: 10px; }
+    /* Profile form (kept for potential use but hidden in onboarding) */
     .onb-profile-form {
       background: var(--surface); border: 1px solid var(--border);
-      border-radius: 14px; padding: 14px 16px; width: 100%; max-width: 320px;
+      border-radius: 16px; padding: 18px 20px; width: 100%;
     }
     .onb-form-lbl {
       font-size: 10px; font-weight: 700; color: var(--text-muted);
@@ -869,31 +1017,45 @@
     }
     .onb-style-btn.selected {
       border-color: var(--fork-accent); color: var(--fork-accent);
-      background: rgba(249,115,22,0.08);
+      background: rgba(224,48,16,0.08);
     }
     .onb-title {
-      font-size: 22px; font-weight: 800; color: var(--text); line-height: 1.2;
+      font-size: 20px; font-weight: 800; color: var(--text); line-height: 1.2; margin: 0 0 5px;
     }
     .onb-body {
-      font-size: 15px; color: var(--text-secondary); line-height: 1.6;
+      font-size: 14px; color: var(--text-secondary); line-height: 1.55; margin: 0;
     }
     .onb-dots {
-      display: flex; gap: 8px; margin-top: 28px; justify-content: center;
+      flex: 1; display: flex; align-items: center; gap: 5px; margin: 0;
     }
     .onb-dot {
-      width: 24px; height: 8px;
-      background: var(--border);
-      transform: scaleX(0.333); transform-origin: center;
-      border-radius: 4px;
-      transition: transform 0.2s ease, background 0.2s ease;
+      flex: 1; height: 3px;
+      background: var(--border-strong);
+      border-radius: 2px;
+      transition: background 0.25s ease;
     }
-    .onb-dot.active { background: var(--fork-accent); transform: scaleX(1); }
+    .onb-dot.active { background: var(--fork-accent); }
     .onb-cta {
-      padding: 16px 24px 40px; flex-shrink: 0;
+      padding: 10px 20px calc(env(safe-area-inset-bottom, 0px) + 28px); flex-shrink: 0;
     }
+    .onb-cta-text { margin-bottom: 12px; text-align: center; }
     .onb-next-btn {
-      width: 100%; padding: 15px; background: var(--fork-accent); color: #000;
+      width: 100%; padding: 15px; background: var(--fork-accent); color: #fff;
       border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer;
+      transition: transform 0.1s ease, background 0.15s;
+    }
+    .onb-next-btn:active { transform: scale(0.97); }
+    @media (prefers-reduced-motion: reduce) {
+      .onb-overlay.open { animation: none; }
+      .onb-step.active { animation: none; }
+      .onb-cta-title.anim, .onb-cta-body.anim { animation: none; }
+      .onb-step.active .onb-profile-form,
+      .onb-step.active .onb-weight-input { animation: none; }
+      .onb-mock-tag, .onb-mock-psi-num, .onb-mock-psi-unit,
+      .onb-mock-sag-badge, .onb-mock-damp-row, .onb-mock-selector,
+      .onb-mock-terrain-row, .onb-mock-terrain-chip, .onb-mock-tyre-result,
+      .onb-mock-save-card, .onb-mock-save-name, .onb-mock-save-row,
+      .onb-mock-symptom, .onb-mock-fixes, .onb-mock-fix { transition: none; }
     }
 
     /* Unit toggle */
@@ -932,7 +1094,7 @@
       color: var(--text-secondary);
       line-height: 1.6;
     }
-    .fork-notes  { border-color: rgba(249,115,22,0.25); }
+    .fork-notes  { border-color: rgba(224,48,16,0.25); }
     .shock-notes { border-color: rgba(62,207,190,0.25); }
 
     /* Formula pill */
@@ -989,40 +1151,29 @@
 
 
     /* ── Saved weight pin ── */
-    .weight-pin-wrap {
-      display: flex;
-      justify-content: flex-end;
-      margin-top: -6px;
-      margin-bottom: 14px;
-    }
     .weight-pin-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 7px 14px;
-      border: 1.5px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      background: none; border: none;
+      color: var(--text-muted);
+      padding: 6px 8px;
       border-radius: var(--radius-xs);
-      background: transparent;
-      color: var(--text-secondary);
-      font-size: 0.75rem;
-      font-weight: 800;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
       touch-action: manipulation;
       user-select: none;
-      min-height: 44px;
-      transition: all 0.15s;
+      min-width: 36px; min-height: 36px;
+      flex-shrink: 0;
+      transition: color 0.15s, background 0.15s;
     }
-    .weight-pin-btn:hover { background: var(--surface2); border-color: var(--border-strong); color: var(--text); }
-    .weight-pin-btn:active { transform: scale(0.96); }
-    .weight-pin-btn.pinned {
-      background: rgba(249,115,22,0.1);
-      border-color: var(--orange);
-      color: var(--orange);
+    .weight-pin-btn:hover { color: var(--text); background: rgba(255,255,255,0.06); }
+    .weight-pin-btn:active { transform: scale(0.93); }
+    .weight-pin-btn.pinned { color: var(--orange); }
+    .weight-pin-btn i { font-size: 0.9rem; }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0;
+      margin: -1px; overflow: hidden; clip: rect(0,0,0,0);
+      white-space: nowrap; border: 0;
     }
-    .weight-pin-btn i { font-size: 0.75rem; }
 
     /* ── Save strip ── */
     .save-strip {
@@ -1035,8 +1186,8 @@
       width: 100%;
       padding: 13px;
       border-radius: var(--radius-sm);
-      border: 1.5px dashed rgba(249,115,22,0.4);
-      background: rgba(249,115,22,0.06);
+      border: 1.5px dashed rgba(224,48,16,0.4);
+      background: rgba(224,48,16,0.06);
       color: var(--orange);
       font-size: 0.85rem;
       font-weight: 700;
@@ -1046,8 +1197,8 @@
       transition: all 0.15s;
     }
     .save-trigger-btn:hover {
-      background: rgba(249,115,22,0.12);
-      border-color: rgba(249,115,22,0.7);
+      background: rgba(224,48,16,0.12);
+      border-color: rgba(224,48,16,0.7);
     }
     .save-trigger-btn:disabled {
       opacity: 0.35;
@@ -1123,8 +1274,8 @@
     .saved-count-badge {
       font-size: 0.68rem;
       font-weight: 700;
-      color: rgba(249,115,22,0.7);
-      background: rgba(249,115,22,0.1);
+      color: rgba(224,48,16,0.7);
+      background: rgba(224,48,16,0.1);
       padding: 2px 8px;
       border-radius: 6px;
     }
@@ -1322,8 +1473,8 @@
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      background: rgba(249,115,22,0.12);
-      border: 1.5px solid rgba(249,115,22,0.4);
+      background: rgba(224,48,16,0.12);
+      border: 1.5px solid rgba(224,48,16,0.4);
       border-radius: var(--radius-sm);
       padding: 12px 16px;
     }
@@ -1465,7 +1616,7 @@
       display: flex;
       align-items: center;
       padding: 6px 10px;
-      background: rgba(249,115,22,0.1);
+      background: rgba(224,48,16,0.1);
       border-radius: var(--radius-xs);
       font-size: 0.72rem;
       font-weight: 700;
@@ -1477,8 +1628,8 @@
 
     /* Save strip update mode */
     .save-trigger-btn.update-mode {
-      border-color: rgba(249,115,22,0.7);
-      background: rgba(249,115,22,0.14);
+      border-color: rgba(224,48,16,0.7);
+      background: rgba(224,48,16,0.14);
     }
 
     /* ── Ride style selector ── */
@@ -1516,6 +1667,18 @@
       font-size: 1rem;
       margin-bottom: 4px;
     }
+    .rs-hint {
+      display: block;
+      font-size: 0.6rem;
+      font-weight: 600;
+      text-transform: none;
+      letter-spacing: 0;
+      color: var(--text-muted);
+      margin-top: 3px;
+      opacity: 0.8;
+      line-height: 1.3;
+    }
+    .rs-btn.active .rs-hint { color: rgba(17,17,17,0.6); opacity: 1; }
 
     /* ── Damping section in result card ── */
     .damping-section {
@@ -1848,6 +2011,7 @@
   }
   .nav-btn i { font-size: 1.15rem; }
   .nav-btn.active { color: var(--orange); }
+  #nav-fixit span { font-size: 0.52rem; letter-spacing: 0.04em; line-height: 1.25; }
 
   /* ── Fix It tab ── */
   .fixit-inner { padding: 20px 16px 100px; }
@@ -1872,8 +2036,8 @@
   .fixit-card-icon { font-size: 1.05rem; color: var(--orange); flex-shrink: 0; width: 20px; text-align: center; }
   .fixit-card-meta { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
   .fixit-card-label { font-size: 0.88rem; font-weight: 700; color: var(--text); }
-  .fixit-card-component { font-size: 0.7rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
-  .fixit-chevron { font-size: 0.75rem; color: var(--text-muted); flex-shrink: 0; transition: transform 0.2s; }
+  .fixit-card-component { font-size: 0.7rem; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; }
+  .fixit-chevron { font-size: 0.75rem; color: var(--text-secondary); flex-shrink: 0; transition: transform 0.2s; }
   .fixit-chevron.open { transform: rotate(90deg); }
 
   .fixit-card-body { display: none; padding: 0 16px 16px; border-top: 1px solid var(--border); }
@@ -1881,8 +2045,11 @@
 
   .fixit-fix-list { margin: 12px 0 0; padding-left: 20px; display: flex; flex-direction: column; gap: 12px; }
   .fixit-fix-item { }
-  .fixit-fix-title { font-size: 0.85rem; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+  .fixit-fix-title { font-size: 0.85rem; font-weight: 700; color: var(--text); margin-bottom: 3px; display: flex; align-items: baseline; gap: 6px; }
+  .fixit-fix-icon { font-size: 0.72rem; color: var(--orange); flex-shrink: 0; width: 13px; text-align: center; }
   .fixit-fix-detail { font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5; }
+  body.light-theme .fixit-card-icon,
+  body.light-theme .fixit-fix-icon { color: var(--orange); }
 
   .nav-btn-badge {
     position: absolute;
@@ -2124,7 +2291,7 @@
     text-transform: uppercase;
     letter-spacing: 0.07em;
     color: var(--orange);
-    background: rgba(249,115,22,0.15);
+    background: rgba(224,48,16,0.15);
     border-radius: 4px;
     padding: 2px 6px;
     margin-top: 4px;
@@ -2159,13 +2326,13 @@
     gap: 7px;
   }
   .sc-load-btn:hover {
-    background: rgba(249,115,22,0.08);
+    background: rgba(224,48,16,0.08);
     border-color: var(--orange);
     color: var(--text);
   }
   .saved-card.is-active .sc-load-btn {
     border-color: var(--orange);
-    background: rgba(249,115,22,0.1);
+    background: rgba(224,48,16,0.1);
     color: var(--orange);
   }
 
@@ -2218,7 +2385,7 @@
   }
   .replace-sheet-item:hover, .replace-sheet-item:active {
     border-color: var(--orange);
-    background: rgba(249,115,22,0.08);
+    background: rgba(224,48,16,0.08);
   }
   .replace-sheet-item-name {
     font-size: 0.88rem;
@@ -2500,7 +2667,7 @@
     }
     .mod-pill.mod-tubeless { background: rgba(62,207,190,0.12); color: var(--shock-accent); }
     .mod-pill.mod-wet      { background: rgba(100,180,255,0.12); color: #64b4ff; }
-    .mod-pill.mod-mixed    { background: rgba(249,115,22,0.12);  color: var(--orange); }
+    .mod-pill.mod-mixed    { background: rgba(224,48,16,0.12);  color: var(--orange); }
 
     /* ── Tyre saved cards ── */
     .tyre-saved-card { background: var(--saved-card-bg); border-radius: var(--radius); padding: 18px; margin-bottom: 12px; border: 1px solid var(--border); transition: border-color 0.15s; }
@@ -2583,102 +2750,147 @@
     <button class="onb-back-btn" id="onb-back-btn" onclick="prevOnboardingStep()" disabled>
       <i class="fa-solid fa-chevron-left"></i>
     </button>
+    <div class="onb-dots">
+      <div class="onb-dot active" id="onb-dot-1"></div>
+      <div class="onb-dot" id="onb-dot-2"></div>
+      <div class="onb-dot" id="onb-dot-3"></div>
+      <div class="onb-dot" id="onb-dot-4"></div>
+    </div>
     <button class="onb-skip" onclick="completeOnboarding()">Skip</button>
-  </div>
-  <div class="onb-logo-wrap">
-    <img src="logo.png" class="onb-logo-img" alt="RideReady">
   </div>
   <div class="onb-body-area">
   <div class="onb-steps">
 
     <div class="onb-step active" id="onb-step-1">
       <div class="onb-visual">
-        <div class="onb-vis-card">
-          <div class="onb-vis-tag" id="onb-v1-tag">Fork · RockShox Lyrik</div>
-          <div class="onb-vis-psi-row">
-            <span class="onb-vis-psi-num" id="onb-v1-num">75</span>
-            <span class="onb-vis-psi-unit" id="onb-v1-unit">PSI</span>
-          </div>
-          <div class="onb-vis-sag" id="onb-v1-sag">
-            <i class="fa-solid fa-circle-info" style="font-size:9px"></i> 25–30% · 37–45 mm
-          </div>
-          <div class="onb-vis-damp" id="onb-v1-damp">
-            <span>Rebound <b>8 clicks</b></span>
-            <span>LSC <b>5 clicks</b></span>
+        <div class="onb-mock-screen">
+          <div class="onb-mock-bar"><span class="onb-mock-bar-title">Setup</span></div>
+          <div class="onb-mock-body">
+            <div class="onb-mock-result-card">
+              <div class="onb-mock-tag" id="onb-m1-tag">Fork · RockShox Lyrik</div>
+              <div class="onb-mock-psi-row">
+                <span class="onb-mock-psi-num" id="onb-v1-num">0</span>
+                <span class="onb-mock-psi-unit" id="onb-v1-unit">PSI</span>
+              </div>
+              <div class="onb-mock-sag-badge" id="onb-v1-sag">
+                <i class="fa-solid fa-circle-info" style="font-size:8px"></i> 25–30% · 37–45 mm
+              </div>
+              <div class="onb-mock-damp-row" id="onb-v1-damp">
+                <div class="onb-mock-damp-item"><span class="onb-mock-damp-lbl">Rebound</span><span class="onb-mock-damp-val">8 clicks</span></div>
+                <div class="onb-mock-damp-item"><span class="onb-mock-damp-lbl">LSC</span><span class="onb-mock-damp-val">5 clicks</span></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      <h2 class="onb-title">Dial in your suspension</h2>
-      <p class="onb-body">RideReady calculates the right air pressure, sag, and damping clicks for your fork and shock, based on your weight and riding style.</p>
     </div>
 
     <div class="onb-step" id="onb-step-2">
       <div class="onb-visual">
-        <div class="onb-profile-form">
-          <div class="onb-form-lbl">Your weight</div>
-          <div class="onb-weight-row">
-            <input type="number" id="onb-weight-input" class="onb-weight-input"
-                   placeholder="75" min="30" max="200" inputmode="decimal">
-            <span class="onb-weight-unit">kg</span>
+        <div class="onb-mock-screen">
+          <div class="onb-mock-bar">
+            <div class="onb-mock-bar-tabs">
+              <span class="onb-mock-bar-tab">Suspension</span>
+              <span class="onb-mock-bar-tab active">Tyres</span>
+            </div>
           </div>
-          <div class="onb-form-lbl">Riding style</div>
-          <div class="onb-style-row">
-            <button class="onb-style-btn" data-style="xc_trail" onclick="onbSelectStyle(this)">XC / Trail</button>
-            <button class="onb-style-btn selected" data-style="all_mountain" onclick="onbSelectStyle(this)">All Mountain</button>
-            <button class="onb-style-btn" data-style="enduro_dh" onclick="onbSelectStyle(this)">Enduro / DH</button>
+          <div class="onb-mock-body">
+            <div class="onb-mock-selector" id="onb-m2-brand">
+              <span class="onb-mock-sel-lbl">Brand</span>
+              <span class="onb-mock-sel-val placeholder" id="onb-m2-brand-val">Select brand…</span>
+              <i class="fa-solid fa-chevron-down onb-mock-sel-chev"></i>
+            </div>
+            <div class="onb-mock-selector" id="onb-m2-model">
+              <span class="onb-mock-sel-lbl">Tyre</span>
+              <span class="onb-mock-sel-val placeholder" id="onb-m2-model-val">Select tyre…</span>
+              <i class="fa-solid fa-chevron-down onb-mock-sel-chev"></i>
+            </div>
+            <div class="onb-mock-terrain-row" id="onb-m2-terrain">
+              <span class="onb-mock-terrain-chip" id="onb-m2-t1">Hardpack</span>
+              <span class="onb-mock-terrain-chip" id="onb-m2-t2">Mixed</span>
+              <span class="onb-mock-terrain-chip" id="onb-m2-t3">Loam</span>
+            </div>
+            <div class="onb-mock-tyre-result" id="onb-m2-result">
+              <div class="onb-mock-tyre-row">
+                <span class="onb-mock-tyre-lbl">Front</span>
+                <span class="onb-mock-tyre-psi">26<span class="onb-mock-tyre-unit"> PSI</span></span>
+              </div>
+              <div class="onb-mock-tyre-row">
+                <span class="onb-mock-tyre-lbl">Rear</span>
+                <span class="onb-mock-tyre-psi">28<span class="onb-mock-tyre-unit"> PSI</span></span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      <h2 class="onb-title">Make it yours</h2>
-      <p class="onb-body">Your weight and riding style shape every recommendation. Set them once. The calculator uses them every time.</p>
     </div>
 
     <div class="onb-step" id="onb-step-3">
       <div class="onb-visual">
-        <div class="onb-vis-flow">
-          <div class="onb-vis-chip" id="onb-v2-c1"><i class="fa-solid fa-bicycle"></i> RockShox · Lyrik</div>
-          <div class="onb-vis-chip" id="onb-v2-c2"><i class="fa-solid fa-weight-scale"></i> <span id="onb-v2-kg">75</span> kg</div>
-          <div class="onb-vis-chip" id="onb-v2-c3"><i class="fa-solid fa-mountain-sun"></i> <span id="onb-v2-style">All Mountain</span></div>
-          <div class="onb-vis-flow-arrow" id="onb-v2-arrow"><i class="fa-solid fa-arrow-down"></i></div>
-          <div class="onb-vis-result-pill" id="onb-v2-result">
-            <span class="rn">95</span><span class="ru">PSI</span>
+        <div class="onb-mock-screen">
+          <div class="onb-mock-bar"><span class="onb-mock-bar-title">Saved</span></div>
+          <div class="onb-mock-body">
+            <div class="onb-mock-save-card" id="onb-m3-card">
+              <div class="onb-mock-save-hdr">
+                <span class="onb-mock-save-name" id="onb-m3-name">Trail Setup</span>
+                <i class="fa-solid fa-bookmark onb-mock-bm" id="onb-m3-bm"></i>
+              </div>
+              <div class="onb-mock-save-row" id="onb-m3-fork">
+                <span class="onb-mock-save-lbl">Fork</span>
+                <span class="onb-mock-save-val">Lyrik · <span class="onb-mock-save-psi">95 PSI</span></span>
+              </div>
+              <div class="onb-mock-save-row" id="onb-m3-shock">
+                <span class="onb-mock-save-lbl">Shock</span>
+                <span class="onb-mock-save-val">Super Deluxe · <span class="onb-mock-save-psi">185 PSI</span></span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      <h2 class="onb-title">Three inputs, one result</h2>
-      <p class="onb-body">Pick your fork or shock model, enter your weight, and choose your terrain. You get a pressure recommendation and damping starting points, ready to ride.</p>
     </div>
 
     <div class="onb-step" id="onb-step-4">
       <div class="onb-visual">
-        <div class="onb-vis-save" id="onb-vis-4">
-          <div class="onb-vis-save-hdr">
-            <span class="onb-vis-save-name" id="onb-v3-name">Trail Setup</span>
-            <i class="fa-solid fa-bookmark onb-vis-bm" id="onb-v3-bm"></i>
-          </div>
-          <div class="onb-vis-save-row" id="onb-v3-fork">
-            <span class="onb-vis-save-lbl">Fork</span>
-            <span class="onb-vis-save-val">Lyrik · <span class="onb-vis-save-psi">95 PSI</span></span>
-          </div>
-          <div class="onb-vis-save-row" id="onb-v3-shock">
-            <span class="onb-vis-save-lbl">Shock</span>
-            <span class="onb-vis-save-val">Super Deluxe · <span class="onb-vis-save-psi">185 PSI</span></span>
+        <div class="onb-mock-screen">
+          <div class="onb-mock-bar"><span class="onb-mock-bar-title">Suspension Feel</span></div>
+          <div class="onb-mock-body">
+            <div class="onb-mock-symptom" id="onb-m4-s1">
+              <div class="onb-mock-symptom-hdr">
+                <i class="fa-solid fa-wave-square onb-mock-symptom-icon"></i>
+                <span class="onb-mock-symptom-lbl">Harsh on small bumps</span>
+                <span class="onb-mock-symptom-badge">Both</span>
+              </div>
+            </div>
+            <div class="onb-mock-symptom" id="onb-m4-s2">
+              <div class="onb-mock-symptom-hdr">
+                <i class="fa-solid fa-arrow-down-to-line onb-mock-symptom-icon"></i>
+                <span class="onb-mock-symptom-lbl">Bottoms out</span>
+                <span class="onb-mock-symptom-badge">Both</span>
+              </div>
+            </div>
+            <div class="onb-mock-symptom" id="onb-m4-s3">
+              <div class="onb-mock-symptom-hdr">
+                <i class="fa-solid fa-angles-down onb-mock-symptom-icon"></i>
+                <span class="onb-mock-symptom-lbl">Braking dive</span>
+                <span class="onb-mock-symptom-badge">Fork</span>
+              </div>
+              <div class="onb-mock-fixes">
+                <div class="onb-mock-fix"><i class="fa-solid fa-sliders"></i> Increase low-speed compression</div>
+                <div class="onb-mock-fix"><i class="fa-solid fa-gauge"></i> Add 5–10 PSI air pressure</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      <h2 class="onb-title">Save and come back</h2>
-      <p class="onb-body" id="onb-step-4-body">Sign up free to save your setups and access them from your phone, even at the trailhead.</p>
     </div>
 
   </div>
-  <div class="onb-dots">
-    <div class="onb-dot active" id="onb-dot-1"></div>
-    <div class="onb-dot" id="onb-dot-2"></div>
-    <div class="onb-dot" id="onb-dot-3"></div>
-    <div class="onb-dot" id="onb-dot-4"></div>
-  </div>
   </div><!-- end .onb-body-area -->
   <div class="onb-cta">
+    <div class="onb-cta-text">
+      <h2 class="onb-title onb-cta-title" id="onb-cta-title">Dial in your suspension</h2>
+      <p class="onb-body onb-cta-body" id="onb-cta-body">RideReady calculates the right air pressure, sag, and damping clicks for your fork and shock — based on your weight and riding style.</p>
+    </div>
     <button class="onb-next-btn" id="onb-next-btn" onclick="nextOnboardingStep()">Next</button>
   </div>
 </div>
@@ -2688,7 +2900,7 @@
 
   <header>
     <div style="display:flex;align-items:center;gap:12px">
-      <img src="logo.png" alt="RideReady" style="width:44px;height:44px;border-radius:12px;flex-shrink:0;">
+      <img src="logo-new.png" alt="RideReady" style="width:44px;height:44px;border-radius:12px;flex-shrink:0;">
       <div>
         <h1>RideReady</h1>
         <p>Suspension setup guide</p>
@@ -2739,7 +2951,35 @@
 
   <!-- Orange input panel -->
   <div class="input-panel">
-    <div class="panel-row-label">Select Models</div>
+
+    <div class="weight-section">
+      <div class="panel-row-label">Rider Weight</div>
+      <div class="weight-inner">
+        <input type="number" id="weight-input" placeholder="75" min="20" max="200" step="0.5"
+          oninput="onWeightInput()" inputmode="decimal" />
+        <span class="kg-badge">KG</span>
+        <button class="weight-pin-btn" id="weight-pin-btn" onclick="toggleSavedWeight()"
+                title="Remember my weight" aria-label="Remember my weight">
+          <i class="fa-solid fa-thumbtack"></i>
+          <span id="weight-pin-label" class="sr-only">Remember my weight</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="panel-row-label">Ride Style</div>
+    <div class="ride-style-row">
+      <button class="rs-btn" id="rs-xc" onclick="setRideStyle('xc_trail')">
+        <span class="rs-icon"><i class="fa-solid fa-route"></i></span>XC / Trail<span class="rs-hint">Firmer, faster</span>
+      </button>
+      <button class="rs-btn active" id="rs-am" onclick="setRideStyle('all_mountain')">
+        <span class="rs-icon"><i class="fa-solid fa-mountain"></i></span>All Mountain<span class="rs-hint">Balanced setup</span>
+      </button>
+      <button class="rs-btn" id="rs-ed" onclick="setRideStyle('enduro_dh')">
+        <span class="rs-icon"><i class="fa-solid fa-flag-checkered"></i></span>Enduro / DH<span class="rs-hint">More sag, slower</span>
+      </button>
+    </div>
+
+    <div class="panel-row-label">Your Gear</div>
     <div class="selectors-grid">
       <div class="selector-box">
         <div class="box-label">Fork</div>
@@ -2763,38 +3003,11 @@
       </div>
     </div>
 
-    <div class="panel-row-label">Ride Style</div>
-    <div class="ride-style-row">
-      <button class="rs-btn" id="rs-xc" onclick="setRideStyle('xc_trail')">
-        <span class="rs-icon"><i class="fa-solid fa-route"></i></span>XC / Trail
-      </button>
-      <button class="rs-btn active" id="rs-am" onclick="setRideStyle('all_mountain')">
-        <span class="rs-icon"><i class="fa-solid fa-mountain"></i></span>All Mountain
-      </button>
-      <button class="rs-btn" id="rs-ed" onclick="setRideStyle('enduro_dh')">
-        <span class="rs-icon"><i class="fa-solid fa-flag-checkered"></i></span>Enduro / DH
-      </button>
+    <div class="btn-row">
+      <button class="calc-btn" onclick="calculate()"><i class="fa-solid fa-bolt"></i> Calculate Pressure</button>
+      <button class="reset-btn" id="reset-btn" onclick="resetAll()" style="display:none">Reset</button>
     </div>
-    <p class="ride-style-hint">Sets damping clicks. Not sure? All Mountain is a safe starting point.</p>
 
-    <div class="weight-section">
-      <div class="panel-row-label">Rider Weight</div>
-      <div class="weight-inner">
-        <input type="number" id="weight-input" placeholder="75" min="20" max="200" step="0.5"
-          oninput="onWeightInput()" />
-        <span class="kg-badge">KG</span>
-      </div>
-      <div class="weight-pin-wrap">
-        <button class="weight-pin-btn" id="weight-pin-btn" onclick="toggleSavedWeight()">
-          <i class="fa-solid fa-thumbtack"></i>
-          <span id="weight-pin-label">Remember my weight</span>
-        </button>
-      </div>
-      <div class="btn-row">
-        <button class="calc-btn" onclick="calculate()"><i class="fa-solid fa-bolt"></i> Calculate Pressure</button>
-        <button class="reset-btn" id="reset-btn" onclick="resetAll()" style="display:none">Reset</button>
-      </div>
-    </div>
   </div>
 
   <!-- Error -->
@@ -3073,8 +3286,8 @@
     <span>Saved</span>
   </button>
   <button class="nav-btn" id="nav-fixit" onclick="switchTab('fixit')">
-    <i class="fa-solid fa-screwdriver-wrench"></i>
-    <span>Feel</span>
+    <i class="fa-solid fa-lightbulb"></i>
+    <span>Tips & Tricks</span>
   </button>
   <button class="nav-btn" id="nav-settings" onclick="switchTab('settings')">
     <i class="fa-solid fa-gear"></i>
@@ -3437,7 +3650,7 @@ function buildResultHTML(brand, model, weightKg, type) {
         <div class="chip-val">${airSpring}</div>
       </div>` : ''}
       ${maxPsi ? `<div class="chip chip-maxpsi">
-        <div class="chip-label"><i class="fa-solid fa-gauge"></i> Max PSI</div>
+        <div class="chip-label"><i class="fa-solid fa-gauge-high"></i> Max PSI</div>
         <div class="chip-val">${maxPsi}</div>
       </div>` : ''}
       ${travelStr ? `<div class="chip chip-travel chip-wide">
@@ -3850,7 +4063,10 @@ function setPinState(pinned) {
   const btn   = document.getElementById('weight-pin-btn');
   const label = document.getElementById('weight-pin-label');
   btn.classList.toggle('pinned', pinned);
-  label.textContent = pinned ? 'Weight saved · tap to forget' : 'Remember my weight';
+  const text = pinned ? 'Weight saved — tap to forget' : 'Remember my weight';
+  btn.title       = text;
+  btn.setAttribute('aria-label', text);
+  label.textContent = text;
 }
 
 
@@ -3987,12 +4203,12 @@ const SYMPTOM_FIXES = [
   {
     id: 'harsh-bumps',
     label: 'Harsh on small bumps',
-    icon: 'fa-road-spikes',
+    icon: 'fa-wave-square',
     component: 'Fork & Shock',
     fixes: [
-      { title: 'Reduce high-speed compression (HSC)', detail: 'Back off HSC 2–3 clicks toward open. This lets the damper move faster on small, sharp impacts like roots and rocks.' },
-      { title: 'Drop tyre pressure 2–3 PSI', detail: 'Softer tyres absorb high-frequency chatter before it reaches the suspension — try both ends.' },
-      { title: 'Check your sag', detail: 'Too little sag (suspension sitting too high in the stroke) makes the ride harsh. Aim for 25–30% fork / 28–32% shock.' },
+      { title: 'Reduce high-speed compression (HSC)', icon: 'fa-sliders', detail: 'Back off HSC 2–3 clicks toward open. This lets the damper move faster on small, sharp impacts like roots and rocks.' },
+      { title: 'Drop tyre pressure 2–3 PSI', icon: 'fa-circle-dot', detail: 'Softer tyres absorb high-frequency chatter before it reaches the suspension — try both ends.' },
+      { title: 'Check your sag', icon: 'fa-percent', detail: 'Too little sag (suspension sitting too high in the stroke) makes the ride harsh. Aim for 25–30% fork / 28–32% shock.' },
     ],
   },
   {
@@ -4001,20 +4217,20 @@ const SYMPTOM_FIXES = [
     icon: 'fa-arrow-down-to-line',
     component: 'Fork & Shock',
     fixes: [
-      { title: 'Add 5–10 PSI air pressure', detail: 'More air = more mid-stroke and end-stroke support. Add 5 PSI at a time and test before adding more.' },
-      { title: 'Increase low-speed compression (LSC)', detail: 'Add 2–3 clicks of LSC to support big hits — drops, compressions, and pump sections.' },
-      { title: 'Add a volume spacer (if still bottoming)', detail: 'Volume spacers reduce the air chamber so pressure ramps up faster at end of stroke. Workshop job, but the most effective long-term fix.' },
+      { title: 'Add 5–10 PSI air pressure', icon: 'fa-gauge', detail: 'More air = more mid-stroke and end-stroke support. Add 5 PSI at a time and test before adding more.' },
+      { title: 'Increase low-speed compression (LSC)', icon: 'fa-sliders', detail: 'Add 2–3 clicks of LSC to support big hits — drops, compressions, and pump sections.' },
+      { title: 'Add a volume spacer (if still bottoming)', icon: 'fa-layer-group', detail: 'Volume spacers reduce the air chamber so pressure ramps up faster at end of stroke. Workshop job, but the most effective long-term fix.' },
     ],
   },
   {
     id: 'braking-dive',
     label: 'Dives under braking',
-    icon: 'fa-hand-back-fist',
+    icon: 'fa-angles-down',
     component: 'Fork',
     fixes: [
-      { title: 'Increase low-speed compression (LSC)', detail: 'Add 2–3 clicks of LSC. Braking forces are slow and sustained — more LSC resists the dive without harshening the ride over bumps.' },
-      { title: 'Add 5 PSI to the fork', detail: 'More pressure gives the fork more support throughout the stroke, reducing how far it drops under hard braking.' },
-      { title: 'Check the brake arch port (fork-specific)', detail: 'Some forks (e.g. Fox 36, 38) have a dedicated brake dive adjuster on the lower leg — check your user manual.' },
+      { title: 'Increase low-speed compression (LSC)', icon: 'fa-sliders', detail: 'Add 2–3 clicks of LSC. Braking forces are slow and sustained — more LSC resists the dive without harshening the ride over bumps.' },
+      { title: 'Add 5 PSI to the fork', icon: 'fa-gauge', detail: 'More pressure gives the fork more support throughout the stroke, reducing how far it drops under hard braking.' },
+      { title: 'Check the brake arch port (fork-specific)', icon: 'fa-screwdriver-wrench', detail: 'Some forks (e.g. Fox 36, 38) have a dedicated brake dive adjuster on the lower leg — check your user manual.' },
     ],
   },
   {
@@ -4023,31 +4239,31 @@ const SYMPTOM_FIXES = [
     icon: 'fa-gauge-simple-low',
     component: 'Fork & Shock',
     fixes: [
-      { title: 'Speed up rebound', detail: 'Turn the rebound adjuster toward fast (fewer clicks / toward open). If rebound is too slow, the suspension can\'t extend between hits and packs down into the stroke.' },
-      { title: 'Reduce low-speed compression (LSC)', detail: 'Loosen LSC 1–2 clicks. Compression that\'s too stiff creates a dead, deflecting feel over repeated small hits.' },
-      { title: 'Check sag isn\'t too deep', detail: 'Excess sag sits you low in the stroke where air spring pressure rises steeply — the suspension runs out of room and goes dead. Reduce pressure by 5 PSI.' },
+      { title: 'Speed up rebound', icon: 'fa-forward', detail: 'Turn the rebound adjuster toward fast (fewer clicks / toward open). If rebound is too slow, the suspension can\'t extend between hits and packs down into the stroke.' },
+      { title: 'Reduce low-speed compression (LSC)', icon: 'fa-sliders', detail: 'Loosen LSC 1–2 clicks. Compression that\'s too stiff creates a dead, deflecting feel over repeated small hits.' },
+      { title: 'Check sag isn\'t too deep', icon: 'fa-percent', detail: 'Excess sag sits you low in the stroke where air spring pressure rises steeply — the suspension runs out of room and goes dead. Reduce pressure by 5 PSI.' },
     ],
   },
   {
     id: 'rear-kicks',
     label: 'Rear kicks on square edges',
-    icon: 'fa-person-falling',
+    icon: 'fa-up-long',
     component: 'Rear Shock',
     fixes: [
-      { title: 'Slow down rear shock rebound', detail: 'Add 2–3 clicks of rebound damping (toward slow/closed). Fast rebound causes the shock to extend and flick the rear wheel off square-edge hits.' },
-      { title: 'Check rear sag', detail: 'Too little rear sag means the shock is running high in the stroke where it\'s already stiff — the wheel has nowhere to go but up. Aim for 28–32% stroke.' },
-      { title: 'Drop rear tyre pressure 2–3 PSI', detail: 'A softer rear tyre deforms around square edges instead of bouncing off them — quick to try trailside.' },
+      { title: 'Slow down rear shock rebound', icon: 'fa-backward', detail: 'Add 2–3 clicks of rebound damping (toward slow/closed). Fast rebound causes the shock to extend and flick the rear wheel off square-edge hits.' },
+      { title: 'Check rear sag', icon: 'fa-percent', detail: 'Too little rear sag means the shock is running high in the stroke where it\'s already stiff — the wheel has nowhere to go but up. Aim for 28–32% stroke.' },
+      { title: 'Drop rear tyre pressure 2–3 PSI', icon: 'fa-circle-dot', detail: 'A softer rear tyre deforms around square edges instead of bouncing off them — quick to try trailside.' },
     ],
   },
   {
     id: 'vague-front',
     label: 'Vague front end in corners',
-    icon: 'fa-circle-exclamation',
+    icon: 'fa-compass',
     component: 'Fork',
     fixes: [
-      { title: 'Add 5–10 PSI to the fork', detail: 'More pressure gives the fork more support and mid-stroke stiffness. A vague front end often means the fork is compressing under cornering load and losing steering precision.' },
-      { title: 'Speed up fork rebound', detail: 'Fewer rebound clicks / toward fast. Slow rebound keeps the fork compressed between bumps — it needs to extend and push the tyre into the ground to corner properly.' },
-      { title: 'Check front sag', detail: 'Too much front sag (>30%) lowers the front of the bike, slackens the head angle, and kills cornering confidence. Add 5 PSI and recheck.' },
+      { title: 'Add 5–10 PSI to the fork', icon: 'fa-gauge', detail: 'More pressure gives the fork more support and mid-stroke stiffness. A vague front end often means the fork is compressing under cornering load and losing steering precision.' },
+      { title: 'Speed up fork rebound', icon: 'fa-forward', detail: 'Fewer rebound clicks / toward fast. Slow rebound keeps the fork compressed between bumps — it needs to extend and push the tyre into the ground to corner properly.' },
+      { title: 'Check front sag', icon: 'fa-percent', detail: 'Too much front sag (>30%) lowers the front of the bike, slackens the head angle, and kills cornering confidence. Add 5 PSI and recheck.' },
     ],
   },
 ];
@@ -4086,7 +4302,7 @@ function showToast(msg, type) {
   const msgEl   = document.getElementById('toast-msg');
   const cfg = {
     success: { icon: 'fa-solid fa-circle-check',          color: '#76ca66', bg: 'rgba(62,207,94,0.10)',  border: 'rgba(62,207,94,0.28)'  },
-    warning: { icon: 'fa-solid fa-triangle-exclamation',  color: '#f97316', bg: 'rgba(249,115,22,0.10)', border: 'rgba(249,115,22,0.28)' },
+    warning: { icon: 'fa-solid fa-triangle-exclamation',  color: '#e03010', bg: 'rgba(224,48,16,0.10)', border: 'rgba(224,48,16,0.28)' },
     error:   { icon: 'fa-solid fa-circle-xmark',          color: '#ff6b6b', bg: 'rgba(186,0,0,0.12)',    border: 'rgba(186,0,0,0.3)'     },
   };
   const c = cfg[type] || cfg.success;
@@ -4692,6 +4908,33 @@ const ONB_TOTAL = 4;
 let onbAnimTimers = [];
 let onbAnimIntervals = [];
 let onbSelectedStyle = 'all_mountain';
+const ONB_STEP_TEXT = [
+  { title: 'Dial in your suspension', body: 'Pick your fork or shock model, enter your weight, choose your riding style — get exact PSI and damping click recommendations in seconds.' },
+  { title: 'Get your tyre pressure right', body: 'Select your tyre, terrain, and setup. RideReady calculates recommended front and rear pressure — no more guessing at the trailhead.' },
+  { title: 'Save and come back', body: null },
+  { title: 'Fix it on the trail', body: 'Something feels off? Six symptom cards give you ordered fixes — quickest trailside solution first, no tools needed.' },
+];
+
+function updateOnbCTAText(step, animate) {
+  const data = ONB_STEP_TEXT[step - 1];
+  if (!data) return;
+  const titleEl = document.getElementById('onb-cta-title');
+  const bodyEl  = document.getElementById('onb-cta-body');
+  if (!titleEl || !bodyEl) return;
+  if (step === 3) {
+    bodyEl.textContent = (typeof isGuest !== 'undefined' && !isGuest)
+      ? 'Your setups are saved to your account. Access them from any device, even at the trailhead.'
+      : 'Sign up free to save your setups and access them from your phone, even at the trailhead.';
+  } else {
+    bodyEl.textContent = data.body;
+  }
+  titleEl.textContent = data.title;
+  if (animate) {
+    titleEl.classList.remove('anim'); bodyEl.classList.remove('anim');
+    void titleEl.offsetWidth;
+    titleEl.classList.add('anim'); bodyEl.classList.add('anim');
+  }
+}
 
 function clearOnbAnimations() {
   onbAnimTimers.forEach(clearTimeout);
@@ -4710,74 +4953,116 @@ function onbSelectStyle(btn) {
 }
 
 function runOnbAnim1() {
-  const tag  = document.getElementById('onb-v1-tag');
+  const tag  = document.getElementById('onb-m1-tag');
   const num  = document.getElementById('onb-v1-num');
   const unit = document.getElementById('onb-v1-unit');
   const sag  = document.getElementById('onb-v1-sag');
   const damp = document.getElementById('onb-v1-damp');
   if (!tag) return;
-  tag.style.opacity = '0';  tag.style.transform = 'translateY(4px)';
-  num.textContent = '75';   num.style.opacity = '0';
+  tag.style.opacity = '0'; tag.style.transform = 'translateY(8px)';
+  num.textContent = '0'; num.style.opacity = '0'; num.style.filter = 'blur(0)';
   unit.style.opacity = '0';
-  sag.style.opacity = '0';  sag.style.transform = 'translateY(4px)';
-  damp.style.opacity = '0';
-  onbT(() => { tag.style.opacity = '1'; tag.style.transform = 'translateY(0)'; }, 200);
+  sag.style.opacity = '0'; sag.style.transform = 'translateY(6px) scale(0.9)';
+  damp.style.opacity = '0'; damp.style.transform = 'translateY(6px)';
+  onbT(() => { tag.style.opacity = '1'; tag.style.transform = 'translateY(0)'; }, 300);
   onbT(() => {
     num.style.opacity = '1'; unit.style.opacity = '1';
-    let v = 75;
-    const iv = onbI(() => { if (v < 95) { num.textContent = ++v; } else { clearInterval(iv); } }, 80);
-  }, 900);
-  onbT(() => { sag.style.opacity = '1'; sag.style.transform = 'translateY(0)'; }, 2900);
-  onbT(() => { damp.style.opacity = '1'; }, 3800);
-  onbT(() => { [tag, num, unit, sag, damp].forEach(el => { el.style.opacity = '0'; }); }, 5500);
-  onbT(runOnbAnim1, 6300);
+    num.style.filter = 'blur(8px)';
+    let v = 0;
+    const iv = onbI(() => {
+      if (v < 95) {
+        v = Math.min(95, v + Math.ceil((95 - v) / 8 + 1));
+        num.textContent = v;
+        num.style.filter = `blur(${Math.max(0, (95 - v) * 0.14).toFixed(1)}px)`;
+      } else {
+        num.style.filter = 'blur(0)';
+        clearInterval(iv);
+      }
+    }, 45);
+  }, 750);
+  onbT(() => { sag.style.opacity = '1'; sag.style.transform = 'translateY(0) scale(1)'; }, 2600);
+  onbT(() => { damp.style.opacity = '1'; damp.style.transform = 'translateY(0)'; }, 3400);
+  onbT(() => {
+    tag.style.opacity = '0'; tag.style.transform = 'translateY(8px)';
+    num.style.opacity = '0'; num.style.filter = 'blur(6px)';
+    unit.style.opacity = '0';
+    sag.style.opacity = '0'; sag.style.transform = 'translateY(6px) scale(0.9)';
+    damp.style.opacity = '0'; damp.style.transform = 'translateY(6px)';
+  }, 5400);
+  onbT(runOnbAnim1, 6200);
+}
+
+function runOnbAnim2() {
+  const brand    = document.getElementById('onb-m2-brand');
+  const model    = document.getElementById('onb-m2-model');
+  const terrain  = document.getElementById('onb-m2-terrain');
+  const result   = document.getElementById('onb-m2-result');
+  const brandVal = document.getElementById('onb-m2-brand-val');
+  const modelVal = document.getElementById('onb-m2-model-val');
+  const t1 = document.getElementById('onb-m2-t1');
+  const t2 = document.getElementById('onb-m2-t2');
+  const t3 = document.getElementById('onb-m2-t3');
+  if (!brand) return;
+  [brand, model, terrain, result].forEach(el => { el.style.opacity = '0'; el.style.transform = 'translateY(8px)'; });
+  result.style.transform = 'translateY(10px) scale(0.96)';
+  if (brandVal) { brandVal.textContent = 'Select brand…'; brandVal.classList.add('placeholder'); }
+  if (modelVal) { modelVal.textContent = 'Select tyre…'; modelVal.classList.add('placeholder'); }
+  [t1, t2, t3].forEach(t => t.classList.remove('selected'));
+  brand.classList.remove('filled'); model.classList.remove('filled');
+  onbT(() => { brand.style.opacity = '1'; brand.style.transform = 'translateY(0)'; }, 300);
+  onbT(() => {
+    if (brandVal) { brandVal.textContent = 'Maxxis'; brandVal.classList.remove('placeholder'); }
+    brand.classList.add('filled');
+  }, 950);
+  onbT(() => { model.style.opacity = '1'; model.style.transform = 'translateY(0)'; }, 1200);
+  onbT(() => {
+    if (modelVal) { modelVal.textContent = 'Minion DHF'; modelVal.classList.remove('placeholder'); }
+    model.classList.add('filled');
+  }, 1850);
+  onbT(() => { terrain.style.opacity = '1'; terrain.style.transform = 'translateY(0)'; }, 2150);
+  onbT(() => { if (t3) t3.classList.add('selected'); }, 2750);
+  onbT(() => { result.style.opacity = '1'; result.style.transform = 'translateY(0) scale(1)'; }, 3200);
+  onbT(() => { [brand, model, terrain, result].forEach(el => { el.style.opacity = '0'; }); }, 5400);
+  onbT(runOnbAnim2, 6200);
 }
 
 function runOnbAnim3() {
-  const c1     = document.getElementById('onb-v2-c1');
-  const c2     = document.getElementById('onb-v2-c2');
-  const c3     = document.getElementById('onb-v2-c3');
-  const arrow  = document.getElementById('onb-v2-arrow');
-  const result = document.getElementById('onb-v2-result');
-  if (!c1) return;
-  const enteredKg = parseInt(document.getElementById('onb-weight-input')?.value) || 75;
-  const kgEl = document.getElementById('onb-v2-kg');
-  const styleEl = document.getElementById('onb-v2-style');
-  if (kgEl) kgEl.textContent = enteredKg;
-  if (styleEl) styleEl.textContent = RS_LABELS[onbSelectedStyle] || 'All Mountain';
-  [c1, c2, c3].forEach(el => { el.style.opacity = '0'; el.style.transform = 'translateX(-10px)'; });
-  arrow.style.opacity = '0';
-  result.style.opacity = '0'; result.style.transform = 'translateY(5px)';
-  onbT(() => { c1.style.opacity = '1'; c1.style.transform = 'translateX(0)'; }, 200);
-  onbT(() => { c2.style.opacity = '1'; c2.style.transform = 'translateX(0)'; }, 900);
-  onbT(() => { c3.style.opacity = '1'; c3.style.transform = 'translateX(0)'; }, 1600);
-  onbT(() => { arrow.style.opacity = '1'; }, 2300);
-  onbT(() => { result.style.opacity = '1'; result.style.transform = 'translateY(0)'; }, 2900);
-  onbT(() => { [c1, c2, c3, arrow, result].forEach(el => { el.style.opacity = '0'; }); }, 5500);
-  onbT(runOnbAnim3, 6300);
+  const card  = document.getElementById('onb-m3-card');
+  const name  = document.getElementById('onb-m3-name');
+  const bm    = document.getElementById('onb-m3-bm');
+  const fork  = document.getElementById('onb-m3-fork');
+  const shock = document.getElementById('onb-m3-shock');
+  if (!card) return;
+  card.style.opacity = '0'; card.style.transform = 'translateY(12px) scale(0.97)';
+  name.style.opacity = '0'; name.style.transform = 'translateY(5px)';
+  bm.style.opacity = '0'; bm.classList.remove('pumping');
+  fork.style.opacity = '0'; fork.style.transform = 'translateY(5px)';
+  shock.style.opacity = '0'; shock.style.transform = 'translateY(5px)';
+  onbT(() => { card.style.opacity = '1'; card.style.transform = 'translateY(0) scale(1)'; }, 300);
+  onbT(() => { name.style.opacity = '1'; name.style.transform = 'translateY(0)'; }, 850);
+  onbT(() => { fork.style.opacity = '1'; fork.style.transform = 'translateY(0)'; }, 1400);
+  onbT(() => { shock.style.opacity = '1'; shock.style.transform = 'translateY(0)'; }, 1950);
+  onbT(() => { bm.style.opacity = '1'; }, 2600);
+  onbT(() => { bm.classList.add('pumping'); }, 2680);
+  onbT(() => { bm.classList.remove('pumping'); }, 3350);
+  onbT(() => { card.style.opacity = '0'; card.style.transform = 'translateY(12px) scale(0.97)'; }, 5400);
+  onbT(runOnbAnim3, 6200);
 }
 
 function runOnbAnim4() {
-  const wrap  = document.getElementById('onb-vis-4');
-  const name  = document.getElementById('onb-v3-name');
-  const bm    = document.getElementById('onb-v3-bm');
-  const fork  = document.getElementById('onb-v3-fork');
-  const shock = document.getElementById('onb-v3-shock');
-  if (!wrap) return;
-  wrap.style.opacity = '0'; wrap.style.transform = 'translateY(10px)';
-  name.style.opacity = '0';
-  bm.style.opacity = '0'; bm.classList.remove('pumping');
-  fork.style.opacity = '0';
-  shock.style.opacity = '0';
-  onbT(() => { wrap.style.opacity = '1'; wrap.style.transform = 'translateY(0)'; }, 200);
-  onbT(() => { name.style.opacity = '1'; }, 900);
-  onbT(() => { fork.style.opacity = '1'; }, 1600);
-  onbT(() => { shock.style.opacity = '1'; }, 2200);
-  onbT(() => { bm.style.opacity = '1'; }, 2900);
-  onbT(() => { bm.classList.add('pumping'); }, 2980);
-  onbT(() => { bm.classList.remove('pumping'); }, 3600);
-  onbT(() => { wrap.style.opacity = '0'; }, 5500);
-  onbT(runOnbAnim4, 6300);
+  const s1 = document.getElementById('onb-m4-s1');
+  const s2 = document.getElementById('onb-m4-s2');
+  const s3 = document.getElementById('onb-m4-s3');
+  if (!s1) return;
+  [s1, s2, s3].forEach(el => { el.style.opacity = '0'; el.style.transform = 'translateY(8px)'; });
+  s3.classList.remove('expanded');
+  onbT(() => { s1.style.opacity = '1'; s1.style.transform = 'translateY(0)'; }, 300);
+  onbT(() => { s2.style.opacity = '1'; s2.style.transform = 'translateY(0)'; }, 800);
+  onbT(() => { s3.style.opacity = '1'; s3.style.transform = 'translateY(0)'; }, 1300);
+  onbT(() => { s3.classList.add('expanded'); }, 2200);
+  onbT(() => { s3.classList.remove('expanded'); }, 4900);
+  onbT(() => { [s1, s2, s3].forEach(el => { el.style.opacity = '0'; }); }, 5400);
+  onbT(runOnbAnim4, 6200);
 }
 
 function updateOnbBackBtn() {
@@ -4787,17 +5072,32 @@ function updateOnbBackBtn() {
 
 function prevOnboardingStep() {
   if (onbCurrentStep <= 1) return;
-  document.getElementById('onb-step-' + onbCurrentStep).classList.remove('active');
-  document.getElementById('onb-dot-' + onbCurrentStep).classList.remove('active');
-  onbCurrentStep--;
-  document.getElementById('onb-step-' + onbCurrentStep).classList.add('active');
-  document.getElementById('onb-dot-' + onbCurrentStep).classList.add('active');
-  document.getElementById('onb-next-btn').textContent = onbCurrentStep === ONB_TOTAL ? 'Done' : 'Next';
-  updateOnbBackBtn();
-  clearOnbAnimations();
-  if (onbCurrentStep === 1) runOnbAnim1();
-  else if (onbCurrentStep === 3) runOnbAnim3();
-  else if (onbCurrentStep === 4) runOnbAnim4();
+  const fromEl  = document.getElementById('onb-step-' + onbCurrentStep);
+  const fromDot = document.getElementById('onb-dot-' + onbCurrentStep);
+  const prevNum = onbCurrentStep - 1;
+  const toEl    = document.getElementById('onb-step-' + prevNum);
+  const toDot   = document.getElementById('onb-dot-' + prevNum);
+  fromEl.style.transition = 'opacity 0.18s ease-in, transform 0.18s ease-in';
+  fromEl.style.opacity    = '0';
+  fromEl.style.transform  = 'translateX(20px)';
+  setTimeout(() => {
+    fromEl.classList.remove('active');
+    fromEl.style.transition = fromEl.style.opacity = fromEl.style.transform = '';
+    fromDot.classList.remove('active');
+    onbCurrentStep = prevNum;
+    toEl.setAttribute('data-onb-dir', 'back');
+    toEl.classList.add('active');
+    toDot.classList.add('active');
+    setTimeout(() => toEl.removeAttribute('data-onb-dir'), 400);
+    document.getElementById('onb-next-btn').textContent = onbCurrentStep === ONB_TOTAL ? 'Done' : 'Next';
+    updateOnbBackBtn();
+    updateOnbCTAText(onbCurrentStep, true);
+    clearOnbAnimations();
+    if (onbCurrentStep === 1) runOnbAnim1();
+    else if (onbCurrentStep === 2) runOnbAnim2();
+    else if (onbCurrentStep === 3) runOnbAnim3();
+    else if (onbCurrentStep === 4) runOnbAnim4();
+  }, 185);
 }
 
 function applyOnbProfile() {
@@ -4815,18 +5115,6 @@ function showOnboarding() {
   if (localStorage.getItem('rr_onboarded')) return;
   onbCurrentStep = 1;
   onbSelectedStyle = 'all_mountain';
-  const step4body = document.getElementById('onb-step-4-body');
-  if (step4body) {
-    step4body.textContent = isGuest
-      ? 'Sign up free to save your setups and access them from your phone, even at the trailhead.'
-      : 'Your setups are saved to your account. Access them from any device, even at the trailhead.';
-  }
-  // Reset profile form
-  const wi = document.getElementById('onb-weight-input');
-  if (wi) wi.value = '';
-  document.querySelectorAll('.onb-style-btn').forEach(b => {
-    b.classList.toggle('selected', b.dataset.style === 'all_mountain');
-  });
   document.querySelectorAll('.onb-step').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.onb-dot').forEach(d => d.classList.remove('active'));
   document.getElementById('onb-step-1').classList.add('active');
@@ -4834,24 +5122,37 @@ function showOnboarding() {
   document.getElementById('onb-next-btn').textContent = 'Next';
   document.getElementById('onb-overlay').classList.add('open');
   updateOnbBackBtn();
+  updateOnbCTAText(1, false);
   clearOnbAnimations();
   runOnbAnim1();
 }
 
 function nextOnboardingStep() {
   if (onbCurrentStep < ONB_TOTAL) {
-    document.getElementById('onb-step-' + onbCurrentStep).classList.remove('active');
-    document.getElementById('onb-dot-' + onbCurrentStep).classList.remove('active');
-    onbCurrentStep++;
-    document.getElementById('onb-step-' + onbCurrentStep).classList.add('active');
-    document.getElementById('onb-dot-' + onbCurrentStep).classList.add('active');
-    if (onbCurrentStep === ONB_TOTAL) {
-      document.getElementById('onb-next-btn').textContent = 'Done';
-    }
-    updateOnbBackBtn();
-    clearOnbAnimations();
-    if (onbCurrentStep === 3) runOnbAnim3();
-    else if (onbCurrentStep === 4) runOnbAnim4();
+    const fromEl  = document.getElementById('onb-step-' + onbCurrentStep);
+    const fromDot = document.getElementById('onb-dot-' + onbCurrentStep);
+    const nextNum = onbCurrentStep + 1;
+    const toEl    = document.getElementById('onb-step-' + nextNum);
+    const toDot   = document.getElementById('onb-dot-' + nextNum);
+    fromEl.style.transition = 'opacity 0.18s ease-in, transform 0.18s ease-in';
+    fromEl.style.opacity    = '0';
+    fromEl.style.transform  = 'translateX(-20px)';
+    setTimeout(() => {
+      fromEl.classList.remove('active');
+      fromEl.style.transition = fromEl.style.opacity = fromEl.style.transform = '';
+      fromDot.classList.remove('active');
+      onbCurrentStep = nextNum;
+      toEl.removeAttribute('data-onb-dir');
+      toEl.classList.add('active');
+      toDot.classList.add('active');
+      if (onbCurrentStep === ONB_TOTAL) document.getElementById('onb-next-btn').textContent = 'Done';
+      updateOnbBackBtn();
+      updateOnbCTAText(onbCurrentStep, true);
+      clearOnbAnimations();
+      if (onbCurrentStep === 2) runOnbAnim2();
+      else if (onbCurrentStep === 3) runOnbAnim3();
+      else if (onbCurrentStep === 4) runOnbAnim4();
+    }, 185);
   } else {
     completeOnboarding();
   }
@@ -4892,8 +5193,8 @@ function renderFixitTab() {
   const inner = document.getElementById('fixit-inner');
   inner.innerHTML = `
     <div class="fixit-header">
-      <h2 class="fixit-title">Suspension Feel</h2>
-      <p class="fixit-desc">Something feels off on the trail? Pick a symptom below. Each card shows ordered fixes for your fork or shock, starting with the quickest trailside adjustment.</p>
+      <h2 class="fixit-title">Tips & Tricks</h2>
+      <p class="fixit-desc">Something feels off on the trail? Pick a symptom below — each card gives you ordered fixes, quickest trailside adjustment first.</p>
     </div>
     <div class="fixit-cards">
       ${SYMPTOM_FIXES.map(s => `
@@ -4910,7 +5211,7 @@ function renderFixitTab() {
             <ol class="fixit-fix-list">
               ${s.fixes.map(f => `
                 <li class="fixit-fix-item">
-                  <div class="fixit-fix-title">${f.title}</div>
+                  <div class="fixit-fix-title"><i class="fa-solid ${f.icon} fixit-fix-icon"></i>${f.title}</div>
                   <div class="fixit-fix-detail">${f.detail}</div>
                 </li>
               `).join('')}
@@ -5580,7 +5881,7 @@ renderTyreSaves();
 <div id="auth-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:1000;align-items:center;justify-content:center;padding:20px;">
   <div class="auth-card">
     <div class="auth-logo">
-      <img src="logo.png" alt="RideReady" style="width:80px;height:80px;border-radius:16px;margin-bottom:10px;">
+      <img src="logo-new.png" alt="RideReady" style="width:80px;height:80px;border-radius:16px;margin-bottom:10px;">
       <div class="auth-app-name">RideReady</div>
       <div class="auth-app-sub">Suspension setup for every trail</div>
     </div>
