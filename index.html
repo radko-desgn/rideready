@@ -334,7 +334,7 @@
       border-radius: var(--radius-sm);
       border: none;
       background: var(--orange);
-      color: #111;
+      color: #fff;
       font-size: 0.9rem;
       font-weight: 800;
       letter-spacing: 0.1em;
@@ -410,7 +410,7 @@
       flex-shrink: 0;
       overflow: hidden;
     }
-    .rc-icon.fork-icon  { background: var(--orange);       color: #111; }
+    .rc-icon.fork-icon  { background: var(--orange);       color: #fff; }
     .rc-icon.shock-icon { background: var(--shock-accent); color: #111; }
 
     /* ── Bike part sprite icons — result cards (36px, white on coloured circles) ── */
@@ -719,7 +719,7 @@
       background: rgba(224,48,16,0.08);
     }
     .hist-save-btn {
-      width: 100%; padding: 13px; background: var(--fork-accent); color: #000;
+      width: 100%; padding: 13px; background: var(--fork-accent); color: #fff;
       border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer;
     }
     .hist-save-btn:disabled { opacity: 0.35; cursor: not-allowed; }
@@ -757,7 +757,7 @@
     .onb-body-area {
       flex: 1; display: flex; flex-direction: column;
       align-items: stretch; justify-content: flex-start;
-      padding: 0 20px 8px; overflow: hidden; min-height: 0;
+      padding: 0; overflow: hidden; min-height: 0;
     }
     .onb-steps { width: 100%; height: 100%; text-align: center; }
     .onb-step { display: none; flex-direction: column; align-items: stretch; gap: 0; height: 100%; }
@@ -794,231 +794,28 @@
     .onb-step.active .onb-weight-input:not(:focus) {
       animation: onbInputHint 2s ease 1.2s 2;
     }
-    .onb-visual { width: 100%; flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-    /* App screen mockup */
-    .onb-mock-screen {
-      width: 100%; background: var(--bg);
-      border-radius: 20px; border: 1px solid var(--border-strong);
-      overflow: hidden; box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+    .onb-demo-area {
+      flex: 1; overflow-y: auto; overflow-x: hidden;
+      -webkit-overflow-scrolling: touch; position: relative;
+      text-align: left;
     }
-    .onb-mock-bar {
-      display: flex; align-items: center; justify-content: center;
-      padding: 11px 16px; border-bottom: 1px solid var(--border);
+    .onb-demo-area * { pointer-events: none; cursor: default; }
+    .onb-cursor {
+      position: fixed; width: 28px; height: 28px; border-radius: 50%;
+      border: 2px solid var(--fork-accent); background: rgba(224,48,16,0.18);
+      pointer-events: none; z-index: 2100; opacity: 0;
+      transform: translate(-50%, -50%) scale(0.4);
+      transition: left 0.45s cubic-bezier(0.16,1,0.3,1), top 0.45s cubic-bezier(0.16,1,0.3,1), opacity 0.22s, transform 0.22s;
+      will-change: left, top;
     }
-    .onb-mock-bar-title { font-size: 13px; font-weight: 700; color: var(--text); letter-spacing: 0.01em; }
-    .onb-mock-body { padding: 14px 16px; }
-    /* Step 1: result card */
-    .onb-mock-result-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 14px; padding: 16px 18px;
+    .onb-cursor.visible { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    @keyframes onbCursorTap {
+      0%   { transform: translate(-50%,-50%) scale(1); background: rgba(224,48,16,0.18); }
+      35%  { transform: translate(-50%,-50%) scale(0.68); background: rgba(224,48,16,0.38); }
+      100% { transform: translate(-50%,-50%) scale(1); background: rgba(224,48,16,0.18); }
     }
-    .onb-mock-tag {
-      font-size: 10px; font-weight: 700; color: var(--text-muted);
-      letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 8px;
-      opacity: 0; transform: translateY(8px);
-      transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .onb-mock-psi-row { display: flex; align-items: baseline; gap: 6px; margin-bottom: 10px; }
-    .onb-mock-psi-num {
-      font-size: 54px; font-weight: 800; color: var(--fork-accent); line-height: 1;
-      opacity: 0; transition: opacity 0.3s, filter 0.1s;
-    }
-    .onb-mock-psi-unit {
-      font-size: 18px; font-weight: 700; color: var(--text-muted);
-      opacity: 0; transition: opacity 0.3s 0.12s;
-    }
-    .onb-mock-sag-badge {
-      display: inline-flex; align-items: center; gap: 5px;
-      background: rgba(224,48,16,0.1); color: var(--fork-accent);
-      border: 1px solid rgba(224,48,16,0.25);
-      border-radius: 6px; padding: 4px 10px; font-size: 11px; font-weight: 600;
-      margin-bottom: 10px;
-      opacity: 0; transform: translateY(6px) scale(0.9);
-      transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .onb-mock-damp-row {
-      display: flex; gap: 18px;
-      opacity: 0; transform: translateY(6px);
-      transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .onb-mock-damp-item { display: flex; flex-direction: column; gap: 2px; }
-    .onb-mock-damp-lbl { font-size: 9px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
-    .onb-mock-damp-val { font-size: 13px; font-weight: 700; color: var(--text); }
-    /* Step 3: calculator flow */
-    .onb-mock-selector {
-      display: flex; align-items: center;
-      background: var(--surface2); border: 1px solid var(--border);
-      border-radius: 10px; padding: 10px 12px; margin-bottom: 8px;
-      opacity: 0; transform: translateY(8px);
-      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s;
-    }
-    .onb-mock-selector.filled { border-color: rgba(224,48,16,0.4); }
-    .onb-mock-sel-lbl { font-size: 9px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; width: 44px; flex-shrink: 0; }
-    .onb-mock-sel-val { font-size: 13px; font-weight: 600; color: var(--text); flex: 1; }
-    .onb-mock-sel-val.placeholder { color: var(--text-muted); font-weight: 400; font-size: 12px; }
-    .onb-mock-sel-chev { font-size: 9px; color: var(--text-muted); flex-shrink: 0; }
-    .onb-mock-weight-chip {
-      display: flex; align-items: center; gap: 6px;
-      background: var(--surface2); border: 1px solid var(--border);
-      border-radius: 8px; padding: 8px 12px; margin-bottom: 8px;
-      font-size: 12px; font-weight: 600; color: var(--text);
-      opacity: 0; transform: translateY(8px);
-      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .onb-mock-weight-chip i { color: var(--fork-accent); font-size: 11px; }
-    .onb-mock-calc-btn {
-      width: 100%; padding: 11px; background: var(--fork-accent); color: #fff;
-      border: none; border-radius: 10px; font-size: 13px; font-weight: 700;
-      display: flex; align-items: center; justify-content: center; gap: 7px;
-      margin-bottom: 10px;
-      opacity: 0; transform: translateY(8px);
-      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-      cursor: default;
-    }
-    .onb-mock-result-reveal {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 12px; padding: 12px 14px;
-      display: flex; align-items: baseline; gap: 6px;
-      opacity: 0; transform: translateY(10px) scale(0.94);
-      transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .onb-mock-result-num { font-size: 30px; font-weight: 800; color: var(--fork-accent); line-height: 1; }
-    .onb-mock-result-unit { font-size: 13px; font-weight: 700; color: var(--text-muted); }
-    /* Step 4: saves screen */
-    .onb-mock-save-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 14px; padding: 14px 16px;
-      opacity: 0; transform: translateY(12px) scale(0.97);
-      transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .onb-mock-save-hdr {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 10px;
-    }
-    .onb-mock-save-name {
-      font-size: 13px; font-weight: 700; color: var(--text);
-      opacity: 0; transform: translateY(5px);
-      transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .onb-mock-bm { font-size: 13px; color: var(--fork-accent); opacity: 0; transition: opacity 0.4s; }
-    @keyframes onb-bm-pulse {
-      0%   { transform: scale(1) rotate(0deg); }
-      20%  { transform: scale(1.65) rotate(-18deg); }
-      48%  { transform: scale(0.82) rotate(6deg); }
-      68%  { transform: scale(1.12) rotate(-3deg); }
-      84%  { transform: scale(0.96); }
-      100% { transform: scale(1) rotate(0deg); }
-    }
-    .onb-mock-bm.pumping { animation: onb-bm-pulse 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-    .onb-mock-save-row {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 8px 0; border-top: 1px solid var(--border);
-      opacity: 0; transform: translateY(5px);
-      transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .onb-mock-save-lbl { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
-    .onb-mock-save-val { font-size: 12px; font-weight: 600; color: var(--text-secondary); }
-    .onb-mock-save-psi { color: var(--fork-accent); }
-    /* Step 2: tyre mockup */
-    .onb-mock-bar-tabs { display: flex; gap: 16px; }
-    .onb-mock-bar-tab {
-      font-size: 12px; font-weight: 600; color: var(--text-muted);
-      padding-bottom: 3px; border-bottom: 2px solid transparent; cursor: default;
-    }
-    .onb-mock-bar-tab.active { color: var(--text); border-bottom-color: var(--fork-accent); }
-    .onb-mock-terrain-row {
-      display: flex; gap: 6px; margin-bottom: 10px;
-      opacity: 0; transform: translateY(8px);
-      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .onb-mock-terrain-chip {
-      flex: 1; padding: 8px 4px; text-align: center;
-      font-size: 11px; font-weight: 600; color: var(--text-secondary);
-      background: var(--surface2); border: 1px solid var(--border); border-radius: 7px;
-      transition: border-color 0.25s, color 0.25s, background 0.25s;
-    }
-    .onb-mock-terrain-chip.selected {
-      border-color: var(--fork-accent); color: var(--fork-accent);
-      background: rgba(224,48,16,0.08);
-    }
-    .onb-mock-tyre-result {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 14px; padding: 10px 16px;
-      opacity: 0; transform: translateY(10px) scale(0.96);
-      transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .onb-mock-tyre-row {
-      display: flex; justify-content: space-between; align-items: center; padding: 7px 0;
-    }
-    .onb-mock-tyre-row + .onb-mock-tyre-row { border-top: 1px solid var(--border); }
-    .onb-mock-tyre-lbl {
-      font-size: 11px; font-weight: 700; color: var(--text-muted);
-      text-transform: uppercase; letter-spacing: 0.05em;
-    }
-    .onb-mock-tyre-psi { font-size: 30px; font-weight: 800; color: var(--fork-accent); line-height: 1; }
-    .onb-mock-tyre-unit { font-size: 13px; font-weight: 700; color: var(--text-muted); margin-left: 3px; }
-    /* Step 4: feel/fixit mockup */
-    .onb-mock-symptom {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 12px; padding: 11px 14px; margin-bottom: 7px;
-      opacity: 0; transform: translateY(8px);
-      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .onb-mock-symptom-hdr { display: flex; align-items: center; gap: 9px; }
-    .onb-mock-symptom-icon { font-size: 13px; color: var(--fork-accent); flex-shrink: 0; }
-    .onb-mock-symptom-lbl { font-size: 12px; font-weight: 700; color: var(--text); flex: 1; }
-    .onb-mock-symptom-badge {
-      font-size: 9px; font-weight: 700; color: var(--text-muted);
-      text-transform: uppercase; letter-spacing: 0.04em;
-      background: var(--surface2); border: 1px solid var(--border);
-      border-radius: 4px; padding: 2px 6px; flex-shrink: 0;
-    }
-    .onb-mock-fixes {
-      overflow: hidden; max-height: 0;
-      transition: max-height 0.45s cubic-bezier(0.16, 1, 0.3, 1), margin-top 0.3s;
-    }
-    .onb-mock-symptom.expanded .onb-mock-fixes { max-height: 110px; margin-top: 10px; }
-    .onb-mock-fix {
-      font-size: 11px; font-weight: 600; color: var(--text-secondary);
-      display: flex; align-items: center; gap: 7px; padding: 3px 0;
-      opacity: 0; transform: translateY(4px);
-      transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .onb-mock-symptom.expanded .onb-mock-fix { opacity: 1; transform: translateY(0); }
-    .onb-mock-symptom.expanded .onb-mock-fixes .onb-mock-fix:nth-child(2) { transition-delay: 0.1s; }
-    .onb-mock-symptom.expanded .onb-mock-fixes .onb-mock-fix:nth-child(3) { transition-delay: 0.2s; }
-    .onb-mock-fix i { color: var(--fork-accent); width: 11px; text-align: center; font-size: 10px; }
-    /* Profile form (kept for potential use but hidden in onboarding) */
-    .onb-profile-form {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 16px; padding: 18px 20px; width: 100%;
-    }
-    .onb-form-lbl {
-      font-size: 10px; font-weight: 700; color: var(--text-muted);
-      text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px;
-    }
-    .onb-weight-row { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-    .onb-weight-input {
-      flex: 1; padding: 10px 14px; background: var(--surface2);
-      border: 1px solid var(--border); border-radius: 10px;
-      color: var(--text); font-size: 22px; font-weight: 700;
-      outline: none; -moz-appearance: textfield; width: 0;
-    }
-    .onb-weight-input::-webkit-outer-spin-button,
-    .onb-weight-input::-webkit-inner-spin-button { -webkit-appearance: none; }
-    .onb-weight-input:focus { border-color: var(--fork-accent); }
-    .onb-weight-unit { font-size: 14px; font-weight: 700; color: var(--text-muted); }
-    .onb-style-row { display: flex; gap: 6px; }
-    .onb-style-btn {
-      flex: 1; padding: 9px 4px; background: var(--surface2);
-      border: 1px solid var(--border); border-radius: 8px;
-      color: var(--text-secondary); font-size: 11px; font-weight: 600;
-      cursor: pointer; text-align: center; transition: border-color 0.15s, color 0.15s, background 0.15s;
-    }
-    .onb-style-btn.selected {
-      border-color: var(--fork-accent); color: var(--fork-accent);
-      background: rgba(224,48,16,0.08);
-    }
+    .onb-cursor.tapping { animation: onbCursorTap 0.38s cubic-bezier(0.16,1,0.3,1) both; }
+    .onb-hl { box-shadow: 0 0 0 2.5px rgba(224,48,16,0.75) !important; transition: box-shadow 0.15s !important; }
     .onb-title {
       font-size: 20px; font-weight: 800; color: var(--text); line-height: 1.2; margin: 0 0 5px;
     }
@@ -1049,13 +846,8 @@
       .onb-overlay.open { animation: none; }
       .onb-step.active { animation: none; }
       .onb-cta-title.anim, .onb-cta-body.anim { animation: none; }
-      .onb-step.active .onb-profile-form,
-      .onb-step.active .onb-weight-input { animation: none; }
-      .onb-mock-tag, .onb-mock-psi-num, .onb-mock-psi-unit,
-      .onb-mock-sag-badge, .onb-mock-damp-row, .onb-mock-selector,
-      .onb-mock-terrain-row, .onb-mock-terrain-chip, .onb-mock-tyre-result,
-      .onb-mock-save-card, .onb-mock-save-name, .onb-mock-save-row,
-      .onb-mock-symptom, .onb-mock-fixes, .onb-mock-fix { transition: none; }
+      .onb-cursor { transition: none; animation: none; }
+      #onbd-rc1, #onbd-rc2, #onbd-scard3 { transition: none !important; }
     }
 
     /* Unit toggle */
@@ -1234,7 +1026,7 @@
       border-radius: var(--radius-sm);
       border: none;
       background: var(--orange);
-      color: #111;
+      color: #fff;
       font-size: 0.85rem;
       font-weight: 800;
       cursor: pointer;
@@ -1351,7 +1143,7 @@
       padding: 0 12px;
       background: var(--orange);
       border-color: var(--orange);
-      color: #111;
+      color: #fff;
       font-size: 0.72rem;
       font-weight: 800;
       letter-spacing: 0.04em;
@@ -1660,7 +1452,7 @@
     .rs-btn.active {
       background: var(--orange);
       border-color: var(--orange);
-      color: #111;
+      color: #fff;
     }
     .rs-btn .rs-icon {
       display: block;
@@ -1678,7 +1470,7 @@
       opacity: 0.8;
       line-height: 1.3;
     }
-    .rs-btn.active .rs-hint { color: rgba(17,17,17,0.6); opacity: 1; }
+    .rs-btn.active .rs-hint { color: rgba(255,255,255,0.65); opacity: 1; }
 
     /* ── Damping section in result card ── */
     .damping-section {
@@ -1906,7 +1698,7 @@
   .auth-btn-primary {
     width: 100%;
     background: var(--orange);
-    color: #000;
+    color: #fff;
     border: none;
     border-radius: var(--radius-sm);
     padding: 14px;
@@ -2056,7 +1848,7 @@
     top: 10px;
     right: calc(50% - 18px);
     background: var(--orange);
-    color: #111;
+    color: #fff;
     font-size: 0.55rem;
     font-weight: 800;
     min-width: 15px;
@@ -2113,7 +1905,7 @@
   .settings-guest-cta-btn.primary {
     background: var(--orange);
     border-color: var(--orange);
-    color: #000;
+    color: #fff;
   }
   .settings-guest-cta-btn.primary:hover { opacity: 0.88; }
 
@@ -2183,7 +1975,7 @@
     width: 44px; height: 44px;
     border-radius: 50%;
     background: var(--orange);
-    color: #111;
+    color: #fff;
     display: flex; align-items: center; justify-content: center;
     font-size: 1.1rem;
     font-weight: 800;
@@ -2761,124 +2553,283 @@
   <div class="onb-body-area">
   <div class="onb-steps">
 
+    <!-- STEP 1: Suspension calculator — real input panel + result -->
     <div class="onb-step active" id="onb-step-1">
-      <div class="onb-visual">
-        <div class="onb-mock-screen">
-          <div class="onb-mock-bar"><span class="onb-mock-bar-title">Setup</span></div>
-          <div class="onb-mock-body">
-            <div class="onb-mock-result-card">
-              <div class="onb-mock-tag" id="onb-m1-tag">Fork · RockShox Lyrik</div>
-              <div class="onb-mock-psi-row">
-                <span class="onb-mock-psi-num" id="onb-v1-num">0</span>
-                <span class="onb-mock-psi-unit" id="onb-v1-unit">PSI</span>
+      <div class="onb-demo-area" id="onbd-area-1">
+        <div class="input-panel">
+          <div class="weight-section">
+            <div class="panel-row-label">Rider Weight</div>
+            <div class="weight-inner" id="onbd-wi-1">
+              <input type="number" id="onbd-w-1" placeholder="75" />
+              <span class="kg-badge">KG</span>
+            </div>
+          </div>
+          <div class="panel-row-label">Ride Style</div>
+          <div class="ride-style-row">
+            <button class="rs-btn" id="onbd-rs-xc">
+              <span class="rs-icon"><i class="fa-solid fa-route"></i></span>XC / Trail<span class="rs-hint">Firmer, faster</span>
+            </button>
+            <button class="rs-btn active" id="onbd-rs-am">
+              <span class="rs-icon"><i class="fa-solid fa-mountain"></i></span>All Mountain<span class="rs-hint">Balanced setup</span>
+            </button>
+            <button class="rs-btn" id="onbd-rs-ed">
+              <span class="rs-icon"><i class="fa-solid fa-flag-checkered"></i></span>Enduro / DH<span class="rs-hint">More sag, slower</span>
+            </button>
+          </div>
+          <div class="panel-row-label">Your Gear</div>
+          <div class="selectors-grid">
+            <div class="selector-box" id="onbd-fbox">
+              <div class="box-label">Fork</div>
+              <div class="cs-wrap">
+                <button class="cs-trigger">
+                  <span class="cs-value placeholder" id="onbd-fval">Select fork model…</span>
+                  <span class="cs-chevron"><i class="fa-solid fa-chevron-down"></i></span>
+                </button>
               </div>
-              <div class="onb-mock-sag-badge" id="onb-v1-sag">
-                <i class="fa-solid fa-circle-info" style="font-size:8px"></i> 25–30% · 37–45 mm
+            </div>
+            <div class="selector-box" id="onbd-sbox">
+              <div class="box-label">Rear Shock</div>
+              <div class="cs-wrap">
+                <button class="cs-trigger">
+                  <span class="cs-value placeholder" id="onbd-sval">Select shock…</span>
+                  <span class="cs-chevron"><i class="fa-solid fa-chevron-down"></i></span>
+                </button>
               </div>
-              <div class="onb-mock-damp-row" id="onb-v1-damp">
-                <div class="onb-mock-damp-item"><span class="onb-mock-damp-lbl">Rebound</span><span class="onb-mock-damp-val">8 clicks</span></div>
-                <div class="onb-mock-damp-item"><span class="onb-mock-damp-lbl">LSC</span><span class="onb-mock-damp-val">5 clicks</span></div>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="calc-btn" id="onbd-calc1"><i class="fa-solid fa-bolt"></i> Calculate Pressure</button>
+          </div>
+        </div>
+        <div class="results-grid" id="onbd-rc1" style="opacity:0;transform:translateY(16px);transition:opacity .55s cubic-bezier(.16,1,.3,1),transform .55s cubic-bezier(.16,1,.3,1)">
+          <div class="result-card visible">
+            <div class="rc-top">
+              <div class="rc-model">
+                <div class="rc-icon fork-icon"><span class="bike-part-icon bike-fork-icon"></span></div>
+                <div><div class="rc-model-name">Lyrik Ultimate</div><div class="rc-model-sub">RockShox · Trail</div></div>
               </div>
+              <div class="rc-type-tag">Fork</div>
+            </div>
+            <div class="unit-toggle"><button class="active">PSI</button><button>BAR</button></div>
+            <div class="rc-psi">
+              <div class="psi-num fork-color"><span>95</span><span class="psi-unit">PSI</span></div>
+              <div class="psi-sub">Starting pressure · 172 lbs rider</div>
+            </div>
+            <div class="range-bar-wrap">
+              <div class="range-ends"><span>65 PSI</span><span>130 PSI</span></div>
+              <div class="range-bar"><div class="range-bar-fill fork-fill" style="width:46%"></div><div class="range-bar-dot fork-dot" style="left:46%"></div></div>
+            </div>
+            <div class="meta-chips">
+              <div class="chip chip-sag"><div class="chip-label"><i class="fa-solid fa-percent"></i> Sag</div><div class="chip-val">25–30% · 37–45mm</div></div>
+              <div class="chip chip-range"><div class="chip-label"><i class="fa-solid fa-gauge"></i> PSI Range</div><div class="chip-val">90–100</div></div>
+              <div class="chip chip-spring"><div class="chip-label"><i class="fa-solid fa-wind"></i> Air Spring</div><div class="chip-val">DebonAir+</div></div>
             </div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- STEP 2: Tyre pressure calculator — real input panel + results -->
     <div class="onb-step" id="onb-step-2">
-      <div class="onb-visual">
-        <div class="onb-mock-screen">
-          <div class="onb-mock-bar">
-            <div class="onb-mock-bar-tabs">
-              <span class="onb-mock-bar-tab">Suspension</span>
-              <span class="onb-mock-bar-tab active">Tyres</span>
+      <div class="onb-demo-area" id="onbd-area-2">
+        <div class="input-panel">
+          <div class="panel-row-label">Wheel Configuration</div>
+          <div class="ws-row">
+            <button class="rs-btn" id="onbd-ws26">26"</button>
+            <button class="rs-btn active" id="onbd-ws275">27.5"</button>
+            <button class="rs-btn" id="onbd-ws29">29"</button>
+            <button class="rs-btn" id="onbd-wsmul">Mullet</button>
+          </div>
+          <div class="tyre-wheel-section">
+            <div class="panel-row-label">Front Tyre</div>
+            <div class="selectors-grid">
+              <div class="selector-box" id="onbd-ftbox">
+                <div class="box-label">Brand / Model</div>
+                <div class="cs-wrap"><button class="cs-trigger"><span class="cs-value placeholder" id="onbd-ftval">Select front tyre…</span><span class="cs-chevron"><i class="fa-solid fa-chevron-down"></i></span></button></div>
+              </div>
+              <div class="selector-box" id="onbd-ftwbox">
+                <div class="box-label">Width</div>
+                <div class="cs-wrap"><button class="cs-trigger"><span class="cs-value placeholder" id="onbd-ftwval">Select width…</span><span class="cs-chevron"><i class="fa-solid fa-chevron-down"></i></span></button></div>
+              </div>
+            </div>
+            <div class="tubeless-row">
+              <span class="tubeless-label">Tubeless</span>
+              <label class="toggle-switch"><input type="checkbox" id="onbd-ftl"><span class="toggle-slider"></span></label>
             </div>
           </div>
-          <div class="onb-mock-body">
-            <div class="onb-mock-selector" id="onb-m2-brand">
-              <span class="onb-mock-sel-lbl">Brand</span>
-              <span class="onb-mock-sel-val placeholder" id="onb-m2-brand-val">Select brand…</span>
-              <i class="fa-solid fa-chevron-down onb-mock-sel-chev"></i>
-            </div>
-            <div class="onb-mock-selector" id="onb-m2-model">
-              <span class="onb-mock-sel-lbl">Tyre</span>
-              <span class="onb-mock-sel-val placeholder" id="onb-m2-model-val">Select tyre…</span>
-              <i class="fa-solid fa-chevron-down onb-mock-sel-chev"></i>
-            </div>
-            <div class="onb-mock-terrain-row" id="onb-m2-terrain">
-              <span class="onb-mock-terrain-chip" id="onb-m2-t1">Hardpack</span>
-              <span class="onb-mock-terrain-chip" id="onb-m2-t2">Mixed</span>
-              <span class="onb-mock-terrain-chip" id="onb-m2-t3">Loam</span>
-            </div>
-            <div class="onb-mock-tyre-result" id="onb-m2-result">
-              <div class="onb-mock-tyre-row">
-                <span class="onb-mock-tyre-lbl">Front</span>
-                <span class="onb-mock-tyre-psi">26<span class="onb-mock-tyre-unit"> PSI</span></span>
+          <div class="tyre-wheel-section">
+            <div class="panel-row-label">Rear Tyre</div>
+            <div class="selectors-grid">
+              <div class="selector-box" id="onbd-rtbox">
+                <div class="box-label">Brand / Model</div>
+                <div class="cs-wrap"><button class="cs-trigger"><span class="cs-value placeholder" id="onbd-rtval">Select rear tyre…</span><span class="cs-chevron"><i class="fa-solid fa-chevron-down"></i></span></button></div>
               </div>
-              <div class="onb-mock-tyre-row">
-                <span class="onb-mock-tyre-lbl">Rear</span>
-                <span class="onb-mock-tyre-psi">28<span class="onb-mock-tyre-unit"> PSI</span></span>
+              <div class="selector-box" id="onbd-rtwbox">
+                <div class="box-label">Width</div>
+                <div class="cs-wrap"><button class="cs-trigger"><span class="cs-value placeholder" id="onbd-rtwval">Select width…</span><span class="cs-chevron"><i class="fa-solid fa-chevron-down"></i></span></button></div>
               </div>
+            </div>
+            <div class="tubeless-row">
+              <span class="tubeless-label">Tubeless</span>
+              <label class="toggle-switch"><input type="checkbox" id="onbd-rtl"><span class="toggle-slider"></span></label>
+            </div>
+          </div>
+          <div class="tyre-wheel-section">
+            <div class="panel-row-label">Terrain Conditions</div>
+            <div class="ride-style-row">
+              <button class="rs-btn active" id="onbd-tdry"><span class="rs-icon"><i class="fa-solid fa-sun"></i></span>Dry</button>
+              <button class="rs-btn" id="onbd-tmix"><span class="rs-icon"><i class="fa-solid fa-cloud-sun"></i></span>Mixed</button>
+              <button class="rs-btn" id="onbd-twet"><span class="rs-icon"><i class="fa-solid fa-cloud-rain"></i></span>Wet</button>
+            </div>
+          </div>
+          <div class="tyre-wheel-section">
+            <div class="panel-row-label">Rider Weight</div>
+            <div class="weight-inner" id="onbd-wi-2">
+              <input type="number" id="onbd-w-2" placeholder="75" />
+              <span class="kg-badge">KG</span>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="calc-btn" id="onbd-calc2"><i class="fa-solid fa-bolt"></i> Calculate Pressure</button>
+          </div>
+        </div>
+        <div class="results-grid" id="onbd-rc2" style="opacity:0;transform:translateY(16px);transition:opacity .55s cubic-bezier(.16,1,.3,1),transform .55s cubic-bezier(.16,1,.3,1)">
+          <div class="result-card visible">
+            <div class="rc-top">
+              <div class="rc-model">
+                <div class="rc-icon tyre-front-icon" style="display:flex;align-items:center;justify-content:center"><i class="fa-solid fa-tire" style="font-size:14px"></i></div>
+                <div><div class="rc-model-name">Front — Minion DHF</div><div class="rc-model-sub">Maxxis · 2.5"</div></div>
+              </div>
+            </div>
+            <div class="rc-psi">
+              <div class="psi-num tyre-front-color"><span>26</span><span class="psi-unit">PSI</span></div>
+              <div class="psi-sub">Mixed terrain · 172 lbs</div>
+            </div>
+          </div>
+          <div class="result-card visible">
+            <div class="rc-top">
+              <div class="rc-model">
+                <div class="rc-icon tyre-rear-icon" style="display:flex;align-items:center;justify-content:center"><i class="fa-solid fa-tire" style="font-size:14px"></i></div>
+                <div><div class="rc-model-name">Rear — Aggressor</div><div class="rc-model-sub">Maxxis · 2.3"</div></div>
+              </div>
+            </div>
+            <div class="rc-psi">
+              <div class="psi-num tyre-rear-color"><span>28</span><span class="psi-unit">PSI</span></div>
+              <div class="psi-sub">Mixed terrain · 172 lbs</div>
             </div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- STEP 3: Save a setup — real save strip + saved card -->
     <div class="onb-step" id="onb-step-3">
-      <div class="onb-visual">
-        <div class="onb-mock-screen">
-          <div class="onb-mock-bar"><span class="onb-mock-bar-title">Saved</span></div>
-          <div class="onb-mock-body">
-            <div class="onb-mock-save-card" id="onb-m3-card">
-              <div class="onb-mock-save-hdr">
-                <span class="onb-mock-save-name" id="onb-m3-name">Trail Setup</span>
-                <i class="fa-solid fa-bookmark onb-mock-bm" id="onb-m3-bm"></i>
-              </div>
-              <div class="onb-mock-save-row" id="onb-m3-fork">
-                <span class="onb-mock-save-lbl">Fork</span>
-                <span class="onb-mock-save-val">Lyrik · <span class="onb-mock-save-psi">95 PSI</span></span>
-              </div>
-              <div class="onb-mock-save-row" id="onb-m3-shock">
-                <span class="onb-mock-save-lbl">Shock</span>
-                <span class="onb-mock-save-val">Super Deluxe · <span class="onb-mock-save-psi">185 PSI</span></span>
-              </div>
+      <div class="onb-demo-area" id="onbd-area-3" style="padding:0 16px 16px">
+        <div class="result-card visible" style="margin-bottom:0">
+          <div class="rc-top">
+            <div class="rc-model">
+              <div class="rc-icon fork-icon"><span class="bike-part-icon bike-fork-icon"></span></div>
+              <div><div class="rc-model-name">Lyrik Ultimate</div><div class="rc-model-sub">RockShox · Trail</div></div>
+            </div>
+            <div class="rc-type-tag">Fork</div>
+          </div>
+          <div class="rc-psi">
+            <div class="psi-num fork-color"><span>95</span><span class="psi-unit">PSI</span></div>
+            <div class="psi-sub">Starting pressure · 172 lbs rider</div>
+          </div>
+        </div>
+        <div class="save-strip" id="onbd-strip3" style="display:block;margin-bottom:16px">
+          <button class="save-trigger-btn" id="onbd-strig3"><i class="fa-regular fa-bookmark"></i> Save this calculation</button>
+          <div class="save-name-row" id="onbd-srow3" style="display:none">
+            <input class="save-name-input" id="onbd-sname3" type="text" placeholder="Name this setup…" maxlength="40" />
+            <button class="save-confirm-btn" id="onbd-sconf3">Save</button>
+            <button class="save-cancel-btn"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+        </div>
+        <div class="saved-card" id="onbd-scard3" style="opacity:0;transform:translateY(14px);transition:opacity .5s cubic-bezier(.16,1,.3,1),transform .5s cubic-bezier(.16,1,.3,1)">
+          <div class="saved-card-top">
+            <div class="saved-card-name-wrap">
+              <div class="saved-card-name">Trail Setup</div>
+              <div class="saved-card-weight">78 kg · Enduro / DH</div>
+            </div>
+            <div class="saved-card-actions">
+              <button class="sc-action-btn edit-btn"><i class="fa-solid fa-pen"></i></button>
+              <button class="sc-action-btn delete-btn"><i class="fa-solid fa-trash"></i></button>
+            </div>
+          </div>
+          <div class="saved-card-results">
+            <div class="sc-result-box fork-box">
+              <div class="sc-result-label">Fork</div>
+              <div class="sc-result-model">Lyrik Ultimate</div>
+              <div class="sc-result-psi">95<span class="sc-unit"> PSI</span></div>
+              <div class="sc-result-bar"><div class="sc-result-bar-fill" style="width:46%"></div></div>
+            </div>
+            <div class="sc-result-box shock-box">
+              <div class="sc-result-label">Shock</div>
+              <div class="sc-result-model">Super Deluxe</div>
+              <div class="sc-result-psi">185<span class="sc-unit"> PSI</span></div>
+              <div class="sc-result-bar"><div class="sc-result-bar-fill" style="width:58%"></div></div>
             </div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- STEP 4: Suspension Feel — real fixit cards -->
     <div class="onb-step" id="onb-step-4">
-      <div class="onb-visual">
-        <div class="onb-mock-screen">
-          <div class="onb-mock-bar"><span class="onb-mock-bar-title">Suspension Feel</span></div>
-          <div class="onb-mock-body">
-            <div class="onb-mock-symptom" id="onb-m4-s1">
-              <div class="onb-mock-symptom-hdr">
-                <i class="fa-solid fa-wave-square onb-mock-symptom-icon"></i>
-                <span class="onb-mock-symptom-lbl">Harsh on small bumps</span>
-                <span class="onb-mock-symptom-badge">Both</span>
-              </div>
+      <div class="onb-demo-area" id="onbd-area-4" style="padding:0 16px 16px">
+        <div class="fixit-cards">
+          <div class="fixit-card" id="onbd-fc1" style="opacity:0;transform:translateY(8px);transition:opacity .4s cubic-bezier(.16,1,.3,1),transform .4s cubic-bezier(.16,1,.3,1)">
+            <button class="fixit-card-trigger">
+              <span class="fixit-card-icon"><i class="fa-solid fa-wave-square"></i></span>
+              <span class="fixit-card-meta">
+                <span class="fixit-card-label">Harsh on small bumps</span>
+                <span class="fixit-card-component">Fork &amp; Shock</span>
+              </span>
+              <span class="fixit-chevron" id="onbd-fchev1"><i class="fa-solid fa-chevron-right"></i></span>
+            </button>
+            <div class="fixit-card-body" id="onbd-fbody1">
+              <ul class="fixit-fix-list">
+                <li class="fixit-fix-item">
+                  <div class="fixit-fix-title"><span class="fixit-fix-icon"><i class="fa-solid fa-sliders"></i></span> Reduce high-speed compression (HSC)</div>
+                  <div class="fixit-fix-detail">Turn HSC 2–3 clicks out. This is the most common fix for a harsh feel on rough terrain.</div>
+                </li>
+                <li class="fixit-fix-item">
+                  <div class="fixit-fix-title"><span class="fixit-fix-icon"><i class="fa-solid fa-gauge"></i></span> Reduce air pressure by 5–10 PSI</div>
+                  <div class="fixit-fix-detail">Lower pressure gives more initial travel compliance. Drop 5 PSI at a time and test.</div>
+                </li>
+              </ul>
             </div>
-            <div class="onb-mock-symptom" id="onb-m4-s2">
-              <div class="onb-mock-symptom-hdr">
-                <i class="fa-solid fa-arrow-down-to-line onb-mock-symptom-icon"></i>
-                <span class="onb-mock-symptom-lbl">Bottoms out</span>
-                <span class="onb-mock-symptom-badge">Both</span>
-              </div>
-            </div>
-            <div class="onb-mock-symptom" id="onb-m4-s3">
-              <div class="onb-mock-symptom-hdr">
-                <i class="fa-solid fa-angles-down onb-mock-symptom-icon"></i>
-                <span class="onb-mock-symptom-lbl">Braking dive</span>
-                <span class="onb-mock-symptom-badge">Fork</span>
-              </div>
-              <div class="onb-mock-fixes">
-                <div class="onb-mock-fix"><i class="fa-solid fa-sliders"></i> Increase low-speed compression</div>
-                <div class="onb-mock-fix"><i class="fa-solid fa-gauge"></i> Add 5–10 PSI air pressure</div>
-              </div>
-            </div>
+          </div>
+          <div class="fixit-card" id="onbd-fc2" style="opacity:0;transform:translateY(8px);transition:opacity .4s cubic-bezier(.16,1,.3,1) .08s,transform .4s cubic-bezier(.16,1,.3,1) .08s">
+            <button class="fixit-card-trigger">
+              <span class="fixit-card-icon"><i class="fa-solid fa-arrow-down-to-line"></i></span>
+              <span class="fixit-card-meta">
+                <span class="fixit-card-label">Bottoms out</span>
+                <span class="fixit-card-component">Fork &amp; Shock</span>
+              </span>
+              <span class="fixit-chevron"><i class="fa-solid fa-chevron-right"></i></span>
+            </button>
+          </div>
+          <div class="fixit-card" id="onbd-fc3" style="opacity:0;transform:translateY(8px);transition:opacity .4s cubic-bezier(.16,1,.3,1) .16s,transform .4s cubic-bezier(.16,1,.3,1) .16s">
+            <button class="fixit-card-trigger">
+              <span class="fixit-card-icon"><i class="fa-solid fa-angles-down"></i></span>
+              <span class="fixit-card-meta">
+                <span class="fixit-card-label">Braking dive (fork)</span>
+                <span class="fixit-card-component">Fork</span>
+              </span>
+              <span class="fixit-chevron"><i class="fa-solid fa-chevron-right"></i></span>
+            </button>
+          </div>
+          <div class="fixit-card" id="onbd-fc4" style="opacity:0;transform:translateY(8px);transition:opacity .4s cubic-bezier(.16,1,.3,1) .24s,transform .4s cubic-bezier(.16,1,.3,1) .24s">
+            <button class="fixit-card-trigger">
+              <span class="fixit-card-icon"><i class="fa-solid fa-person-falling"></i></span>
+              <span class="fixit-card-meta">
+                <span class="fixit-card-label">Too much rebound</span>
+                <span class="fixit-card-component">Fork &amp; Shock</span>
+              </span>
+              <span class="fixit-chevron"><i class="fa-solid fa-chevron-right"></i></span>
+            </button>
           </div>
         </div>
       </div>
@@ -2886,6 +2837,7 @@
 
   </div>
   </div><!-- end .onb-body-area -->
+  <div class="onb-cursor" id="onb-cursor"></div>
   <div class="onb-cta">
     <div class="onb-cta-text">
       <h2 class="onb-title onb-cta-title" id="onb-cta-title">Dial in your suspension</h2>
@@ -4941,6 +4893,25 @@ function clearOnbAnimations() {
   onbAnimTimers = [];
   onbAnimIntervals.forEach(clearInterval);
   onbAnimIntervals = [];
+  const cur = document.getElementById('onb-cursor');
+  if (cur) { cur.classList.remove('visible', 'tapping'); }
+}
+
+function onbCurTo(el, dx, dy) {
+  const cur = document.getElementById('onb-cursor');
+  if (!cur || !el) return;
+  const r = el.getBoundingClientRect();
+  cur.style.left = (r.left + r.width / 2 + (dx || 0)) + 'px';
+  cur.style.top  = (r.top  + r.height / 2 + (dy || 0)) + 'px';
+  cur.classList.add('visible');
+}
+function onbCurTap(el, dx, dy) {
+  onbCurTo(el, dx, dy);
+  const cur = document.getElementById('onb-cursor');
+  if (!cur) return;
+  cur.classList.remove('tapping');
+  void cur.offsetWidth;
+  cur.classList.add('tapping');
 }
 
 function onbT(fn, ms) { const id = setTimeout(fn, ms); onbAnimTimers.push(id); }
@@ -4953,116 +4924,198 @@ function onbSelectStyle(btn) {
 }
 
 function runOnbAnim1() {
-  const tag  = document.getElementById('onb-m1-tag');
-  const num  = document.getElementById('onb-v1-num');
-  const unit = document.getElementById('onb-v1-unit');
-  const sag  = document.getElementById('onb-v1-sag');
-  const damp = document.getElementById('onb-v1-damp');
-  if (!tag) return;
-  tag.style.opacity = '0'; tag.style.transform = 'translateY(8px)';
-  num.textContent = '0'; num.style.opacity = '0'; num.style.filter = 'blur(0)';
-  unit.style.opacity = '0';
-  sag.style.opacity = '0'; sag.style.transform = 'translateY(6px) scale(0.9)';
-  damp.style.opacity = '0'; damp.style.transform = 'translateY(6px)';
-  onbT(() => { tag.style.opacity = '1'; tag.style.transform = 'translateY(0)'; }, 300);
+  const wInput  = document.getElementById('onbd-w-1');
+  const wi      = document.getElementById('onbd-wi-1');
+  const rsAM    = document.getElementById('onbd-rs-am');
+  const rsED    = document.getElementById('onbd-rs-ed');
+  const fbox    = document.getElementById('onbd-fbox');
+  const fval    = document.getElementById('onbd-fval');
+  const sbox    = document.getElementById('onbd-sbox');
+  const sval    = document.getElementById('onbd-sval');
+  const calcBtn = document.getElementById('onbd-calc1');
+  const rc      = document.getElementById('onbd-rc1');
+  const area    = document.getElementById('onbd-area-1');
+  if (!wInput) return;
+
+  // reset
+  wInput.value = '';
+  rsAM.classList.add('active'); rsED.classList.remove('active');
+  fval.textContent = 'Select fork model…'; fval.classList.add('placeholder');
+  sval.textContent = 'Select shock…'; sval.classList.add('placeholder');
+  wi.classList.remove('onb-hl'); fbox.classList.remove('onb-hl'); sbox.classList.remove('onb-hl'); calcBtn.classList.remove('onb-hl');
+  rc.style.opacity = '0'; rc.style.transform = 'translateY(16px)';
+  if (area) area.scrollTop = 0;
+
+  // cursor appears at weight field
+  onbT(() => onbCurTo(wInput), 400);
+  onbT(() => { onbCurTap(wInput); wi.classList.add('onb-hl'); }, 700);
+  // type weight
   onbT(() => {
-    num.style.opacity = '1'; unit.style.opacity = '1';
-    num.style.filter = 'blur(8px)';
-    let v = 0;
-    const iv = onbI(() => {
-      if (v < 95) {
-        v = Math.min(95, v + Math.ceil((95 - v) / 8 + 1));
-        num.textContent = v;
-        num.style.filter = `blur(${Math.max(0, (95 - v) * 0.14).toFixed(1)}px)`;
-      } else {
-        num.style.filter = 'blur(0)';
-        clearInterval(iv);
-      }
-    }, 45);
-  }, 750);
-  onbT(() => { sag.style.opacity = '1'; sag.style.transform = 'translateY(0) scale(1)'; }, 2600);
-  onbT(() => { damp.style.opacity = '1'; damp.style.transform = 'translateY(0)'; }, 3400);
+    let i = 0, t = '78';
+    const iv = onbI(() => { if (i < t.length) wInput.value += t[i++]; else clearInterval(iv); }, 200);
+  }, 950);
+  // ride style → Enduro/DH
+  onbT(() => { wi.classList.remove('onb-hl'); onbCurTo(rsED); }, 1650);
+  onbT(() => { onbCurTap(rsED); rsAM.classList.remove('active'); rsED.classList.add('active'); }, 1950);
+  // fork selector
+  onbT(() => onbCurTo(fbox), 2650);
+  onbT(() => { onbCurTap(fbox); fbox.classList.add('onb-hl'); fval.textContent = 'RockShox · Lyrik Ultimate'; fval.classList.remove('placeholder'); }, 2950);
+  // shock selector
+  onbT(() => { fbox.classList.remove('onb-hl'); onbCurTo(sbox); }, 3600);
+  onbT(() => { onbCurTap(sbox); sbox.classList.add('onb-hl'); sval.textContent = 'Fox · Float X2'; sval.classList.remove('placeholder'); }, 3900);
+  // calculate
+  onbT(() => { sbox.classList.remove('onb-hl'); onbCurTo(calcBtn); }, 4550);
+  onbT(() => { onbCurTap(calcBtn); calcBtn.classList.add('onb-hl'); }, 4850);
+  // results appear
   onbT(() => {
-    tag.style.opacity = '0'; tag.style.transform = 'translateY(8px)';
-    num.style.opacity = '0'; num.style.filter = 'blur(6px)';
-    unit.style.opacity = '0';
-    sag.style.opacity = '0'; sag.style.transform = 'translateY(6px) scale(0.9)';
-    damp.style.opacity = '0'; damp.style.transform = 'translateY(6px)';
-  }, 5400);
-  onbT(runOnbAnim1, 6200);
+    calcBtn.classList.remove('onb-hl');
+    rc.style.opacity = '1'; rc.style.transform = 'translateY(0)';
+    if (area) area.scrollTo({ top: 9999, behavior: 'smooth' });
+  }, 5200);
+  // reset & loop
+  onbT(() => {
+    rc.style.opacity = '0'; rc.style.transform = 'translateY(16px)';
+    wInput.value = ''; rsED.classList.remove('active'); rsAM.classList.add('active');
+    fval.textContent = 'Select fork model…'; fval.classList.add('placeholder');
+    sval.textContent = 'Select shock…'; sval.classList.add('placeholder');
+    if (area) area.scrollTo({ top: 0, behavior: 'smooth' });
+  }, 8800);
+  onbT(runOnbAnim1, 9800);
 }
 
 function runOnbAnim2() {
-  const brand    = document.getElementById('onb-m2-brand');
-  const model    = document.getElementById('onb-m2-model');
-  const terrain  = document.getElementById('onb-m2-terrain');
-  const result   = document.getElementById('onb-m2-result');
-  const brandVal = document.getElementById('onb-m2-brand-val');
-  const modelVal = document.getElementById('onb-m2-model-val');
-  const t1 = document.getElementById('onb-m2-t1');
-  const t2 = document.getElementById('onb-m2-t2');
-  const t3 = document.getElementById('onb-m2-t3');
-  if (!brand) return;
-  [brand, model, terrain, result].forEach(el => { el.style.opacity = '0'; el.style.transform = 'translateY(8px)'; });
-  result.style.transform = 'translateY(10px) scale(0.96)';
-  if (brandVal) { brandVal.textContent = 'Select brand…'; brandVal.classList.add('placeholder'); }
-  if (modelVal) { modelVal.textContent = 'Select tyre…'; modelVal.classList.add('placeholder'); }
-  [t1, t2, t3].forEach(t => t.classList.remove('selected'));
-  brand.classList.remove('filled'); model.classList.remove('filled');
-  onbT(() => { brand.style.opacity = '1'; brand.style.transform = 'translateY(0)'; }, 300);
+  const ftbox  = document.getElementById('onbd-ftbox');
+  const ftval  = document.getElementById('onbd-ftval');
+  const ftwval = document.getElementById('onbd-ftwval');
+  const rtbox  = document.getElementById('onbd-rtbox');
+  const rtval  = document.getElementById('onbd-rtval');
+  const tdry   = document.getElementById('onbd-tdry');
+  const tmix   = document.getElementById('onbd-tmix');
+  const wInput = document.getElementById('onbd-w-2');
+  const wi     = document.getElementById('onbd-wi-2');
+  const calc   = document.getElementById('onbd-calc2');
+  const rc     = document.getElementById('onbd-rc2');
+  const area   = document.getElementById('onbd-area-2');
+  if (!ftbox) return;
+
+  // reset
+  ftval.textContent = 'Select front tyre…'; ftval.classList.add('placeholder');
+  ftwval.textContent = 'Select width…'; ftwval.classList.add('placeholder');
+  rtval.textContent = 'Select rear tyre…'; rtval.classList.add('placeholder');
+  tdry.classList.add('active'); tmix.classList.remove('active');
+  wInput.value = ''; wi.classList.remove('onb-hl');
+  rc.style.opacity = '0'; rc.style.transform = 'translateY(16px)';
+  if (area) area.scrollTop = 0;
+
+  // front tyre
+  onbT(() => onbCurTo(ftbox), 400);
+  onbT(() => { onbCurTap(ftbox); ftbox.classList.add('onb-hl'); ftval.textContent = 'Maxxis · Minion DHF'; ftval.classList.remove('placeholder'); ftwval.textContent = '2.5"'; ftwval.classList.remove('placeholder'); }, 700);
+  // rear tyre
+  onbT(() => { ftbox.classList.remove('onb-hl'); onbCurTo(rtbox); }, 1450);
+  onbT(() => { onbCurTap(rtbox); rtbox.classList.add('onb-hl'); rtval.textContent = 'Maxxis · Aggressor'; rtval.classList.remove('placeholder'); }, 1750);
+  // terrain: Mixed
+  onbT(() => { rtbox.classList.remove('onb-hl'); }, 2100);
+  onbT(() => area && area.scrollTo({ top: 9999, behavior: 'smooth' }), 2200);
+  onbT(() => onbCurTo(tmix), 2600);
+  onbT(() => { onbCurTap(tmix); tdry.classList.remove('active'); tmix.classList.add('active'); }, 2900);
+  // weight
+  onbT(() => onbCurTo(wInput), 3550);
+  onbT(() => { onbCurTap(wInput); wi.classList.add('onb-hl'); }, 3850);
   onbT(() => {
-    if (brandVal) { brandVal.textContent = 'Maxxis'; brandVal.classList.remove('placeholder'); }
-    brand.classList.add('filled');
-  }, 950);
-  onbT(() => { model.style.opacity = '1'; model.style.transform = 'translateY(0)'; }, 1200);
+    let i = 0, t = '78';
+    const iv = onbI(() => { if (i < t.length) wInput.value += t[i++]; else clearInterval(iv); }, 200);
+  }, 4100);
+  // calculate
+  onbT(() => { wi.classList.remove('onb-hl'); onbCurTo(calc); }, 4700);
+  onbT(() => { onbCurTap(calc); }, 5000);
+  onbT(() => { rc.style.opacity = '1'; rc.style.transform = 'translateY(0)'; }, 5350);
+  // reset & loop
   onbT(() => {
-    if (modelVal) { modelVal.textContent = 'Minion DHF'; modelVal.classList.remove('placeholder'); }
-    model.classList.add('filled');
-  }, 1850);
-  onbT(() => { terrain.style.opacity = '1'; terrain.style.transform = 'translateY(0)'; }, 2150);
-  onbT(() => { if (t3) t3.classList.add('selected'); }, 2750);
-  onbT(() => { result.style.opacity = '1'; result.style.transform = 'translateY(0) scale(1)'; }, 3200);
-  onbT(() => { [brand, model, terrain, result].forEach(el => { el.style.opacity = '0'; }); }, 5400);
-  onbT(runOnbAnim2, 6200);
+    rc.style.opacity = '0'; rc.style.transform = 'translateY(16px)';
+    ftval.textContent = 'Select front tyre…'; ftval.classList.add('placeholder');
+    ftwval.textContent = 'Select width…'; ftwval.classList.add('placeholder');
+    rtval.textContent = 'Select rear tyre…'; rtval.classList.add('placeholder');
+    tdry.classList.add('active'); tmix.classList.remove('active');
+    wInput.value = '';
+    if (area) area.scrollTo({ top: 0, behavior: 'smooth' });
+  }, 9000);
+  onbT(runOnbAnim2, 10000);
 }
 
 function runOnbAnim3() {
-  const card  = document.getElementById('onb-m3-card');
-  const name  = document.getElementById('onb-m3-name');
-  const bm    = document.getElementById('onb-m3-bm');
-  const fork  = document.getElementById('onb-m3-fork');
-  const shock = document.getElementById('onb-m3-shock');
-  if (!card) return;
-  card.style.opacity = '0'; card.style.transform = 'translateY(12px) scale(0.97)';
-  name.style.opacity = '0'; name.style.transform = 'translateY(5px)';
-  bm.style.opacity = '0'; bm.classList.remove('pumping');
-  fork.style.opacity = '0'; fork.style.transform = 'translateY(5px)';
-  shock.style.opacity = '0'; shock.style.transform = 'translateY(5px)';
-  onbT(() => { card.style.opacity = '1'; card.style.transform = 'translateY(0) scale(1)'; }, 300);
-  onbT(() => { name.style.opacity = '1'; name.style.transform = 'translateY(0)'; }, 850);
-  onbT(() => { fork.style.opacity = '1'; fork.style.transform = 'translateY(0)'; }, 1400);
-  onbT(() => { shock.style.opacity = '1'; shock.style.transform = 'translateY(0)'; }, 1950);
-  onbT(() => { bm.style.opacity = '1'; }, 2600);
-  onbT(() => { bm.classList.add('pumping'); }, 2680);
-  onbT(() => { bm.classList.remove('pumping'); }, 3350);
-  onbT(() => { card.style.opacity = '0'; card.style.transform = 'translateY(12px) scale(0.97)'; }, 5400);
-  onbT(runOnbAnim3, 6200);
+  const strip  = document.getElementById('onbd-strip3');
+  const trig   = document.getElementById('onbd-strig3');
+  const srow   = document.getElementById('onbd-srow3');
+  const sname  = document.getElementById('onbd-sname3');
+  const sconf  = document.getElementById('onbd-sconf3');
+  const scard  = document.getElementById('onbd-scard3');
+  if (!strip) return;
+
+  // reset
+  srow.style.display = 'none'; sname.value = '';
+  scard.style.opacity = '0'; scard.style.transform = 'translateY(14px)';
+
+  // cursor → save button
+  onbT(() => onbCurTo(trig), 500);
+  onbT(() => {
+    onbCurTap(trig);
+    // show save name row
+    srow.style.display = 'flex';
+  }, 800);
+  // cursor → name input, type
+  onbT(() => { onbCurTo(sname); sname.classList.add('onb-hl'); }, 1200);
+  onbT(() => {
+    onbCurTap(sname);
+    let i = 0, t = 'Trail Setup';
+    const iv = onbI(() => { if (i < t.length) sname.value += t[i++]; else clearInterval(iv); }, 110);
+  }, 1500);
+  // cursor → Save confirm
+  onbT(() => { sname.classList.remove('onb-hl'); onbCurTo(sconf); }, 2800);
+  onbT(() => {
+    onbCurTap(sconf);
+    srow.style.display = 'none';
+    scard.style.opacity = '1'; scard.style.transform = 'translateY(0)';
+  }, 3100);
+  // reset & loop
+  onbT(() => {
+    srow.style.display = 'none'; sname.value = '';
+    scard.style.opacity = '0'; scard.style.transform = 'translateY(14px)';
+  }, 7500);
+  onbT(runOnbAnim3, 8500);
 }
 
 function runOnbAnim4() {
-  const s1 = document.getElementById('onb-m4-s1');
-  const s2 = document.getElementById('onb-m4-s2');
-  const s3 = document.getElementById('onb-m4-s3');
-  if (!s1) return;
-  [s1, s2, s3].forEach(el => { el.style.opacity = '0'; el.style.transform = 'translateY(8px)'; });
-  s3.classList.remove('expanded');
-  onbT(() => { s1.style.opacity = '1'; s1.style.transform = 'translateY(0)'; }, 300);
-  onbT(() => { s2.style.opacity = '1'; s2.style.transform = 'translateY(0)'; }, 800);
-  onbT(() => { s3.style.opacity = '1'; s3.style.transform = 'translateY(0)'; }, 1300);
-  onbT(() => { s3.classList.add('expanded'); }, 2200);
-  onbT(() => { s3.classList.remove('expanded'); }, 4900);
-  onbT(() => { [s1, s2, s3].forEach(el => { el.style.opacity = '0'; }); }, 5400);
-  onbT(runOnbAnim4, 6200);
+  const fc1    = document.getElementById('onbd-fc1');
+  const fc2    = document.getElementById('onbd-fc2');
+  const fc3    = document.getElementById('onbd-fc3');
+  const fc4    = document.getElementById('onbd-fc4');
+  const fbody1 = document.getElementById('onbd-fbody1');
+  const fchev1 = document.getElementById('onbd-fchev1');
+  if (!fc1) return;
+
+  // reset
+  [fc1,fc2,fc3,fc4].forEach(c => { c.style.opacity = '0'; c.style.transform = 'translateY(8px)'; });
+  fbody1.classList.remove('open'); fchev1 && fchev1.classList.remove('open');
+
+  // cards stagger in (CSS transition-delay handles stagger)
+  onbT(() => { [fc1,fc2,fc3,fc4].forEach(c => { c.style.opacity = '1'; c.style.transform = 'translateY(0)'; }); }, 400);
+
+  // cursor → first card, tap to expand
+  onbT(() => onbCurTo(fc1), 1600);
+  onbT(() => {
+    onbCurTap(fc1);
+    fbody1.classList.add('open');
+    fchev1 && fchev1.classList.add('open');
+  }, 1900);
+
+  // collapse + move to second card
+  onbT(() => { fbody1.classList.remove('open'); fchev1 && fchev1.classList.remove('open'); }, 5000);
+  onbT(() => onbCurTo(fc2), 5600);
+  onbT(() => { onbCurTap(fc2); }, 5900);
+
+  // reset & loop
+  onbT(() => { [fc1,fc2,fc3,fc4].forEach(c => { c.style.opacity = '0'; c.style.transform = 'translateY(8px)'; }); }, 8500);
+  onbT(runOnbAnim4, 9500);
 }
 
 function updateOnbBackBtn() {
