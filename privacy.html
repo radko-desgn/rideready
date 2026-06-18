@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy &amp; Terms — RideReady</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700;800&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0e0e0e;
+      --surface:  #1a1a1a;
+      --border:   rgba(255,255,255,0.08);
+      --text:     #f0ede6;
+      --text-sec: rgba(255,255,255,0.72);
+      --text-mut: rgba(255,255,255,0.50);
+      --orange:   #e03010;
+      --radius:   12px;
+    }
+
+    body {
+      font-family: 'Lora', Georgia, serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.75;
+      min-height: 100vh;
+      padding: 0 0 64px;
+    }
+
+    h1, h2, h3, .back-link, .updated, .data-table th, .copyright-block {
+      font-family: 'Barlow', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    .page-header {
+      padding: 32px 24px 28px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .header-logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .header-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .header-text h1 {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.2;
+    }
+
+    .header-text p {
+      font-size: 13px;
+      color: var(--text-mut);
+      margin-top: 2px;
+    }
+
+    .back-link {
+      margin-left: auto;
+      color: var(--text-mut);
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+      transition: color 0.15s;
+    }
+
+    .back-link:hover { color: var(--text-sec); }
+
+    .content {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 40px 24px;
+    }
+
+    .updated {
+      font-size: 12px;
+      color: var(--text-mut);
+      margin-bottom: 36px;
+    }
+
+    section {
+      margin-bottom: 40px;
+    }
+
+    section h2 {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--orange);
+      margin-bottom: 14px;
+    }
+
+    section p {
+      font-size: 16px;
+      color: var(--text-sec);
+      margin-bottom: 12px;
+    }
+
+    section p:last-child { margin-bottom: 0; }
+
+    ul {
+      padding-left: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    li {
+      font-size: 16px;
+      color: var(--text-sec);
+      padding-left: 16px;
+      position: relative;
+    }
+
+    li::before {
+      content: '·';
+      position: absolute;
+      left: 0;
+      color: var(--text-mut);
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 4px;
+    }
+
+    .data-table th, .data-table td {
+      padding: 10px 14px;
+      text-align: left;
+      font-size: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .data-table th {
+      font-weight: 700;
+      color: var(--text-mut);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .data-table td { color: var(--text-sec); }
+
+    .data-table tr:last-child td { border-bottom: none; }
+
+    .data-table tbody tr:nth-child(odd) td {
+      background: rgba(255,255,255,0.02);
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 40px 0;
+    }
+
+    .copyright-block {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 24px;
+      text-align: center;
+    }
+
+    .copyright-block p {
+      font-size: 14px;
+      color: var(--text-mut);
+      margin-bottom: 8px;
+    }
+
+    .copyright-block p:last-child { margin-bottom: 0; }
+
+    .copyright-block strong {
+      color: var(--text-sec);
+    }
+
+    a { color: var(--orange); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    @media (max-width: 400px) {
+      .content { padding: 32px 16px; }
+      .page-header { padding: 24px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="page-header">
+  <div class="header-logo">
+    <img src="logo-new.png" alt="RideReady">
+  </div>
+  <div class="header-text">
+    <h1>RideReady</h1>
+    <p>Privacy Policy &amp; Terms</p>
+  </div>
+  <a href="/index.html" class="back-link">
+    ← Back to app
+  </a>
+</header>
+
+<main class="content">
+
+  <p class="updated">Last updated: June 2026</p>
+
+  <section>
+    <h2>What is RideReady?</h2>
+    <p>RideReady is a mountain bike suspension calculator. You enter your weight, suspension model, and riding style; we return recommended PSI, sag targets, and damping settings based on manufacturer guidelines.</p>
+    <p>RideReady is operated by Radostin Armenov as a solo, independent project.</p>
+  </section>
+
+  <section>
+    <h2>What data we collect</h2>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>When collected</th>
+          <th>Stored where</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Email address</td>
+          <td>When you create an account</td>
+          <td>Supabase (cloud)</td>
+        </tr>
+        <tr>
+          <td>Password (hashed)</td>
+          <td>When you create an account</td>
+          <td>Supabase (cloud, never readable)</td>
+        </tr>
+        <tr>
+          <td>Body weight (kg)</td>
+          <td>When you save a setup</td>
+          <td>Supabase (cloud)</td>
+        </tr>
+        <tr>
+          <td>Ride style &amp; suspension models</td>
+          <td>When you save a setup</td>
+          <td>Supabase (cloud)</td>
+        </tr>
+        <tr>
+          <td>Ride history entries (PSI, feel rating)</td>
+          <td>When you log a ride</td>
+          <td>Supabase (cloud)</td>
+        </tr>
+        <tr>
+          <td>Tyre saves</td>
+          <td>When you save a tyre setup</td>
+          <td>Your device only (localStorage)</td>
+        </tr>
+        <tr>
+          <td>Theme preference &amp; app state</td>
+          <td>On first use</td>
+          <td>Your device only (localStorage)</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Why we collect it</h2>
+    <ul>
+      <li><strong>Email &amp; password:</strong> to authenticate you and let you access your setups from any device.</li>
+      <li><strong>Body weight, models, ride style:</strong> to calculate and store your personalised suspension settings.</li>
+      <li><strong>Ride history:</strong> to help you track which settings worked and refine your setup over time.</li>
+      <li><strong>Email for product updates:</strong> when you create an account, your email may be used to notify you about significant new features. You can ask to be removed at any time.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>How it's stored &amp; protected</h2>
+    <p>Cloud data is stored in <strong>Supabase</strong>, a managed PostgreSQL database hosted on AWS infrastructure in the US/EU. Supabase enforces row-level security so your data is only accessible with your authenticated session. Passwords are hashed with bcrypt and are never stored in plain text.</p>
+    <p>Tyre saves, theme settings, and onboarding state live entirely in your browser's <code>localStorage</code> and never leave your device.</p>
+    <p>We do not sell, share, or transfer your data to any third party for advertising or commercial purposes.</p>
+  </section>
+
+  <section>
+    <h2>Your rights</h2>
+    <ul>
+      <li><strong>Delete your account:</strong> available in the Settings tab. This permanently deletes your account and all cloud-stored setups.</li>
+      <li><strong>Data export:</strong> email <a href="mailto:radostinarmenov@gmail.com">radostinarmenov@gmail.com</a> to request a copy of your data.</li>
+      <li><strong>Unsubscribe from emails:</strong> reply to any product email with "unsubscribe" or email us directly.</li>
+      <li><strong>Local data:</strong> clear your browser's localStorage at any time to remove all on-device data.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Third-party services</h2>
+    <ul>
+      <li><strong>Supabase:</strong> authentication and database. <a href="https://supabase.com/privacy" target="_blank" rel="noopener">Privacy policy</a>.</li>
+      <li><strong>Google Sign-In:</strong> optional OAuth login. Google's privacy policy applies to that authentication step.</li>
+      <li><strong>Vercel:</strong> hosting. Vercel may log request metadata (IP, timestamp) for security purposes. <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener">Privacy policy</a>.</li>
+      <li><strong>Font Awesome &amp; Google Fonts:</strong> loaded from CDN. Standard CDN request logs apply.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Cookies &amp; tracking</h2>
+    <p>RideReady does not use advertising cookies or tracking pixels. Supabase uses session tokens (stored in localStorage) to keep you logged in. No cross-site tracking is performed.</p>
+  </section>
+
+  <div class="divider"></div>
+
+  <section>
+    <h2>Terms of use</h2>
+    <p>RideReady provides suspension recommendations based on manufacturer guidelines and community-verified data. These are starting points. Always verify your sag with rider weight applied and adjust to personal preference.</p>
+    <p><strong>Suspension setup affects bike handling and rider safety.</strong> RideReady is not liable for any incidents resulting from following these recommendations. Always ride within your ability and check your equipment before riding.</p>
+    <p>You may use RideReady for personal, non-commercial purposes. You may not scrape, redistribute, or commercially exploit the suspension data or application without written permission.</p>
+  </section>
+
+  <div class="divider"></div>
+
+  <div class="copyright-block">
+    <p><strong>&copy; 2024–2026 RideReady</strong></p>
+    <p>Built and maintained by <strong>Radostin Armenov</strong>.<br>All suspension data, UI design, and application code are original works.</p>
+    <p>Suspension reference data is derived from manufacturer guidelines (RockShox, Fox, DVO, Öhlins, Manitou, Marzocchi, Cane Creek). Brand names and model names remain the property of their respective manufacturers. RideReady is not affiliated with or endorsed by any suspension brand.</p>
+    <p style="margin-top:16px">
+      <a href="/index.html">← Back to RideReady</a>
+      &nbsp;·&nbsp;
+      <a href="mailto:radostinarmenov@gmail.com">Contact</a>
+    </p>
+  </div>
+
+</main>
+
+</body>
+</html>

@@ -38,16 +38,17 @@
       --border-strong:   rgba(255,255,255,0.14);
 
       --text:            #f0ede6;
-      --text-secondary:  rgba(255,255,255,0.55);
-      --text-muted:      rgba(255,255,255,0.35);
-      --text-faint:      rgba(255,255,255,0.22);
+      --text-secondary:  rgba(255,255,255,0.72);
+      --text-muted:      rgba(255,255,255,0.55);
+      --text-faint:      rgba(255,255,255,0.38);
 
       --fork-accent:     #e03010;
       --shock-accent:    #3ecfbe;
       --fork-accent-dk:  #e03010;
       --shock-accent-dk: #3ecfbe;
-      --tyre-front:      #7c6af7;
+      --tyre-front:      #9b8ffa;
       --tyre-rear:       #4ade80;
+      --orange-text:     #ff5b36;
 
       --chip-bg:         rgba(255,255,255,0.07);
       --chip-text:       var(--text);
@@ -77,17 +78,18 @@
       --border-strong:   rgba(0,0,0,0.16);
 
       --text:            #111111;
-      --text-secondary:  rgba(0,0,0,0.6);
-      --text-muted:      rgba(0,0,0,0.45);
-      --text-faint:      rgba(0,0,0,0.28);
+      --text-secondary:  rgba(0,0,0,0.72);
+      --text-muted:      rgba(0,0,0,0.62);
+      --text-faint:      rgba(0,0,0,0.45);
 
       --orange:          #c02a0a;
       --fork-accent:     #c02a0a;
-      --shock-accent:    #0d9488;
+      --shock-accent:    #087c70;
       --fork-accent-dk:  #c02a0a;
-      --shock-accent-dk: #0d9488;
+      --shock-accent-dk: #087c70;
       --tyre-front:      #6b5ce6;
-      --tyre-rear:       #16a34a;
+      --tyre-rear:       #15803d;
+      --orange-text:     #c02a0a;
 
       --chip-bg:         rgba(0,0,0,0.05);
       --chip-text:       #111111;
@@ -114,8 +116,19 @@
     }
     body.light-theme .cs-option { color: var(--text-secondary); }
     body.light-theme .cs-option:hover { background: var(--chip-bg); color: var(--text); }
-    body.light-theme .cs-group-label { color: var(--text-faint); }
-    body.light-theme .cs-opt-series { color: var(--text-faint); }
+    body.light-theme .cs-group-label { color: var(--text-muted); }
+    body.light-theme .cs-opt-series { color: var(--text-muted); }
+
+    /* Light-theme contrast fixes — hardcoded colours that fail on white surfaces */
+    body.light-theme .chip-travel .chip-label  { color: #2f6ea4; }
+    body.light-theme .chip-maxpsi .chip-label  { color: #a85220; }
+    body.light-theme .rs-btn.active .rs-hint   { color: var(--text-muted); }
+    body.light-theme .error-notice             { color: #c0302a; }
+    body.light-theme .sag-corrector-result.good { color: #15803d; }
+    body.light-theme .hist-feel-badge.perfect  { color: #15803d; }
+    body.light-theme .damp-delta-badge.pos     { color: #6930c3; }
+    body.light-theme .damp-delta-badge.neg     { color: #1e5fad; }
+    body.light-theme .mod-pill.mod-wet         { color: #1e5fad; }
 
     body {
       font-family: 'Barlow', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -170,7 +183,7 @@
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.1em;
-      color: var(--text-muted);
+      color: var(--text-secondary);
       margin-top: 18px;
       margin-bottom: 10px;
     }
@@ -198,7 +211,7 @@
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.09em;
-      color: var(--text-muted);
+      color: var(--text-secondary);
       margin-bottom: 7px;
     }
     /* ── Custom dropdown ── */
@@ -227,7 +240,7 @@
       text-overflow: ellipsis;
       color: var(--text);
     }
-    .cs-value.placeholder { color: var(--text-faint); }
+    .cs-value.placeholder { color: var(--text-muted); }
     .cs-chevron {
       width: 18px;
       height: 18px;
@@ -262,7 +275,7 @@
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.1em;
-      color: rgba(255,255,255,0.3);
+      color: var(--text-muted);
       padding: 12px 16px 5px;
     }
     .cs-option {
@@ -273,23 +286,23 @@
       cursor: pointer;
       font-size: 0.88rem;
       font-weight: 500;
-      color: rgba(255,255,255,0.75);
+      color: rgba(255,255,255,0.87);
       transition: background 0.1s, color 0.1s;
       border-radius: 0;
     }
     .cs-option:hover { background: rgba(255,255,255,0.07); color: #fff; }
     .cs-option.selected {
       background: rgba(224,48,16,0.15);
-      color: var(--orange);
+      color: var(--orange-text);
       font-weight: 700;
     }
     .cs-option .cs-opt-series {
       font-size: 0.72rem;
-      color: rgba(255,255,255,0.3);
+      color: var(--text-muted);
       margin-left: auto;
       white-space: nowrap;
     }
-    .cs-option.selected .cs-opt-series { color: rgba(224,48,16,0.5); }
+    .cs-option.selected .cs-opt-series { color: var(--text-muted); }
 
     /* Weight input row */
     .weight-section { }
@@ -490,7 +503,7 @@
       letter-spacing: -0.01em;
       line-height: 1;
     }
-    .fork-color  { color: var(--fork-accent); }
+    .fork-color  { color: var(--orange-text); }
     .shock-color { color: var(--shock-accent); }
     .rc-psi .psi-unit {
       font-family: 'Barlow', -apple-system, sans-serif;
@@ -565,7 +578,7 @@
     .chip .chip-label i { font-size: 0.65rem; }
     .chip .chip-val { font-size: 1rem; font-weight: 700; color: var(--text); line-height: 1.2; }
     .chip-sag   .chip-label { color: var(--shock-accent); }
-    .chip-range .chip-label { color: var(--fork-accent); }
+    .chip-range .chip-label { color: var(--orange-text); }
     .chip-spring .chip-label { color: var(--text-secondary); }
     .chip-travel .chip-label { color: #82aadc; }
     .chip-maxpsi .chip-label { color: #e07755; }
@@ -638,7 +651,7 @@
     }
     .sag-corrector-result.show { display: block; }
     .sag-corrector-result.good { background: rgba(74,222,128,0.1); color: #4ade80; }
-    .sag-corrector-result.adjust { background: rgba(224,48,16,0.1); color: var(--orange); }
+    .sag-corrector-result.adjust { background: rgba(224,48,16,0.1); color: var(--orange-text); }
 
     /* History modal */
     .hist-backdrop {
@@ -679,7 +692,7 @@
       padding: 3px 9px; border-radius: 20px; white-space: nowrap;
     }
     .hist-feel-badge.perfect   { background: rgba(74,222,128,0.15); color: #4ade80; }
-    .hist-feel-badge.too-stiff { background: rgba(224,48,16,0.15); color: var(--fork-accent); }
+    .hist-feel-badge.too-stiff { background: rgba(224,48,16,0.15); color: var(--orange-text); }
     .hist-feel-badge.too-soft  { background: rgba(62,207,190,0.15); color: var(--shock-accent); }
     .hist-empty {
       text-align: center; padding: 20px 0;
@@ -697,7 +710,7 @@
       color: var(--text-secondary); font-size: 12px; font-weight: 600; cursor: pointer;
     }
     .hist-component-btn.selected {
-      border-color: var(--fork-accent); color: var(--fork-accent);
+      border-color: var(--fork-accent); color: var(--orange-text);
       background: rgba(224,48,16,0.08);
     }
     .hist-psi-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
@@ -715,7 +728,7 @@
       cursor: pointer; text-align: center;
     }
     .hist-feel-btn.selected {
-      border-color: var(--fork-accent); color: var(--fork-accent);
+      border-color: var(--fork-accent); color: var(--orange-text);
       background: rgba(224,48,16,0.08);
     }
     .hist-save-btn {
@@ -989,6 +1002,14 @@
       color: var(--text-muted);
       letter-spacing: 0.02em;
     }
+    footer .footer-policy-link {
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      transition: color 0.15s;
+    }
+    footer .footer-policy-link:hover { color: var(--text-secondary); }
 
 
     /* ── Saved weight pin ── */
@@ -1008,7 +1029,7 @@
     }
     .weight-pin-btn:hover { color: var(--text); background: rgba(255,255,255,0.06); }
     .weight-pin-btn:active { transform: scale(0.93); }
-    .weight-pin-btn.pinned { color: var(--orange); }
+    .weight-pin-btn.pinned { color: var(--orange-text); }
     .weight-pin-btn i { font-size: 0.9rem; }
     .sr-only {
       position: absolute; width: 1px; height: 1px; padding: 0;
@@ -1029,7 +1050,7 @@
       border-radius: var(--radius-sm);
       border: 1.5px dashed rgba(224,48,16,0.4);
       background: rgba(224,48,16,0.06);
-      color: var(--orange);
+      color: var(--orange-text);
       font-size: 0.85rem;
       font-weight: 700;
       letter-spacing: 0.06em;
@@ -1115,7 +1136,7 @@
     .saved-count-badge {
       font-size: 0.68rem;
       font-weight: 700;
-      color: rgba(224,48,16,0.7);
+      color: var(--orange-text);
       background: rgba(224,48,16,0.1);
       padding: 2px 8px;
       border-radius: 6px;
@@ -1324,7 +1345,7 @@
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      color: var(--orange);
+      color: var(--orange-text);
       margin-bottom: 2px;
     }
     .edit-banner-name {
@@ -1413,8 +1434,8 @@
     }
     .loaded-banner-unload:hover { color: var(--text); border-color: var(--border-strong); }
     body.light-theme .loaded-banner-inner { background: rgba(22,163,74,0.07); border-color: rgba(22,163,74,0.3); }
-    body.light-theme .loaded-banner-label  { color: #16a34a; }
-    body.light-theme .loaded-banner-update { background: rgba(22,163,74,0.1); border-color: rgba(22,163,74,0.4); color: #16a34a; }
+    body.light-theme .loaded-banner-label  { color: #15803d; }
+    body.light-theme .loaded-banner-update { background: rgba(22,163,74,0.1); border-color: rgba(22,163,74,0.4); color: #15803d; }
 
     /* ── Saved card damping summary ── */
     .sc-damping-row {
@@ -1461,11 +1482,10 @@
       border-radius: var(--radius-xs);
       font-size: 0.72rem;
       font-weight: 700;
-      color: var(--orange-dk);
+      color: var(--orange-text);
       white-space: nowrap;
       align-self: center;
     }
-    body.light-theme .sc-damp-style-tag { color: var(--orange-dk); }
 
     /* Save strip update mode */
     .save-trigger-btn.update-mode {
@@ -1727,8 +1747,8 @@
     transition: color 0.15s, border-color 0.15s;
   }
   .auth-tab.active {
-    color: var(--orange);
-    border-bottom-color: var(--orange);
+    color: var(--orange-text);
+    border-bottom-color: var(--orange-text);
   }
   .auth-input {
     width: 100%;
@@ -1817,6 +1837,27 @@
     gap: 8px;
   }
   .auth-guest-btn:hover { border-color: var(--text-secondary); color: var(--text); }
+  .auth-forgot-link {
+    background: none; border: none;
+    color: var(--text-muted); font-size: 13px; font-family: inherit;
+    cursor: pointer; padding: 0; align-self: flex-end;
+    transition: color 0.15s;
+  }
+  .auth-forgot-link:hover { color: var(--text-secondary); }
+  .auth-back-btn {
+    background: none; border: none;
+    color: var(--text-muted); font-size: 13px; font-family: inherit;
+    cursor: pointer; padding: 0;
+    display: flex; align-items: center; gap: 6px;
+    transition: color 0.15s;
+  }
+  .auth-back-btn:hover { color: var(--text-secondary); }
+  .auth-view-title {
+    font-size: 18px; font-weight: 800; color: var(--text); line-height: 1.2;
+  }
+  .auth-view-desc {
+    font-size: 14px; color: var(--text-muted); line-height: 1.5; margin-top: -4px;
+  }
   /* ── Bottom navigation ── */
   .bottom-nav {
     position: fixed;
@@ -1851,7 +1892,7 @@
     font-family: inherit;
   }
   .nav-btn i { font-size: 1.15rem; }
-  .nav-btn.active { color: var(--orange); }
+  .nav-btn.active { color: var(--orange-text); }
   #nav-fixit span { font-size: 0.52rem; letter-spacing: 0.04em; line-height: 1.25; }
 
   /* ── Fix It tab ── */
@@ -1877,7 +1918,8 @@
   .fixit-card-icon { font-size: 1.05rem; color: var(--orange); flex-shrink: 0; width: 20px; text-align: center; }
   .fixit-card-meta { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
   .fixit-card-label { font-size: 0.88rem; font-weight: 700; color: var(--text); }
-  .fixit-card-component { font-size: 0.7rem; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; }
+  .fixit-card-component { font-size: 0.7rem; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center; gap: 4px; }
+  .fixit-comp-icon { font-size: 0.65rem; color: var(--text-muted); flex-shrink: 0; }
   .fixit-chevron { font-size: 0.75rem; color: var(--text-secondary); flex-shrink: 0; transition: transform 0.2s; }
   .fixit-chevron.open { transform: rotate(90deg); }
 
@@ -2131,7 +2173,7 @@
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.07em;
-    color: var(--orange);
+    color: var(--orange-text);
     background: rgba(224,48,16,0.15);
     border-radius: 4px;
     padding: 2px 6px;
@@ -2174,7 +2216,7 @@
   .saved-card.is-active .sc-load-btn {
     border-color: var(--orange);
     background: rgba(224,48,16,0.1);
-    color: var(--orange);
+    color: var(--orange-text);
   }
 
   /* ── Replace slot bottom sheet ── */
@@ -2853,7 +2895,7 @@
               <span class="fixit-card-icon"><i class="fa-solid fa-wave-square"></i></span>
               <span class="fixit-card-meta">
                 <span class="fixit-card-label">Harsh on small bumps</span>
-                <span class="fixit-card-component">Fork &amp; Shock</span>
+                <span class="fixit-card-component"><i class="fa-solid fa-gears fixit-comp-icon"></i>Fork &amp; Shock</span>
               </span>
               <span class="fixit-chevron" id="onbd-fchev1"><i class="fa-solid fa-chevron-right"></i></span>
             </button>
@@ -2872,10 +2914,10 @@
           </div>
           <div class="fixit-card" id="onbd-fc2" style="opacity:0;transform:translateY(8px);transition:opacity .4s cubic-bezier(.16,1,.3,1) .08s,transform .4s cubic-bezier(.16,1,.3,1) .08s">
             <button class="fixit-card-trigger">
-              <span class="fixit-card-icon"><i class="fa-solid fa-arrow-down-to-line"></i></span>
+              <span class="fixit-card-icon"><i class="fa-solid fa-circle-arrow-down"></i></span>
               <span class="fixit-card-meta">
                 <span class="fixit-card-label">Bottoms out</span>
-                <span class="fixit-card-component">Fork &amp; Shock</span>
+                <span class="fixit-card-component"><i class="fa-solid fa-gears fixit-comp-icon"></i>Fork &amp; Shock</span>
               </span>
               <span class="fixit-chevron"><i class="fa-solid fa-chevron-right"></i></span>
             </button>
@@ -2885,7 +2927,7 @@
               <span class="fixit-card-icon"><i class="fa-solid fa-angles-down"></i></span>
               <span class="fixit-card-meta">
                 <span class="fixit-card-label">Braking dive (fork)</span>
-                <span class="fixit-card-component">Fork</span>
+                <span class="fixit-card-component"><i class="fa-solid fa-arrows-up-down fixit-comp-icon"></i>Fork</span>
               </span>
               <span class="fixit-chevron"><i class="fa-solid fa-chevron-right"></i></span>
             </button>
@@ -2895,7 +2937,7 @@
               <span class="fixit-card-icon"><i class="fa-solid fa-person-falling"></i></span>
               <span class="fixit-card-meta">
                 <span class="fixit-card-label">Too much rebound</span>
-                <span class="fixit-card-component">Fork &amp; Shock</span>
+                <span class="fixit-card-component"><i class="fa-solid fa-gears fixit-comp-icon"></i>Fork &amp; Shock</span>
               </span>
               <span class="fixit-chevron"><i class="fa-solid fa-chevron-right"></i></span>
             </button>
@@ -3289,7 +3331,8 @@
     <footer>
       Based on RockShox, Fox, DVO, Öhlins &amp; Manitou manufacturer guidelines.<br>
       Always verify sag with rider seated in normal riding position.<br><br>
-      <span class="signature">From biker for bikers — Radostin Armenov</span>
+      <span class="signature">From biker for bikers — Radostin Armenov</span><br><br>
+      <a href="/privacy.html" class="footer-policy-link">Privacy Policy &amp; Terms</a>
     </footer>
 
   </div><!-- end tab-settings -->
@@ -4236,7 +4279,7 @@ const SYMPTOM_FIXES = [
   {
     id: 'bottoms-out',
     label: 'Bottoms out',
-    icon: 'fa-arrow-down-to-line',
+    icon: 'fa-circle-arrow-down',
     component: 'Fork & Shock',
     fixes: [
       { title: 'Add 5–10 PSI air pressure', icon: 'fa-gauge', detail: 'More air = more mid-stroke and end-stroke support. Add 5 PSI at a time and test before adding more.' },
@@ -4258,7 +4301,7 @@ const SYMPTOM_FIXES = [
   {
     id: 'feels-dead',
     label: 'Feels dead / packs down',
-    icon: 'fa-gauge-simple-low',
+    icon: 'fa-battery-quarter',
     component: 'Fork & Shock',
     fixes: [
       { title: 'Speed up rebound', icon: 'fa-forward', detail: 'Turn the rebound adjuster toward fast (fewer clicks / toward open). If rebound is too slow, the suspension can\'t extend between hits and packs down into the stroke.' },
@@ -4834,6 +4877,16 @@ loadSavedWeight();
 
 // ── Auth ──────────────────────────────────────────────────────────────
 supabaseClient.auth.onAuthStateChange(async (event, session) => {
+  if (event === 'PASSWORD_RECOVERY') {
+    const overlay    = document.getElementById('auth-overlay');
+    const appContent = document.getElementById('app-content');
+    if (overlay && appContent) {
+      overlay.style.display = 'flex';
+      appContent.style.display = 'none';
+      authSetView('newpass');
+    }
+    return;
+  }
   const applyAuthState = async () => {
     const overlay    = document.getElementById('auth-overlay');
     const appContent = document.getElementById('app-content');
@@ -5398,6 +5451,7 @@ function renderFixitTab() {
   if (fixitRendered) return;
   fixitRendered = true;
   const inner = document.getElementById('fixit-inner');
+  const compIcon = { 'Fork': 'fa-arrows-up-down', 'Rear Shock': 'fa-compress', 'Fork & Shock': 'fa-gears' };
   inner.innerHTML = `
     <div class="fixit-header">
       <h2 class="fixit-title">Tips & Tricks</h2>
@@ -5410,7 +5464,7 @@ function renderFixitTab() {
             <i class="fa-solid ${s.icon} fixit-card-icon"></i>
             <div class="fixit-card-meta">
               <span class="fixit-card-label">${s.label}</span>
-              <span class="fixit-card-component">${s.component}</span>
+              <span class="fixit-card-component"><i class="fa-solid ${compIcon[s.component] || 'fa-circle-dot'} fixit-comp-icon"></i>${s.component}</span>
             </div>
             <i class="fa-solid fa-chevron-right fixit-chevron" id="fixit-chev-${s.id}"></i>
           </button>
@@ -5460,13 +5514,21 @@ function handleDeleteAccount() {
   });
 }
 
-function authShowTab(tab) {
-  document.getElementById('auth-login-form').style.display = tab === 'login' ? 'flex' : 'none';
-  document.getElementById('auth-signup-form').style.display = tab === 'signup' ? 'flex' : 'none';
-  document.getElementById('auth-tab-login').classList.toggle('active', tab === 'login');
-  document.getElementById('auth-tab-signup').classList.toggle('active', tab === 'signup');
+function authSetView(view) {
+  const isMain = view === 'login' || view === 'signup';
+  document.getElementById('auth-login-form').style.display   = view === 'login'   ? 'flex' : 'none';
+  document.getElementById('auth-signup-form').style.display  = view === 'signup'  ? 'flex' : 'none';
+  document.getElementById('auth-forgot-form').style.display  = view === 'forgot'  ? 'flex' : 'none';
+  document.getElementById('auth-newpass-form').style.display = view === 'newpass' ? 'flex' : 'none';
+  document.getElementById('auth-tabs-row').style.display     = isMain ? 'flex' : 'none';
+  document.getElementById('auth-guest-divider').style.display = isMain ? '' : 'none';
+  document.getElementById('auth-guest-row').style.display     = isMain ? '' : 'none';
+  document.getElementById('auth-tab-login').classList.toggle('active', view === 'login');
+  document.getElementById('auth-tab-signup').classList.toggle('active', view === 'signup');
   authClearMessages();
 }
+
+function authShowTab(tab) { authSetView(tab); }
 
 function authClearMessages() {
   document.getElementById('auth-error').style.display = 'none';
@@ -5509,6 +5571,32 @@ async function handleSignIn() {
   const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
   btn.disabled = false; btn.textContent = 'Log In';
   if (error) return authShowError('Invalid email or password.');
+}
+
+async function handleForgotPassword() {
+  const email = document.getElementById('forgot-email').value.trim();
+  if (!email) return authShowError('Please enter your email address.');
+  const btn = document.getElementById('forgot-btn');
+  btn.disabled = true; btn.textContent = 'Sending…';
+  const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.origin
+  });
+  btn.disabled = false; btn.textContent = 'Send reset link';
+  if (error) return authShowError(error.message);
+  authShowSuccess('Check your email for a reset link. It may take a minute to arrive.');
+  document.getElementById('forgot-email').value = '';
+}
+
+async function handleNewPassword() {
+  const password = document.getElementById('newpass-password').value;
+  if (!password || password.length < 6) return authShowError('Password must be at least 6 characters.');
+  const btn = document.getElementById('newpass-btn');
+  btn.disabled = true; btn.textContent = 'Updating…';
+  const { error } = await supabaseClient.auth.updateUser({ password });
+  btn.disabled = false; btn.textContent = 'Set new password';
+  if (error) return authShowError(error.message);
+  authShowSuccess('Password updated. You are now logged in.');
+  document.getElementById('newpass-password').value = '';
 }
 
 async function handleGoogleSignIn() {
@@ -6093,9 +6181,9 @@ renderTyreSaves();
       <div class="auth-app-sub">Suspension setup for every trail</div>
     </div>
 
-    <div class="auth-tabs">
-      <button class="auth-tab active" id="auth-tab-login" onclick="authShowTab('login')">Log In</button>
-      <button class="auth-tab" id="auth-tab-signup" onclick="authShowTab('signup')">Sign Up</button>
+    <div class="auth-tabs" id="auth-tabs-row">
+      <button class="auth-tab active" id="auth-tab-login" onclick="authSetView('login')">Log In</button>
+      <button class="auth-tab" id="auth-tab-signup" onclick="authSetView('signup')">Sign Up</button>
     </div>
 
     <div id="auth-error" class="auth-message auth-message--error" style="display:none"></div>
@@ -6105,6 +6193,7 @@ renderTyreSaves();
     <div id="auth-login-form" style="display:flex;flex-direction:column;gap:12px;">
       <input class="auth-input" id="login-email" type="email" placeholder="Email address" autocomplete="email">
       <input class="auth-input" id="login-password" type="password" placeholder="Password" autocomplete="current-password">
+      <button class="auth-forgot-link" onclick="authSetView('forgot')">Forgot password?</button>
       <button class="auth-btn-primary" id="login-btn" onclick="handleSignIn()">Log In</button>
       <div class="auth-divider"><span>or</span></div>
       <button class="auth-btn-google" onclick="handleGoogleSignIn()">
@@ -6114,8 +6203,8 @@ renderTyreSaves();
     </div>
 
     <!-- Guest entry -->
-    <div class="auth-divider" style="margin: 4px 0"><span>or continue without an account</span></div>
-    <div class="auth-guest-row">
+    <div class="auth-divider" id="auth-guest-divider" style="margin: 4px 0"><span>or continue without an account</span></div>
+    <div id="auth-guest-row">
       <button class="auth-guest-btn" onclick="enterGuestMode()">
         <i class="fa-solid fa-person-biking"></i> Browse as guest
       </button>
@@ -6131,6 +6220,23 @@ renderTyreSaves();
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
         Continue with Google
       </button>
+    </div>
+
+    <!-- Forgot Password Form -->
+    <div id="auth-forgot-form" style="display:none;flex-direction:column;gap:14px;">
+      <button class="auth-back-btn" onclick="authSetView('login')"><i class="fa-solid fa-arrow-left"></i> Back to login</button>
+      <div class="auth-view-title">Forgot password?</div>
+      <div class="auth-view-desc">Enter your email and we'll send you a link to reset your password.</div>
+      <input class="auth-input" id="forgot-email" type="email" placeholder="Email address" autocomplete="email">
+      <button class="auth-btn-primary" id="forgot-btn" onclick="handleForgotPassword()">Send reset link</button>
+    </div>
+
+    <!-- New Password Form (shown after clicking reset link) -->
+    <div id="auth-newpass-form" style="display:none;flex-direction:column;gap:14px;">
+      <div class="auth-view-title">Set new password</div>
+      <div class="auth-view-desc">Enter a new password for your account.</div>
+      <input class="auth-input" id="newpass-password" type="password" placeholder="New password (min. 6 characters)" autocomplete="new-password">
+      <button class="auth-btn-primary" id="newpass-btn" onclick="handleNewPassword()">Set new password</button>
     </div>
   </div>
 </div>
