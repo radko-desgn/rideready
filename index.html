@@ -728,6 +728,49 @@
     }
 
     /* Onboarding overlay */
+    .onb-welcome {
+      display: none; position: fixed; inset: 0; z-index: 1100;
+      background: var(--bg); flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 48px 32px calc(env(safe-area-inset-bottom, 0px) + 40px);
+      text-align: center;
+    }
+    .onb-welcome.open { display: flex; animation: onbOverlayIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both; }
+    .onb-welcome-logo {
+      width: 88px; height: 88px; border-radius: 22px;
+      overflow: hidden; margin-bottom: 28px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.28);
+    }
+    .onb-welcome-logo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .onb-welcome-title {
+      font-size: 26px; font-weight: 800; color: var(--text);
+      line-height: 1.2; margin: 0 0 12px;
+    }
+    .onb-welcome-desc {
+      font-size: 15px; color: var(--text-secondary);
+      line-height: 1.6; margin: 0 0 48px;
+      max-width: 268px;
+    }
+    .onb-welcome-actions {
+      display: flex; flex-direction: column;
+      gap: 10px; width: 100%; max-width: 320px;
+    }
+    .onb-welcome-btn-start {
+      width: 100%; padding: 16px;
+      background: var(--fork-accent); color: #fff;
+      border: none; border-radius: 12px;
+      font-size: 16px; font-weight: 700; cursor: pointer;
+      transition: transform 0.1s ease, background 0.15s;
+    }
+    .onb-welcome-btn-start:active { transform: scale(0.97); }
+    .onb-welcome-btn-skip {
+      width: 100%; padding: 14px;
+      background: none; color: var(--text-muted);
+      border: none; font-size: 15px; font-weight: 500; cursor: pointer;
+      transition: color 0.15s;
+    }
+    .onb-welcome-btn-skip:hover { color: var(--text-secondary); }
+
     .onb-overlay {
       display: none; position: fixed; inset: 0; z-index: 1100;
       background: var(--bg); flex-direction: column; align-items: stretch;
@@ -795,11 +838,17 @@
       animation: onbInputHint 2s ease 1.2s 2;
     }
     .onb-demo-area {
-      flex: 1; overflow-y: auto; overflow-x: hidden;
-      -webkit-overflow-scrolling: touch; position: relative;
-      text-align: left;
+      flex: 1; overflow: hidden;
+      display: flex; flex-direction: column; align-items: stretch;
+      justify-content: flex-start; padding: 32px 16px;
+      position: relative; text-align: left; min-height: 0;
     }
     .onb-demo-area * { pointer-events: none; cursor: default; }
+    .onb-demo-scaler { transform-origin: top center; flex-shrink: 0; width: 100%; }
+    .onb-demo-area.onb-scroll {
+      overflow-y: auto; overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+    }
     .onb-cursor {
       position: fixed; width: 28px; height: 28px; border-radius: 50%;
       border: 2px solid var(--fork-accent); background: rgba(224,48,16,0.18);
@@ -2536,6 +2585,19 @@
   </div>
 </div>
 
+<!-- Welcome screen -->
+<div class="onb-welcome" id="onb-welcome">
+  <div class="onb-welcome-logo">
+    <img src="logo-new.png" alt="Ride Setup" />
+  </div>
+  <h1 class="onb-welcome-title">Welcome to Ride Setup</h1>
+  <p class="onb-welcome-desc">Calculate your ideal suspension pressure, damping settings, and tyre PSI — tailored to your weight, model, and riding style.</p>
+  <div class="onb-welcome-actions">
+    <button class="onb-welcome-btn-start" onclick="startOnboarding()">Start Onboarding</button>
+    <button class="onb-welcome-btn-skip" onclick="skipWelcome()">Skip</button>
+  </div>
+</div>
+
 <!-- Onboarding overlay -->
 <div class="onb-overlay" id="onb-overlay">
   <div class="onb-header">
@@ -2555,7 +2617,8 @@
 
     <!-- STEP 1: Suspension calculator — real input panel + result -->
     <div class="onb-step active" id="onb-step-1">
-      <div class="onb-demo-area" id="onbd-area-1">
+      <div class="onb-demo-area onb-scroll" id="onbd-area-1">
+        <div class="onb-demo-scaler" id="onbd-scaler-1">
         <div class="input-panel">
           <div class="weight-section">
             <div class="panel-row-label">Rider Weight</div>
@@ -2626,12 +2689,14 @@
             </div>
           </div>
         </div>
+        </div><!-- /onbd-scaler-1 -->
       </div>
     </div>
 
     <!-- STEP 2: Tyre pressure calculator — real input panel + results -->
     <div class="onb-step" id="onb-step-2">
-      <div class="onb-demo-area" id="onbd-area-2">
+      <div class="onb-demo-area onb-scroll" id="onbd-area-2">
+        <div class="onb-demo-scaler" id="onbd-scaler-2">
         <div class="input-panel">
           <div class="panel-row-label">Wheel Configuration</div>
           <div class="ws-row">
@@ -2719,12 +2784,14 @@
             </div>
           </div>
         </div>
+        </div><!-- /onbd-scaler-2 -->
       </div>
     </div>
 
     <!-- STEP 3: Save a setup — real save strip + saved card -->
     <div class="onb-step" id="onb-step-3">
-      <div class="onb-demo-area" id="onbd-area-3" style="padding:0 16px 16px">
+      <div class="onb-demo-area" id="onbd-area-3">
+        <div class="onb-demo-scaler" id="onbd-scaler-3">
         <div class="result-card visible" style="margin-bottom:0">
           <div class="rc-top">
             <div class="rc-model">
@@ -2772,12 +2839,14 @@
             </div>
           </div>
         </div>
+        </div><!-- /onbd-scaler-3 -->
       </div>
     </div>
 
     <!-- STEP 4: Suspension Feel — real fixit cards -->
     <div class="onb-step" id="onb-step-4">
-      <div class="onb-demo-area" id="onbd-area-4" style="padding:0 16px 16px">
+      <div class="onb-demo-area" id="onbd-area-4">
+        <div class="onb-demo-scaler" id="onbd-scaler-4">
         <div class="fixit-cards">
           <div class="fixit-card" id="onbd-fc1" style="opacity:0;transform:translateY(8px);transition:opacity .4s cubic-bezier(.16,1,.3,1),transform .4s cubic-bezier(.16,1,.3,1)">
             <button class="fixit-card-trigger">
@@ -2832,6 +2901,7 @@
             </button>
           </div>
         </div>
+        </div><!-- /onbd-scaler-4 -->
       </div>
     </div>
 
@@ -4917,6 +4987,51 @@ function onbCurTap(el, dx, dy) {
 function onbT(fn, ms) { const id = setTimeout(fn, ms); onbAnimTimers.push(id); }
 function onbI(fn, ms) { const id = setInterval(fn, ms); onbAnimIntervals.push(id); return id; }
 
+function scaleOnbStep(n) {
+  const area   = document.getElementById('onbd-area-' + n);
+  const scaler = document.getElementById('onbd-scaler-' + n);
+  if (!area || !scaler) return;
+
+  if (n <= 2) {
+    // Camera-follow mode: full-size scrollable, no transform
+    scaler.style.transform = 'none';
+    scaler.style.marginTop = '0';
+    area.scrollTop = 0;
+    return;
+  }
+
+  // Fit-to-screen mode for steps 3 & 4
+  scaler.style.transform = 'none';
+  scaler.style.marginTop = '0';
+  void scaler.offsetHeight;
+  const cs      = window.getComputedStyle(area);
+  const innerH  = area.clientHeight - parseFloat(cs.paddingTop || 0) - parseFloat(cs.paddingBottom || 0);
+  const contentH = scaler.scrollHeight;
+  if (!innerH || !contentH) return;
+  const scale = contentH > innerH ? Math.max(0.3, innerH / contentH) : 1;
+  const visualH = contentH * scale;
+  const topMargin = Math.max(0, (innerH - visualH) / 2);
+  if (scale < 1) scaler.style.transform = 'scale(' + scale + ')';
+  scaler.style.marginTop = topMargin + 'px';
+}
+
+function onbScrollToEl(area, el) {
+  if (!area || !el) return;
+  const areaRect = area.getBoundingClientRect();
+  const elRect   = el.getBoundingClientRect();
+  const elMid    = elRect.top + elRect.height / 2;
+  const targetY  = areaRect.top + area.clientHeight * 0.42;
+  const delta    = elMid - targetY;
+  if (Math.abs(delta) > 20) {
+    area.scrollTo({ top: Math.max(0, area.scrollTop + delta), behavior: 'smooth' });
+  }
+}
+
+window.addEventListener('resize', () => {
+  const ov = document.getElementById('onb-overlay');
+  if (ov && ov.classList.contains('open')) scaleOnbStep(onbCurrentStep);
+});
+
 function onbSelectStyle(btn) {
   document.querySelectorAll('.onb-style-btn').forEach(b => b.classList.remove('selected'));
   btn.classList.add('selected');
@@ -4924,6 +5039,7 @@ function onbSelectStyle(btn) {
 }
 
 function runOnbAnim1() {
+  const area    = document.getElementById('onbd-area-1');
   const wInput  = document.getElementById('onbd-w-1');
   const wi      = document.getElementById('onbd-wi-1');
   const rsAM    = document.getElementById('onbd-rs-am');
@@ -4934,56 +5050,68 @@ function runOnbAnim1() {
   const sval    = document.getElementById('onbd-sval');
   const calcBtn = document.getElementById('onbd-calc1');
   const rc      = document.getElementById('onbd-rc1');
-  const area    = document.getElementById('onbd-area-1');
-  if (!wInput) return;
+  if (!wInput || !area) return;
 
   // reset
+  area.scrollTop = 0;
   wInput.value = '';
   rsAM.classList.add('active'); rsED.classList.remove('active');
   fval.textContent = 'Select fork model…'; fval.classList.add('placeholder');
   sval.textContent = 'Select shock…'; sval.classList.add('placeholder');
-  wi.classList.remove('onb-hl'); fbox.classList.remove('onb-hl'); sbox.classList.remove('onb-hl'); calcBtn.classList.remove('onb-hl');
-  rc.style.opacity = '0'; rc.style.transform = 'translateY(16px)';
-  if (area) area.scrollTop = 0;
+  wi.classList.remove('onb-hl'); fbox.classList.remove('onb-hl');
+  sbox.classList.remove('onb-hl'); calcBtn.classList.remove('onb-hl');
+  rc.style.opacity = '0'; rc.style.transform = 'translateY(12px)';
 
-  // cursor appears at weight field
-  onbT(() => onbCurTo(wInput), 400);
-  onbT(() => { onbCurTap(wInput); wi.classList.add('onb-hl'); }, 700);
-  // type weight
+  // weight — camera follows to top of form
+  onbT(() => onbScrollToEl(area, wInput), 350);
+  onbT(() => onbCurTo(wInput), 800);
+  onbT(() => { onbCurTap(wInput); wi.classList.add('onb-hl'); }, 1050);
   onbT(() => {
     let i = 0, t = '78';
-    const iv = onbI(() => { if (i < t.length) wInput.value += t[i++]; else clearInterval(iv); }, 200);
-  }, 950);
-  // ride style → Enduro/DH
-  onbT(() => { wi.classList.remove('onb-hl'); onbCurTo(rsED); }, 1650);
-  onbT(() => { onbCurTap(rsED); rsAM.classList.remove('active'); rsED.classList.add('active'); }, 1950);
-  // fork selector
-  onbT(() => onbCurTo(fbox), 2650);
-  onbT(() => { onbCurTap(fbox); fbox.classList.add('onb-hl'); fval.textContent = 'RockShox · Lyrik Ultimate'; fval.classList.remove('placeholder'); }, 2950);
-  // shock selector
-  onbT(() => { fbox.classList.remove('onb-hl'); onbCurTo(sbox); }, 3600);
-  onbT(() => { onbCurTap(sbox); sbox.classList.add('onb-hl'); sval.textContent = 'Fox · Float X2'; sval.classList.remove('placeholder'); }, 3900);
-  // calculate
-  onbT(() => { sbox.classList.remove('onb-hl'); onbCurTo(calcBtn); }, 4550);
-  onbT(() => { onbCurTap(calcBtn); calcBtn.classList.add('onb-hl'); }, 4850);
-  // results appear
+    const iv = onbI(() => { if (i < t.length) wInput.value += t[i++]; else clearInterval(iv); }, 220);
+  }, 1250);
+
+  // ride style — camera scrolls to bring buttons near center
+  onbT(() => { wi.classList.remove('onb-hl'); onbScrollToEl(area, rsED); }, 1950);
+  onbT(() => onbCurTo(rsED), 2400);
+  onbT(() => { onbCurTap(rsED); rsAM.classList.remove('active'); rsED.classList.add('active'); }, 2650);
+
+  // fork selector — camera follows down
+  onbT(() => onbScrollToEl(area, fbox), 3250);
+  onbT(() => onbCurTo(fbox), 3700);
+  onbT(() => { onbCurTap(fbox); fbox.classList.add('onb-hl'); fval.textContent = 'RockShox · Lyrik Ultimate'; fval.classList.remove('placeholder'); }, 3950);
+
+  // shock selector — adjacent, small camera adjustment
+  onbT(() => { fbox.classList.remove('onb-hl'); onbScrollToEl(area, sbox); }, 4550);
+  onbT(() => onbCurTo(sbox), 4950);
+  onbT(() => { onbCurTap(sbox); sbox.classList.add('onb-hl'); sval.textContent = 'Fox · Float X2'; sval.classList.remove('placeholder'); }, 5200);
+
+  // calculate — camera follows to button
+  onbT(() => { sbox.classList.remove('onb-hl'); onbScrollToEl(area, calcBtn); }, 5800);
+  onbT(() => onbCurTo(calcBtn), 6250);
+  onbT(() => { onbCurTap(calcBtn); calcBtn.classList.add('onb-hl'); }, 6500);
+
+  // result reveals — camera follows to result card
   onbT(() => {
     calcBtn.classList.remove('onb-hl');
     rc.style.opacity = '1'; rc.style.transform = 'translateY(0)';
-    if (area) area.scrollTo({ top: 9999, behavior: 'smooth' });
-  }, 5200);
+    onbScrollToEl(area, rc);
+  }, 6900);
+  onbT(() => onbCurTo(rc), 7450);
+
   // reset & loop
   onbT(() => {
-    rc.style.opacity = '0'; rc.style.transform = 'translateY(16px)';
+    rc.style.opacity = '0'; rc.style.transform = 'translateY(12px)';
+    area.scrollTo({ top: 0, behavior: 'smooth' });
     wInput.value = ''; rsED.classList.remove('active'); rsAM.classList.add('active');
     fval.textContent = 'Select fork model…'; fval.classList.add('placeholder');
     sval.textContent = 'Select shock…'; sval.classList.add('placeholder');
-    if (area) area.scrollTo({ top: 0, behavior: 'smooth' });
-  }, 8800);
-  onbT(runOnbAnim1, 9800);
+  }, 9200);
+  onbT(runOnbAnim1, 10200);
 }
 
 function runOnbAnim2() {
+  const area   = document.getElementById('onbd-area-2');
   const ftbox  = document.getElementById('onbd-ftbox');
   const ftval  = document.getElementById('onbd-ftval');
   const ftwval = document.getElementById('onbd-ftwval');
@@ -4995,51 +5123,65 @@ function runOnbAnim2() {
   const wi     = document.getElementById('onbd-wi-2');
   const calc   = document.getElementById('onbd-calc2');
   const rc     = document.getElementById('onbd-rc2');
-  const area   = document.getElementById('onbd-area-2');
-  if (!ftbox) return;
+  if (!ftbox || !area) return;
 
   // reset
+  area.scrollTop = 0;
   ftval.textContent = 'Select front tyre…'; ftval.classList.add('placeholder');
   ftwval.textContent = 'Select width…'; ftwval.classList.add('placeholder');
   rtval.textContent = 'Select rear tyre…'; rtval.classList.add('placeholder');
   tdry.classList.add('active'); tmix.classList.remove('active');
   wInput.value = ''; wi.classList.remove('onb-hl');
-  rc.style.opacity = '0'; rc.style.transform = 'translateY(16px)';
-  if (area) area.scrollTop = 0;
+  ftbox.classList.remove('onb-hl'); rtbox.classList.remove('onb-hl');
+  rc.style.opacity = '0'; rc.style.transform = 'translateY(12px)';
 
-  // front tyre
-  onbT(() => onbCurTo(ftbox), 400);
-  onbT(() => { onbCurTap(ftbox); ftbox.classList.add('onb-hl'); ftval.textContent = 'Maxxis · Minion DHF'; ftval.classList.remove('placeholder'); ftwval.textContent = '2.5"'; ftwval.classList.remove('placeholder'); }, 700);
-  // rear tyre
-  onbT(() => { ftbox.classList.remove('onb-hl'); onbCurTo(rtbox); }, 1450);
-  onbT(() => { onbCurTap(rtbox); rtbox.classList.add('onb-hl'); rtval.textContent = 'Maxxis · Aggressor'; rtval.classList.remove('placeholder'); }, 1750);
-  // terrain: Mixed
-  onbT(() => { rtbox.classList.remove('onb-hl'); }, 2100);
-  onbT(() => area && area.scrollTo({ top: 9999, behavior: 'smooth' }), 2200);
-  onbT(() => onbCurTo(tmix), 2600);
-  onbT(() => { onbCurTap(tmix); tdry.classList.remove('active'); tmix.classList.add('active'); }, 2900);
-  // weight
-  onbT(() => onbCurTo(wInput), 3550);
-  onbT(() => { onbCurTap(wInput); wi.classList.add('onb-hl'); }, 3850);
+  // front tyre — camera at top
+  onbT(() => onbScrollToEl(area, ftbox), 350);
+  onbT(() => onbCurTo(ftbox), 800);
+  onbT(() => { onbCurTap(ftbox); ftbox.classList.add('onb-hl'); ftval.textContent = 'Maxxis · Minion DHF'; ftval.classList.remove('placeholder'); ftwval.textContent = '2.5"'; ftwval.classList.remove('placeholder'); }, 1050);
+
+  // rear tyre — camera stays or scrolls slightly
+  onbT(() => { ftbox.classList.remove('onb-hl'); onbScrollToEl(area, rtbox); }, 1700);
+  onbT(() => onbCurTo(rtbox), 2150);
+  onbT(() => { onbCurTap(rtbox); rtbox.classList.add('onb-hl'); rtval.textContent = 'Maxxis · Aggressor'; rtval.classList.remove('placeholder'); }, 2400);
+
+  // terrain: Mixed — camera follows
+  onbT(() => { rtbox.classList.remove('onb-hl'); onbScrollToEl(area, tmix); }, 3050);
+  onbT(() => onbCurTo(tmix), 3500);
+  onbT(() => { onbCurTap(tmix); tdry.classList.remove('active'); tmix.classList.add('active'); }, 3750);
+
+  // weight — camera follows down
+  onbT(() => onbScrollToEl(area, wInput), 4350);
+  onbT(() => onbCurTo(wInput), 4800);
+  onbT(() => { onbCurTap(wInput); wi.classList.add('onb-hl'); }, 5050);
   onbT(() => {
     let i = 0, t = '78';
-    const iv = onbI(() => { if (i < t.length) wInput.value += t[i++]; else clearInterval(iv); }, 200);
-  }, 4100);
-  // calculate
-  onbT(() => { wi.classList.remove('onb-hl'); onbCurTo(calc); }, 4700);
-  onbT(() => { onbCurTap(calc); }, 5000);
-  onbT(() => { rc.style.opacity = '1'; rc.style.transform = 'translateY(0)'; }, 5350);
+    const iv = onbI(() => { if (i < t.length) wInput.value += t[i++]; else clearInterval(iv); }, 220);
+  }, 5250);
+
+  // calculate — camera to button
+  onbT(() => { wi.classList.remove('onb-hl'); onbScrollToEl(area, calc); }, 5900);
+  onbT(() => onbCurTo(calc), 6350);
+  onbT(() => onbCurTap(calc), 6600);
+
+  // results — camera follows to result cards
+  onbT(() => {
+    rc.style.opacity = '1'; rc.style.transform = 'translateY(0)';
+    onbScrollToEl(area, rc);
+  }, 6950);
+  onbT(() => onbCurTo(rc), 7500);
+
   // reset & loop
   onbT(() => {
-    rc.style.opacity = '0'; rc.style.transform = 'translateY(16px)';
+    rc.style.opacity = '0'; rc.style.transform = 'translateY(12px)';
+    area.scrollTo({ top: 0, behavior: 'smooth' });
     ftval.textContent = 'Select front tyre…'; ftval.classList.add('placeholder');
     ftwval.textContent = 'Select width…'; ftwval.classList.add('placeholder');
     rtval.textContent = 'Select rear tyre…'; rtval.classList.add('placeholder');
     tdry.classList.add('active'); tmix.classList.remove('active');
     wInput.value = '';
-    if (area) area.scrollTo({ top: 0, behavior: 'smooth' });
-  }, 9000);
-  onbT(runOnbAnim2, 10000);
+  }, 9400);
+  onbT(runOnbAnim2, 10400);
 }
 
 function runOnbAnim3() {
@@ -5146,6 +5288,7 @@ function prevOnboardingStep() {
     updateOnbBackBtn();
     updateOnbCTAText(onbCurrentStep, true);
     clearOnbAnimations();
+    scaleOnbStep(onbCurrentStep);
     if (onbCurrentStep === 1) runOnbAnim1();
     else if (onbCurrentStep === 2) runOnbAnim2();
     else if (onbCurrentStep === 3) runOnbAnim3();
@@ -5166,6 +5309,11 @@ function applyOnbProfile() {
 
 function showOnboarding() {
   if (localStorage.getItem('rr_onboarded')) return;
+  document.getElementById('onb-welcome').classList.add('open');
+}
+
+function startOnboarding() {
+  document.getElementById('onb-welcome').classList.remove('open');
   onbCurrentStep = 1;
   onbSelectedStyle = 'all_mountain';
   document.querySelectorAll('.onb-step').forEach(s => s.classList.remove('active'));
@@ -5177,7 +5325,12 @@ function showOnboarding() {
   updateOnbBackBtn();
   updateOnbCTAText(1, false);
   clearOnbAnimations();
-  runOnbAnim1();
+  requestAnimationFrame(() => { scaleOnbStep(1); runOnbAnim1(); });
+}
+
+function skipWelcome() {
+  document.getElementById('onb-welcome').classList.remove('open');
+  completeOnboarding();
 }
 
 function nextOnboardingStep() {
@@ -5202,6 +5355,7 @@ function nextOnboardingStep() {
       updateOnbBackBtn();
       updateOnbCTAText(onbCurrentStep, true);
       clearOnbAnimations();
+      scaleOnbStep(onbCurrentStep);
       if (onbCurrentStep === 2) runOnbAnim2();
       else if (onbCurrentStep === 3) runOnbAnim3();
       else if (onbCurrentStep === 4) runOnbAnim4();
