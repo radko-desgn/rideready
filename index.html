@@ -30,6 +30,7 @@
       --radius-xs: 8px;
 
       /* ── Dark theme (default) ── */
+      --desktop-chrome:  #050505;
       --bg:              #0f0f0f;
       --surface:         #1c1c1c;
       --surface2:        #242424;
@@ -70,6 +71,7 @@
 
     /* ── Light theme ── */
     body.light-theme {
+      --desktop-chrome:  #c8c3bc;
       --bg:              #f0ede8;
       --surface:         #ffffff;
       --surface2:        #f5f3ef;
@@ -145,7 +147,39 @@
       padding: 0;
     }
 
+    #app-shell { width: 100%; min-height: 100vh; }
     #app-content { width: 100%; }
+
+    /* ── Desktop shell ── */
+    @media (min-width: 680px) {
+      body {
+        background: var(--desktop-chrome);
+        padding: 24px;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+      #app-shell {
+        width: 430px;
+        height: calc(100dvh - 48px);
+        max-height: 900px;
+        min-height: 0;
+        flex-shrink: 0;
+        position: relative;
+        background: var(--bg);
+        border-radius: 28px;
+        border: 1px solid var(--border-strong);
+        box-shadow: 0 40px 100px rgba(0,0,0,0.6);
+        overflow: hidden;
+        transform: translateZ(0);
+      }
+      #app-content {
+        height: 100%;
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+      }
+    }
 
     .container {
       width: 100%;
@@ -202,23 +236,46 @@
       background: var(--surface2);
       border: 1.5px solid var(--border);
       border-radius: var(--radius-sm);
-      padding: 14px 14px 12px;
+      height: 64px;
+      padding: 0 14px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
       transition: border-color 0.15s;
+      min-width: 0;
     }
     .selector-box:has(.cs-wrap.open) { border-color: var(--orange); }
     .selector-box .box-label {
-      font-size: 0.72rem;
+      position: absolute;
+      left: 14px;
+      right: 46px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.82rem;
       font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.09em;
+      letter-spacing: 0.06em;
       color: var(--text-secondary);
-      margin-bottom: 7px;
+      pointer-events: none;
+      margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: top 0.22s ease, transform 0.22s ease, font-size 0.22s ease, letter-spacing 0.22s ease, color 0.22s ease;
+    }
+    .selector-box:has(.cs-value:not(.placeholder)) .box-label {
+      top: 11px;
+      transform: translateY(0);
+      font-size: 0.72rem;
+      letter-spacing: 0.09em;
+      color: var(--text-muted);
     }
     /* ── Custom dropdown ── */
-    .cs-wrap { position: relative; }
+    .selector-box .cs-wrap { flex: 1; position: relative; min-width: 0; }
 
     .cs-trigger {
       width: 100%;
+      height: 100%;
       background: transparent;
       border: none;
       outline: none;
@@ -230,6 +287,7 @@
       padding: 0;
       color: var(--text);
       text-align: left;
+      min-width: 0;
     }
     .cs-value {
       font-size: 0.92rem;
@@ -239,8 +297,13 @@
       overflow: hidden;
       text-overflow: ellipsis;
       color: var(--text);
+      transform: translateY(0);
+      transition: transform 0.22s ease;
     }
-    .cs-value.placeholder { color: var(--text-muted); }
+    .cs-value.placeholder { visibility: hidden; }
+    .selector-box:has(.cs-value:not(.placeholder)) .cs-value {
+      transform: translateY(9px);
+    }
     .cs-chevron {
       width: 18px;
       height: 18px;
@@ -248,10 +311,13 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: transform 0.2s;
       color: var(--text-secondary);
+      transform: translateY(0) rotate(0deg);
+      transition: transform 0.22s ease;
     }
-    .cs-wrap.open .cs-chevron { transform: rotate(180deg); }
+    .selector-box:has(.cs-value:not(.placeholder)) .cs-chevron          { transform: translateY(9px) rotate(0deg); }
+    .cs-wrap.open .cs-chevron                                            { transform: translateY(0) rotate(180deg); }
+    .selector-box:has(.cs-value:not(.placeholder)) .cs-wrap.open .cs-chevron { transform: translateY(9px) rotate(180deg); }
 
     .cs-panel {
       display: none;
@@ -640,7 +706,7 @@
     .sag-corrector-input-row { display: flex; gap: 8px; align-items: center; }
     .sag-corrector-input {
       flex: 1; background: var(--surface2); border: 1px solid var(--border);
-      border-radius: 8px; padding: 10px 12px; font-size: 15px; font-weight: 600;
+      border-radius: 8px; padding: 10px 12px; font-size: 16px; font-weight: 600;
       color: var(--text); outline: none;
     }
     .sag-corrector-input:focus { border-color: var(--shock-accent); }
@@ -1083,7 +1149,7 @@
       border: 1.5px solid var(--border-strong);
       border-radius: var(--radius-sm);
       color: var(--text);
-      font-size: 0.9rem;
+      font-size: 16px;
       font-weight: 600;
       padding: 11px 14px;
       outline: none;
@@ -2369,7 +2435,7 @@
       border: 1.5px solid var(--border-strong);
       border-radius: var(--radius-sm);
       color: var(--text);
-      font-size: 0.9rem;
+      font-size: 16px;
       padding: 10px 14px;
       outline: none;
       transition: border-color 0.15s;
@@ -2595,6 +2661,7 @@
   </style>
 </head>
 <body>
+<div id="app-shell">
 <!-- Sag verify modal -->
 <div class="sag-modal-backdrop" id="sag-modal-backdrop" onclick="closeSagVerify()">
   <div class="sag-modal" onclick="event.stopPropagation()">
@@ -5680,11 +5747,6 @@ function selectTyre(wheel, brandKey, model) {
   valEl.textContent = label;
   valEl.classList.remove('placeholder');
   document.getElementById(`tyre-${wheel}-wrap`).classList.remove('open');
-  // Auto-select baseline width
-  selectedTyreWidths[wheel] = model.baseline_width;
-  const wEl = document.getElementById(`tyre-${wheel}-width-value`);
-  wEl.textContent = `${model.baseline_width.toFixed(1)}"`;
-  wEl.classList.remove('placeholder');
 }
 
 function selectTyreWidth(wheel, width) {
@@ -6240,6 +6302,8 @@ renderTyreSaves();
     </div>
   </div>
 </div>
+
+</div><!-- end #app-shell -->
 
 </body>
 </html>
