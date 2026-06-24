@@ -512,13 +512,20 @@
       flex-shrink: 0;
       vertical-align: middle;
       object-fit: contain;
-      /* inactive: faded white */
       filter: brightness(0) invert(1);
       opacity: 0.38;
       transition: opacity 0.2s ease, filter 0.2s ease;
     }
     .subtab-btn.active .subtab-icon {
-      /* active: orange (#FF4510) */
+      filter: brightness(0) saturate(100%) invert(40%) sepia(100%) saturate(800%) hue-rotate(350deg) brightness(108%);
+      opacity: 1;
+    }
+    /* Light theme: inactive icons must be dark, not white */
+    body.light-theme .subtab-icon {
+      filter: brightness(0);
+      opacity: 0.38;
+    }
+    body.light-theme .subtab-btn.active .subtab-icon {
       filter: brightness(0) saturate(100%) invert(40%) sepia(100%) saturate(800%) hue-rotate(350deg) brightness(108%);
       opacity: 1;
     }
