@@ -1,10 +1,10 @@
-# RideReady
+# RideSetup
 
 > Free MTB suspension calculator. Enter your weight, fork/shock model, and riding style — get instant PSI, damping clicks and tyre pressure recommendations.
 
 ## About
 
-RideReady helps mountain bike riders dial in their suspension setup in under 30 seconds. It covers the five major suspension brands (RockShox, Fox, Öhlins, DVO, Manitou) and calculates air pressure, target sag, and damping click starting points based on rider weight and riding style.
+RideSetup helps mountain bike riders dial in their suspension setup in under 30 seconds. It covers the five major suspension brands (RockShox, Fox, Öhlins, DVO, Manitou) and calculates air pressure, target sag, and damping click starting points based on rider weight and riding style.
 
 ## What it does
 
