@@ -1,0 +1,28 @@
+# RideSetup
+
+> Free MTB suspension calculator. Enter your weight, fork/shock model, and riding style — get instant PSI, damping clicks and tyre pressure recommendations.
+
+## About
+
+RideSetup helps mountain bike riders dial in their suspension setup in under 30 seconds. It covers the five major suspension brands (RockShox, Fox, Öhlins, DVO, Manitou) and calculates air pressure, target sag, and damping click starting points based on rider weight and riding style.
+
+## What it does
+
+- Fork and shock PSI calculator (weight-based, interpolated from manufacturer charts)
+- Damping click recommendations (rebound, LSC, HSC) per model and ride style
+- Tyre pressure calculator — front and rear, with terrain, width, and tubeless modifiers
+- Sag verification guide with on-trail PSI corrector
+- Suspension feel troubleshooter — 6 symptom cards with ordered trail-side fixes
+- Cloud-synced saved setups (free account)
+
+## Supported suspension
+
+RockShox: SID, Judy, 30, 32, 35, Pike, Lyrik, Zeb, Boxxer — Deluxe, Super Deluxe, Vivid, Vivid Coil
+Fox: 32, 34, 36, 38, 40 — Float DPS, Float X, Float X2, DHX, DHX Air
+Öhlins: RXF 34, RXF 36 — TTX Air, TTX Coil
+DVO: Diamond, Jade — Topaz, Jade Coil
+Manitou: Mattoc, Mezzer — Mara, Mara Pro
+
+## URL
+
+https://rideready-two.vercel.app/

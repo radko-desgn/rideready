@@ -3,10 +3,131 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="MTB suspension setup calculator — find the right PSI and damping for your fork and shock." />
+  <title>RideSetup — MTB Suspension Calculator | Fork & Shock Setup</title>
+  <meta name="description" content="Free MTB suspension calculator for RockShox, Fox, Öhlins, DVO and Manitou. Enter your weight and riding style — get instant PSI, damping clicks and tyre pressure for any mountain bike fork or shock." />
+  <meta name="keywords" content="MTB suspension calculator, mountain bike suspension setup, fork PSI calculator, shock PSI, RockShox settings, Fox fork setup, Öhlins, DVO, Manitou, damping clicks, sag calculator, mountain bike setup guide, MTB fork settings, enduro suspension setup" />
   <meta name="theme-color" content="#0f0f0f" />
-  <title>Ride Setup</title>
+  <meta name="robots" content="index, follow, max-snippet:160, max-image-preview:large" />
+  <link rel="canonical" href="https://rideready-two.vercel.app/" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="RideSetup" />
+  <meta property="og:title" content="RideSetup — MTB Suspension Calculator" />
+  <meta property="og:description" content="Free suspension calculator for mountain bike forks and shocks. Enter your weight and riding style — get instant PSI and damping click settings for RockShox, Fox, Öhlins, DVO and Manitou." />
+  <meta property="og:url" content="https://rideready-two.vercel.app/" />
+  <meta property="og:image" content="https://rideready-two.vercel.app/logo-new.png" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="RideSetup — MTB Suspension Calculator" />
+  <meta name="twitter:description" content="Free suspension calculator for mountain bike forks and shocks. Get instant PSI and damping settings for RockShox, Fox, Öhlins, DVO and Manitou." />
+  <meta name="twitter:image" content="https://rideready-two.vercel.app/logo-new.png" />
+
   <link rel="icon" type="image/png" href="logo-new.png" />
+  <link rel="apple-touch-icon" href="logo-new.png" />
+
+  <!-- Structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "RideSetup",
+    "url": "https://rideready-two.vercel.app/",
+    "description": "MTB suspension calculator for RockShox, Fox, Öhlins, DVO and Manitou forks and shocks. Get recommended PSI, damping clicks and tyre pressure based on your weight and riding style.",
+    "applicationCategory": "SportsApplication",
+    "operatingSystem": "Web, iOS, Android",
+    "browserRequirements": "Requires JavaScript",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "featureList": [
+      "MTB fork PSI calculator (RockShox, Fox, Öhlins, DVO, Manitou)",
+      "Rear shock PSI calculator",
+      "Rebound and compression damping click settings",
+      "Tyre pressure calculator (front and rear)",
+      "Sag verification guide with PSI corrector",
+      "Suspension feel troubleshooter — 6 symptom cards",
+      "Cloud-synced saved setups"
+    ],
+    "screenshot": "https://rideready-two.vercel.app/logo-new.png",
+    "about": {
+      "@type": "Thing",
+      "name": "Mountain Bike Suspension Setup",
+      "description": "Guide and calculator for setting up MTB fork and shock air pressure, sag and damping"
+    }
+  }
+  </script>
+
+  <!-- FAQ schema — captures "how do I set up MTB suspension" type queries in SERP -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What PSI should I run in my mountain bike fork?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "MTB fork PSI depends on your body weight and fork model. As a starting point, most air forks run 1 PSI per kilogram of rider weight (including gear). RideSetup calculates the exact recommended PSI for RockShox, Fox, Öhlins, DVO and Manitou forks based on your weight and riding style."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I set sag on my mountain bike suspension?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sag is how far your suspension compresses under your weight. For trail riding, aim for 25–30% fork sag and 28–32% shock sag. To measure: sit on the bike in your normal riding position with gear, push a zip tie against the lower leg of the fork, then stand up and measure how far it moved. RideSetup shows target sag % and mm for every fork model and includes a built-in sag verification guide."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How many clicks of rebound damping should I use?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Rebound clicks depend on your fork or shock model and your body weight. A good starting point is 8–12 clicks from fully closed. If the suspension feels like it's kicking back or bucking over repeated hits, add more rebound (slow it down). If it feels sluggish or packs down, reduce rebound (speed it up). RideSetup gives weight-specific starting clicks for every supported damper."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What tyre pressure should I run on my mountain bike?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "MTB tyre pressure depends on your weight, tyre width, riding style and terrain. Trail riders typically run 24–30 PSI front and 26–32 PSI rear (tubeless). Enduro riders go lower: 18–24 PSI front and 20–26 PSI rear. RideSetup calculates front and rear pressures based on your weight, tyre model, width, tubeless setup and terrain conditions."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Which mountain bike suspension brands does RideSetup support?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "RideSetup covers RockShox (SID, Judy, Pike, Lyrik, Zeb, Boxxer, Deluxe, Super Deluxe, Vivid), Fox (32, 34, 36, 38, 40, Float DPS, Float X, Float X2, DHX), Öhlins (RXF 34, RXF 36, TTX Air, TTX Coil), DVO (Diamond, Jade, Topaz) and Manitou (Mattoc, Mezzer, Mara). PSI and damping settings are provided for every listed model."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does riding style affect my suspension setup?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. XC and trail riding favours higher pressure (more efficiency) and faster rebound. Enduro and DH riding favours lower pressure (more grip and compliance), more compression support and slower rebound. RideSetup adjusts PSI recommendations and damping click settings based on your selected ride style: XC/Trail, All Mountain or Enduro/DH."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <!-- Google Analytics 4 — replace G-XXXXXXXXXX with your Measurement ID from analytics.google.com -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX', { anonymize_ip: true });
+  </script>
+
   <!-- Preconnect to every external host so DNS+TCP is ready before the requests fire -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -2678,9 +2799,9 @@
 <!-- Welcome screen -->
 <div class="onb-welcome" id="onb-welcome">
   <div class="onb-welcome-logo">
-    <img src="logo-new.png" alt="Ride Setup" />
+    <img src="logo-new.png" alt="RideSetup — MTB Suspension Calculator" />
   </div>
-  <h1 class="onb-welcome-title">Welcome to Ride Setup</h1>
+  <h1 class="onb-welcome-title">Welcome to RideSetup</h1>
   <p class="onb-welcome-desc">Calculate your ideal suspension pressure, damping settings, and tyre PSI — tailored to your weight, model, and riding style.</p>
   <div class="onb-welcome-actions">
     <button class="onb-welcome-btn-start" onclick="startOnboarding()">Start Onboarding</button>
@@ -3012,10 +3133,10 @@
 
   <header>
     <div style="display:flex;align-items:center;gap:12px">
-      <img src="logo-new.png" alt="Ride Setup" style="width:44px;height:44px;border-radius:12px;flex-shrink:0;">
+      <img src="logo-new.png" alt="RideSetup" style="width:44px;height:44px;border-radius:12px;flex-shrink:0;">
       <div>
-        <h1>Ride Setup</h1>
-        <p>Suspension setup guide</p>
+        <h1>RideSetup</h1>
+        <p>MTB suspension calculator</p>
       </div>
     </div>
   </header>
