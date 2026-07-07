@@ -1,4 +1,4 @@
-# RideReady
+# RideSetup
 
 ## What This Is
 
@@ -13,9 +13,9 @@ Riders can know exactly what suspension settings to use depending on the terrain
 | Attribute | Value |
 |-----------|-------|
 | Type | Application |
-| Version | 0.3.0 |
-| Status | In Progress (v0.3 Retention & Growth) |
-| Last Updated | 2026-06-15 |
+| Version | 0.4.0 |
+| Status | In Progress (v0.5 Discovery — Phase 14 SEO) |
+| Last Updated | 2026-07-05 |
 
 ## Requirements
 
@@ -52,16 +52,30 @@ Riders can know exactly what suspension settings to use depending on the terrain
 - ✓ Onboarding overlay — 4-step animated walkthrough with weight/ride-style profile collection, shown once on first use — Phase 10
 - ✓ UX Polish — nav/auth/settings guest friction removed, save strip animation, actionable empty states — Phase 12
 - ✓ Suspension data expansion — 9 new models across 7 brands: Boxxer, Vivid, Vivid Coil, Fox DHX2, Marzocchi Bomber Z1/Z2/CR, Cane Creek Helm/DB Coil IL — Phase 13
+- ✓ Brand rename: RideReady → RideSetup — Post v0.4
+- ✓ Onboarding overhaul: live real-UI demos replacing mock screens, welcome screen, ghost cursor + camera-follow animations for steps 1 & 2 — Post v0.4
+- ✓ Forgot password flow (email magic link via Supabase Auth) — Post v0.4
+- ✓ Privacy policy page (privacy.html) — Post v0.4
+- ✓ A11y contrast improvements across key surfaces — Post v0.4
+- ✓ Desktop shell layout — Post v0.4
+- ✓ Floating-label selectors — Post v0.4
+- ✓ iOS zoom fix (16px input font size) — Post v0.4
+- ✓ Icons8 ios11 PNG icons for Suspension Feel tab (replacing Font Awesome) — Post v0.4
+- ✓ Tyre ride style selector (XC / Trail / Enduro / DH) with auto-sync from selected tyre model, user-overridable — Post v0.4
+- ✓ Rider weight input moved to top of tyre form — Post v0.4
+- ✓ Light theme icon fix (subtab icons visible on both dark and light themes) — Post v0.4
+- ✓ SEO optimisation: title, meta description, OG/Twitter Card, canonical, JSON-LD (WebApplication + FAQPage), robots.txt, sitemap.xml, llms.txt, security headers, GA4 analytics — seo/optm (pending merge, PR #9)
 
 ### Active (In Progress)
 
-None.
+- SEO optimisation (PR #9 — seo/optm branch, pending merge to main)
 
 ### Planned (Next)
 
 - SEO Landing Pages per model — Phase 14
 - PWA + Offline Mode — Phase 11 (deferred)
 - Contextual suspension numbers in Fix It tab (pendingCalc injection) — optional Phase 6 enhancement (deferred)
+- GA4 Measurement ID — user needs to replace placeholder `G-XXXXXXXXXX` with real ID from analytics.google.com
 
 ### Out of Scope
 
@@ -112,6 +126,10 @@ None.
 | Onboarding: 4 steps not 3 | Added weight/ride-style profile collection step — needed so applyOnbProfile() can personalise calculator on first open | 2026-06-15 | Active |
 | Onboarding: animated HTML mockups | CSS-animated real-data mockups (not static icons) build more trust and familiarise rider with the UI before first use | 2026-06-15 | Active |
 | Onboarding: Skip = completeOnboarding | Sets rr_onboarded so skipping also gates future shows — intentional | 2026-06-15 | Active |
+| Icons8 PNG + CSS filter for Suspension Feel icons | Free tier returns PNG only (SVG needs paid); colour applied via CSS brightness/invert/hue-rotate filter | 2026-07-05 | Active |
+| currentTyreRideStyle override for tyre pressure | null = auto from model.category; explicit value overrides — lets user change ride style without changing tyre | 2026-07-05 | Active |
+| SEO: canonical URL points to rideready-two.vercel.app | Vercel deployment domain used for all canonical/OG/sitemap URLs; brand name is RideSetup but domain is unchanged | 2026-07-05 | Active |
+| GA4 snippet with placeholder ID | Analytics snippet present in index.html; user must replace G-XXXXXXXXXX with real Measurement ID before tracking activates | 2026-07-05 | Active |
 
 ## Success Metrics
 
@@ -133,4 +151,4 @@ None.
 
 ---
 *PROJECT.md — Updated when requirements or context change*
-*Last updated: 2026-06-15 after Phase 10*
+*Last updated: 2026-07-05 after Post v0.4 UI/SEO work*
