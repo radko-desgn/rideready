@@ -1761,6 +1761,36 @@
       margin-top: 10px;
     }
 
+    .sc-details {
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height 0.35s ease;
+    }
+    .sc-details.sc-expanded {
+      max-height: 800px;
+    }
+    .sc-toggle-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      width: 100%;
+      padding: 9px 0 6px;
+      margin-top: 12px;
+      background: none;
+      border: none;
+      border-top: 1px solid var(--border);
+      cursor: pointer;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      transition: color 0.15s;
+    }
+    .sc-toggle-btn:hover { color: var(--orange); }
+    .sc-toggle-btn i { font-size: 0.6rem; }
+
     /* Save strip update mode */
     .save-trigger-btn.update-mode {
       border-color: rgba(224,48,16,0.7);
@@ -4180,6 +4210,15 @@ function toggleResultDetails(btn) {
     : '<i class="fa-solid fa-chevron-down"></i> Show full settings';
 }
 
+function toggleSavedDetails(btn) {
+  const card = btn.closest('.saved-card');
+  const details = card.querySelector('.sc-details');
+  const isExpanded = details.classList.toggle('sc-expanded');
+  btn.innerHTML = isExpanded
+    ? '<i class="fa-solid fa-chevron-up"></i> Hide damping'
+    : '<i class="fa-solid fa-chevron-down"></i> Show damping';
+}
+
 function setUnit(type, unit, btn) {
   const display = document.getElementById(`${type}-psi-display`);
   if (!display) return;
@@ -5286,6 +5325,7 @@ async function renderSaves() {
     const forkDampRow  = s.fork  && s.fork.damping  ? `<div class="sc-damping-row">${dampChips(s.fork.damping)}</div>`  : '';
     const shockDampRow = s.shock && s.shock.damping ? `<div class="sc-damping-row">${dampChips(s.shock.damping)}</div>` : '';
     const rideStyleRow = rideStyleTag ? `<div class="sc-ride-style-row">${rideStyleTag}</div>` : '';
+    const hasDetails   = forkDampRow || shockDampRow || rideStyleRow;
 
     return `<div class="saved-card${isActive ? ' is-active' : ''}" id="sc-${s.id}">
       <div class="saved-card-top">
@@ -5308,9 +5348,15 @@ async function renderSaves() {
         ${forkBox}
         ${shockBox}
       </div>
-      ${forkDampRow}
-      ${shockDampRow}
-      ${rideStyleRow}
+      ${hasDetails ? `
+      <button class="sc-toggle-btn" onclick="toggleSavedDetails(this)">
+        <i class="fa-solid fa-chevron-down"></i> Show damping
+      </button>
+      <div class="sc-details">
+        ${forkDampRow}
+        ${shockDampRow}
+        ${rideStyleRow}
+      </div>` : ''}
       <button class="sc-load-btn" onclick="loadSaveNoEdit('${s.id}')">
         ${isActive
           ? '<i class="fa-solid fa-circle-check"></i> Loaded'
