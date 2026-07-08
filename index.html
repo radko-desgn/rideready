@@ -1761,13 +1761,23 @@
       margin-top: 10px;
     }
 
+    .sc-preview-block {
+      padding-top: 18px;
+      margin-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+    .sc-preview-block .rc-top { margin-bottom: 10px; }
+    .sc-preview-block .rc-psi { margin: 10px 0 8px; }
+    .sc-preview-block .notes-box { font-size: 0.78rem; margin-top: 10px; }
+    .sc-preview-block .damping-section { margin-top: 10px; }
+
     .sc-details {
       overflow: hidden;
       max-height: 0;
       transition: max-height 0.35s ease;
     }
     .sc-details.sc-expanded {
-      max-height: 800px;
+      max-height: 4000px;
     }
     .sc-toggle-btn {
       display: flex;
@@ -2917,9 +2927,18 @@
       background: var(--chip-bg);
       color: var(--text-secondary);
     }
-    .mod-pill.mod-tubeless { background: rgba(62,207,190,0.12); color: var(--shock-accent); }
+    .mod-pill.mod-tubeless { background: rgba(62,207,190,0.12);  color: var(--shock-accent); }
     .mod-pill.mod-wet      { background: rgba(100,180,255,0.12); color: #64b4ff; }
-    .mod-pill.mod-mixed    { background: rgba(224,48,16,0.12);  color: var(--orange); }
+    .mod-pill.mod-mixed    { background: rgba(224,48,16,0.12);   color: var(--orange); }
+    .mod-pill.mod-bike     { background: rgba(180,140,255,0.12); color: #b48cff; }
+    .mod-pill.mod-ebike    { background: rgba(255,200,50,0.12);  color: #f0c030; }
+    .mod-pill.mod-inserts  { background: rgba(62,207,190,0.12);  color: var(--shock-accent); }
+    .fixit-section-label {
+      font-size: 0.65rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--text-muted); padding: 18px 0 8px; border-top: 1px solid var(--border);
+      margin-top: 6px;
+    }
+    .fixit-section-label:first-child { border-top: none; padding-top: 0; margin-top: 0; }
 
     /* ── Tyre saved cards ── */
     .tyre-saved-card { background: var(--saved-card-bg); border-radius: var(--radius); padding: 18px; margin-bottom: 12px; border: 1px solid var(--border); transition: border-color 0.15s; }
@@ -3562,6 +3581,13 @@
           <span class="toggle-slider"></span>
         </label>
       </div>
+      <div class="tubeless-row">
+        <span class="tubeless-label"><i class="fa-solid fa-shield-halved"></i> Inserts / CushCore</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="front-inserts-toggle" onchange="setInserts('front', this.checked)">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
     </div>
 
     <!-- Rear Tyre -->
@@ -3593,6 +3619,13 @@
         <span class="tubeless-label"><i class="fa-regular fa-circle"></i> Tubeless</span>
         <label class="toggle-switch">
           <input type="checkbox" id="rear-tubeless-toggle" onchange="setTubeless('rear', this.checked)">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="tubeless-row">
+        <span class="tubeless-label"><i class="fa-solid fa-shield-halved"></i> Inserts / CushCore</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="rear-inserts-toggle" onchange="setInserts('rear', this.checked)">
           <span class="toggle-slider"></span>
         </label>
       </div>
@@ -3873,7 +3906,7 @@ const tyreData = {
   modifiers: {
     wheel_size: { '26': 2.5, '27.5': 1.5, '29': 0, 'mullet': 0 },
     terrain: { dry: 0, mixed: -1.5, wet: -3 },
-    width_psi_per_tenth: -0.8
+    width_psi_per_tenth: -1.5
   },
   brands: {
     maxxis: { label: 'Maxxis', models: [
@@ -4210,9 +4243,101 @@ function toggleResultDetails(btn) {
     : '<i class="fa-solid fa-chevron-down"></i> Show full settings';
 }
 
-function toggleSavedDetails(btn) {
+function buildSavedPreviewHTML(save) {
+  const RSL = { xc_trail: 'XC / Trail', all_mountain: 'All Mountain', enduro_dh: 'Enduro / DH' };
+  const ctLabels = {
+    fully_closed: 'From Closed (+)',
+    fully_open:   'From Open (−)',
+    center:       'From Center (0)',
+    sweep:        'Sweep Adjust',
+    lever:        'Lever / Remote',
+  };
+  const dirLabel = cf => cf === 'center'
+    ? 'From Neutral (0) — turn either direction'
+    : cf === 'fully_open'
+    ? 'From FULLY OPEN (−) towards slow / closed (+)'
+    : cf === 'sweep'
+    ? 'Continuous sweep — no fixed click positions'
+    : 'From FULLY CLOSED (+) towards fast / open (−)';
+
+  let html = '';
+
+  ['fork', 'shock'].forEach(type => {
+    const part = save[type];
+    if (!part) return;
+    const model = part.model;
+    const dSnap = part.damping;
+    const color = type === 'fork' ? 'fork' : 'shock';
+    if (!dSnap || !model.damping) return;
+
+    const d = model.damping;
+    const row = (label, clicks, adjuster) => {
+      if (clicks == null || !adjuster?.total_clicks) return '';
+      const total = adjuster.total_clicks;
+      const pct   = Math.round((clicks / total) * 100);
+      const dir   = dirLabel(adjuster.count_from);
+      return `<div class="damp-row ${color}-damp">
+        <div class="damp-row-top">
+          <div class="damp-row-left"><div class="damp-row-label">${label}</div></div>
+          <div class="damp-row-right">
+            <span class="damp-clicks">${clicks}</span><span class="damp-clicks-unit">clicks</span>
+          </div>
+        </div>
+        <div class="damp-bar-row">
+          <div class="damp-bar"><div class="damp-bar-fill" style="width:${pct}%"></div></div>
+          <span class="damp-bar-meta">${clicks} / ${total}</span>
+        </div>
+        <div class="damp-direction">${dir}</div>
+      </div>`;
+    };
+
+    let rows = '';
+    if (dSnap.rebound    != null) rows += row('Rebound',                dSnap.rebound,    d.rebound);
+    if (dSnap.reboundLSR != null) rows += row('Rebound — Low Speed',    dSnap.reboundLSR, d.rebound_lsr);
+    if (dSnap.reboundHSR != null) rows += row('Rebound — High Speed',   dSnap.reboundHSR, d.rebound_hsr);
+    if (dSnap.lsc        != null) rows += row('Low-Speed Compression',  dSnap.lsc,        d.lsc);
+    if (dSnap.hsc        != null) rows += row('High-Speed Compression', dSnap.hsc,        d.hsc);
+    if (dSnap.compressionMode) {
+      rows += `<div class="damp-row damp-row-lever">
+        <div class="damp-row-top"><div class="damp-row-left"><div class="damp-row-label">Compression Mode</div></div></div>
+        <div class="damp-lever-pills">${dSnap.compressionMode.split('/').map((p, i) =>
+          `<span class="damp-lever-pill${i === 0 ? ' active-lever' : ''}">${p.trim()}</span>`
+        ).join('')}</div>
+      </div>`;
+    }
+    if (!rows) return;
+
+    const ctChip = d.click_type && ctLabels[d.click_type]
+      ? `<div class="damping-ct-row"><span class="damp-ct-chip">${ctLabels[d.click_type]}</span></div>`
+      : '';
+
+    html += `<div class="sc-preview-block">
+      <div class="damping-section">
+        <div class="damping-header">
+          <div class="damping-header-top">
+            <span class="damping-heading">${type === 'fork' ? 'Fork' : 'Shock'} Damping</span>
+            <span class="damping-damper-name">${d.damper || ''}</span>
+          </div>
+          ${ctChip}
+          ${save.rideStyle ? `<div class="damping-style-note">Settings for ${RSL[save.rideStyle] || save.rideStyle}</div>` : ''}
+        </div>
+        <div class="damp-rows">${rows}</div>
+      </div>
+    </div>`;
+  });
+  return html;
+}
+
+function toggleSavedDetails(btn, saveId) {
   const card = btn.closest('.saved-card');
   const details = card.querySelector('.sc-details');
+  if (!details.dataset.rendered) {
+    const save = cachedSaves.find(s => String(s.id) === String(saveId));
+    if (save) {
+      details.innerHTML = buildSavedPreviewHTML(save);
+      details.dataset.rendered = '1';
+    }
+  }
   const isExpanded = details.classList.toggle('sc-expanded');
   btn.innerHTML = isExpanded
     ? '<i class="fa-solid fa-chevron-up"></i> Hide damping'
@@ -4916,6 +5041,79 @@ const SYMPTOM_FIXES = [
     ],
   },
 ];
+
+const TYRE_SYMPTOM_FIXES = [
+  {
+    id: 'tyre-squirm',
+    label: 'Tyre squirming / folding in corners',
+    icon: '7aqMmdV5fwEG',
+    component: 'Tyres',
+    fixes: [
+      {
+        title: 'Add 2 PSI to stabilise the casing',
+        icon: 'Y98Hr-tq6Ep9',
+        detail: 'Casing fold under lateral load means the tyre is running below the minimum structural pressure for its width and casing type. Add 2 PSI — the sidewall needs hydraulic support to resist lateral deformation. Re-test the same corner. If folding persists, add another 1–2 PSI or consider a DH/Double Down casing.'
+      },
+      {
+        title: 'Switch to a stiffer casing (DoubleDown / EXO+)',
+        icon: '60006',
+        detail: 'Folding is a casing stiffness problem as much as a pressure problem. A reinforced casing (Maxxis DoubleDown, Schwalbe Super Gravity, Continental Downhill) resists lateral deformation structurally, allowing you to run lower pressures without fold. The stiffer bead also improves rim protection.'
+      },
+      {
+        title: 'Check for worn or cracked sidewalls',
+        icon: '60006',
+        detail: 'A tyre that suddenly begins folding at previously stable pressures may have cracked or delaminating sidewall fabric. Inspect under good light — look for fine cracks or mesh showing through the rubber. Sidewall damage compromises fold resistance regardless of pressure.'
+      },
+    ],
+  },
+  {
+    id: 'tyre-bounce',
+    label: 'Harsh bouncing off wet roots / rocks',
+    icon: '100040',
+    component: 'Tyres',
+    fixes: [
+      {
+        title: 'Drop 1.5 PSI to increase casing compliance',
+        icon: 'Y98Hr-tq6Ep9',
+        detail: 'Over-inflated tyres deform less on contact and deflect off round obstacles (roots, wet rocks) rather than wrapping around them. Reducing pressure by 1.5 PSI increases the tyre\'s contact deformation — the casing absorbs more energy and the wheel tracks the surface rather than bouncing over it.'
+      },
+      {
+        title: 'Switch to a softer rubber compound',
+        icon: '7aqMmdV5fwEG',
+        detail: 'Hard rubber (MaxxSpeed, XC compounds) has high rebound energy off slick surfaces — it deflects rather than deforms. A softer compound (MaxxGrip, Soft-Compound) absorbs impact energy through molecular deformation and increases friction on wet organic surfaces. Essential on exposed wet roots.'
+      },
+      {
+        title: 'Try a wider tyre at equivalent pressure',
+        icon: '7aqMmdV5fwEG',
+        detail: 'A wider tyre at the same pressure has a larger contact patch and lower casing stiffness per unit area. Going from 2.35" to 2.5" at the same PSI gives significantly more compliance over repeated small obstacles without requiring as much pressure reduction.'
+      },
+    ],
+  },
+  {
+    id: 'tyre-rim-strike',
+    label: 'Rim strikes on square-edge hits',
+    icon: '99992',
+    component: 'Tyres',
+    fixes: [
+      {
+        title: 'Add 2–3 PSI to increase rim protection',
+        icon: 'Y98Hr-tq6Ep9',
+        detail: 'Rim strikes happen when the tyre bottoms out — the casing compresses fully and the rim contacts the obstacle directly. Adding 2–3 PSI increases the hydraulic buffer between rim and obstacle. Increase in 1 PSI steps and test until strikes stop, or until grip feels too reduced.'
+      },
+      {
+        title: 'Fit a heavier casing (DoubleDown / DH)',
+        icon: '60006',
+        detail: 'DH and DoubleDown casings have a reinforced sidewall bead area that resists full compression. They allow you to run lower pressures than a standard EXO casing without rim strikes — the extra rubber absorbs the impact before it reaches the rim. Mandatory at high speeds on rocky terrain.'
+      },
+      {
+        title: 'Add tyre inserts (CushCore / Huck Norris)',
+        icon: '60006',
+        detail: 'Foam inserts sit between the tyre bead and the rim bed, acting as a structural stop that prevents full casing collapse. They allow 2–4 PSI lower than without inserts while eliminating rim strikes. Also damp vibration and improve rim protection against lateral rock strikes.'
+      },
+    ],
+  },
+];
+
 let cachedSaves = [];
 
 function findModel(brand, modelName, type) {
@@ -5320,12 +5518,7 @@ async function renderSaves() {
       </div>`;
     })() : '';
 
-    const rideStyleTag = s.rideStyle
-      ? `<div class="sc-damp-style-tag">${RS_DISPLAY[s.rideStyle] || s.rideStyle}</div>` : '';
-    const forkDampRow  = s.fork  && s.fork.damping  ? `<div class="sc-damping-row">${dampChips(s.fork.damping)}</div>`  : '';
-    const shockDampRow = s.shock && s.shock.damping ? `<div class="sc-damping-row">${dampChips(s.shock.damping)}</div>` : '';
-    const rideStyleRow = rideStyleTag ? `<div class="sc-ride-style-row">${rideStyleTag}</div>` : '';
-    const hasDetails   = forkDampRow || shockDampRow || rideStyleRow;
+    const hasDetails = s.fork || s.shock;
 
     return `<div class="saved-card${isActive ? ' is-active' : ''}" id="sc-${s.id}">
       <div class="saved-card-top">
@@ -5349,14 +5542,10 @@ async function renderSaves() {
         ${shockBox}
       </div>
       ${hasDetails ? `
-      <button class="sc-toggle-btn" onclick="toggleSavedDetails(this)">
+      <button class="sc-toggle-btn" onclick="toggleSavedDetails(this,'${s.id}')">
         <i class="fa-solid fa-chevron-down"></i> Show damping
       </button>
-      <div class="sc-details">
-        ${forkDampRow}
-        ${shockDampRow}
-        ${rideStyleRow}
-      </div>` : ''}
+      <div class="sc-details"></div>` : ''}
       <button class="sc-load-btn" onclick="loadSaveNoEdit('${s.id}')">
         ${isActive
           ? '<i class="fa-solid fa-circle-check"></i> Loaded'
@@ -6081,7 +6270,7 @@ function renderFixitTab() {
   fixitRendered = true;
 
   const inner    = document.getElementById('fixit-inner');
-  const compIcon = { 'Fork': '121089', 'Rear Shock': '77801', 'Fork & Shock': '60983' };
+  const compIcon = { 'Fork': '121089', 'Rear Shock': '77801', 'Fork & Shock': '60983', 'Tyres': '7aqMmdV5fwEG' };
   const i8       = id => `https://img.icons8.com/?id=${id}&format=png&size=40`;
 
   // ── Baseline badge ────────────────────────────────────────────────────────
@@ -6132,42 +6321,47 @@ function renderFixitTab() {
     return info;
   }
 
+  const renderCards = (list) => list.map(s => {
+    const adjInfo      = getAdjInfo(s);
+    const visibleFixes = s.fixes.filter(f => !f.condition || !adjInfo.loaded || f.condition(adjInfo));
+    return `
+    <div class="fixit-card" id="fixit-card-${s.id}">
+      <button class="fixit-card-trigger" onclick="toggleSymptom('${s.id}')">
+        <img src="${i8(s.icon)}" class="fixit-card-icon" width="18" height="18" alt="">
+        <div class="fixit-card-meta">
+          <span class="fixit-card-label">${s.label}</span>
+          <span class="fixit-card-component"><img src="${i8(compIcon[s.component] || '59996')}" class="fixit-comp-icon" width="12" height="12" alt="">${s.component}</span>
+        </div>
+        <i class="fa-solid fa-chevron-right fixit-chevron" id="fixit-chev-${s.id}"></i>
+      </button>
+      <div class="fixit-card-body" id="fixit-body-${s.id}">
+        ${baselineBadge(s)}
+        <ol class="fixit-fix-list">
+          ${visibleFixes.map((f, i) => `
+            <li class="fixit-fix-item">
+              <div class="fixit-fix-title">
+                <span class="fixit-fix-num">${i + 1}</span>
+                <img src="${i8(f.icon)}" class="fixit-fix-icon" width="13" height="13" alt="">
+                ${f.title}
+              </div>
+              <div class="fixit-fix-detail">${f.detail}</div>
+            </li>
+          `).join('')}
+        </ol>
+      </div>
+    </div>`;
+  }).join('');
+
   inner.innerHTML = `
     <div class="fixit-header">
       <h2 class="fixit-title">Suspension Feel</h2>
       <p class="fixit-desc">Something feels off? Pick a symptom — each card gives ordered fixes based on Fox, RockShox, and Öhlins tuning principles. Quickest trailside adjustment first.</p>
     </div>
     <div class="fixit-cards">
-      ${SYMPTOM_FIXES.map(s => {
-        const adjInfo      = getAdjInfo(s);
-        const visibleFixes = s.fixes.filter(f => !f.condition || !adjInfo.loaded || f.condition(adjInfo));
-        return `
-        <div class="fixit-card" id="fixit-card-${s.id}">
-          <button class="fixit-card-trigger" onclick="toggleSymptom('${s.id}')">
-            <img src="${i8(s.icon)}" class="fixit-card-icon" width="18" height="18" alt="">
-            <div class="fixit-card-meta">
-              <span class="fixit-card-label">${s.label}</span>
-              <span class="fixit-card-component"><img src="${i8(compIcon[s.component] || '59996')}" class="fixit-comp-icon" width="12" height="12" alt="">${s.component}</span>
-            </div>
-            <i class="fa-solid fa-chevron-right fixit-chevron" id="fixit-chev-${s.id}"></i>
-          </button>
-          <div class="fixit-card-body" id="fixit-body-${s.id}">
-            ${baselineBadge(s)}
-            <ol class="fixit-fix-list">
-              ${visibleFixes.map((f, i) => `
-                <li class="fixit-fix-item">
-                  <div class="fixit-fix-title">
-                    <span class="fixit-fix-num">${i + 1}</span>
-                    <img src="${i8(f.icon)}" class="fixit-fix-icon" width="13" height="13" alt="">
-                    ${f.title}
-                  </div>
-                  <div class="fixit-fix-detail">${f.detail}</div>
-                </li>
-              `).join('')}
-            </ol>
-          </div>
-        </div>`;
-      }).join('')}
+      <div class="fixit-section-label">Suspension</div>
+      ${renderCards(SYMPTOM_FIXES)}
+      <div class="fixit-section-label">Tire Behavior</div>
+      ${renderCards(TYRE_SYMPTOM_FIXES)}
     </div>
   `;
 }
@@ -6306,6 +6500,8 @@ let currentTerrain      = 'dry';
 let currentTyreRideStyle = null; // null = auto from tyre model
 let frontTubeless     = false;
 let rearTubeless      = false;
+let frontInserts      = false;
+let rearInserts       = false;
 let selectedTyres     = { front: null, rear: null };
 let selectedTyreWidths = { front: null, rear: null };
 let pendingTyreCalc   = null;
@@ -6412,6 +6608,11 @@ function setTubeless(wheel, checked) {
   else rearTubeless = checked;
 }
 
+function setInserts(wheel, checked) {
+  if (wheel === 'front') frontInserts = checked;
+  else rearInserts = checked;
+}
+
 function onTyreWeightInput() {
   const val = parseFloat(document.getElementById('tyre-weight-input').value);
   if (!isNaN(val)) {
@@ -6420,7 +6621,8 @@ function onTyreWeightInput() {
   }
 }
 
-function computeTyrePSI(wheel, model, weightKg) {
+function computeTyrePSI(wheel, model, weightKg, bikeWeightKg = 14, isEBike = false) {
+  const BIKE_BASELINE = 14;
   const catKey = currentTyreRideStyle || model.category;
   const cat = tyreData.categories[catKey];
   const chart = wheel === 'front' ? cat.front_chart : cat.rear_chart;
@@ -6429,14 +6631,19 @@ function computeTyrePSI(wheel, model, weightKg) {
   const wheelForCalc = currentWheelSize === 'mullet'
     ? (wheel === 'front' ? '29' : '27.5')
     : currentWheelSize;
-  const wheelMod  = tyreData.modifiers.wheel_size[wheelForCalc] ?? 0;
-  const width      = selectedTyreWidths[wheel] ?? model.baseline_width;
-  const widthMod   = ((width - model.baseline_width) / 0.1) * tyreData.modifiers.width_psi_per_tenth;
-  const tubeless   = wheel === 'front' ? frontTubeless : rearTubeless;
-  const tubelessMod = tubeless ? cat.tubeless_delta : 0;
-  const terrainMod  = tyreData.modifiers.terrain[currentTerrain] ?? 0;
+  const wheelMod     = tyreData.modifiers.wheel_size[wheelForCalc] ?? 0;
+  const width        = selectedTyreWidths[wheel] ?? model.baseline_width;
+  const widthMod     = ((width - model.baseline_width) / 0.1) * tyreData.modifiers.width_psi_per_tenth;
+  const tubeless     = wheel === 'front' ? frontTubeless : rearTubeless;
+  const tubelessMod  = tubeless ? cat.tubeless_delta : 0;
+  const terrainMod   = tyreData.modifiers.terrain[currentTerrain] ?? 0;
+  const extraBlocks  = Math.floor(Math.max(0, bikeWeightKg - BIKE_BASELINE) / 4);
+  const bikeWeightMod = extraBlocks * (wheel === 'front' ? 0.5 : 1.0);
+  const ebikeMod     = isEBike ? (wheel === 'front' ? 2 : 3) : 0;
+  const inserts      = wheel === 'front' ? frontInserts : rearInserts;
+  const insertsMod   = inserts ? -2 : 0;
 
-  const rawPsi = base.psi + wheelMod + widthMod + tubelessMod + terrainMod;
+  const rawPsi = base.psi + wheelMod + widthMod + tubelessMod + terrainMod + bikeWeightMod + ebikeMod + insertsMod;
   return {
     psi: Math.max(10, Math.round(rawPsi)),
     rangeStr: base.range,
@@ -6445,10 +6652,14 @@ function computeTyrePSI(wheel, model, weightKg) {
     wheelForCalc,
     width,
     tubeless,
+    inserts,
     widthMod: Math.round(widthMod * 10) / 10,
     wheelMod,
     tubelessMod,
-    terrainMod
+    terrainMod,
+    bikeWeightMod: Math.round(bikeWeightMod * 10) / 10,
+    ebikeMod,
+    insertsMod,
   };
 }
 
@@ -6464,15 +6675,17 @@ function buildTyreResultHTML(wheel, brandKey, model, result) {
   const catKey     = currentTyreRideStyle || model.category;
   const cat        = tyreData.categories[catKey];
 
-  const { psi, rangeStr, barMin, barMax, width, tubeless, widthMod, wheelMod, tubelessMod, terrainMod } = result;
+  const { psi, rangeStr, barMin, barMax, width, tubeless, inserts, widthMod, wheelMod, tubelessMod, terrainMod, bikeWeightMod, ebikeMod, insertsMod } = result;
   const barPctVal = Math.min(100, Math.max(0, ((psi - barMin) / (barMax - barMin)) * 100));
 
-
   const modPills = [
-    tubeless   ? `<span class="mod-pill mod-tubeless"><i class="fa-regular fa-circle"></i> Tubeless −${Math.abs(tubelessMod)} PSI</span>` : '',
-    wheelMod   ? `<span class="mod-pill"><i class="fa-solid fa-circle-half-stroke"></i> ${result.wheelForCalc}" wheel ${wheelMod > 0 ? '+' : ''}${wheelMod} PSI</span>` : '',
-    widthMod   ? `<span class="mod-pill"><i class="fa-solid fa-arrows-left-right"></i> ${width.toFixed(1)}" width ${widthMod > 0 ? '+' : ''}${widthMod.toFixed(1)} PSI</span>` : '',
-    currentTerrain !== 'dry' ? `<span class="mod-pill mod-${currentTerrain}"><i class="fa-solid fa-${currentTerrain === 'wet' ? 'cloud-rain' : 'cloud-sun'}"></i> ${currentTerrain === 'wet' ? 'Wet' : 'Mixed'} −${Math.abs(terrainMod)} PSI</span>` : ''
+    tubeless        ? `<span class="mod-pill mod-tubeless"><i class="fa-regular fa-circle"></i> Tubeless −${Math.abs(tubelessMod)} PSI</span>` : '',
+    wheelMod        ? `<span class="mod-pill"><i class="fa-solid fa-circle-half-stroke"></i> ${result.wheelForCalc}" wheel ${wheelMod > 0 ? '+' : ''}${wheelMod} PSI</span>` : '',
+    widthMod        ? `<span class="mod-pill"><i class="fa-solid fa-arrows-left-right"></i> ${width.toFixed(1)}" width ${widthMod > 0 ? '+' : ''}${widthMod.toFixed(1)} PSI</span>` : '',
+    currentTerrain !== 'dry' ? `<span class="mod-pill mod-${currentTerrain}"><i class="fa-solid fa-${currentTerrain === 'wet' ? 'cloud-rain' : 'cloud-sun'}"></i> ${currentTerrain === 'wet' ? 'Wet' : 'Mixed'} −${Math.abs(terrainMod)} PSI</span>` : '',
+    bikeWeightMod   ? `<span class="mod-pill mod-bike"><i class="fa-solid fa-bicycle"></i> Bike weight +${bikeWeightMod.toFixed(1)} PSI</span>` : '',
+    ebikeMod        ? `<span class="mod-pill mod-ebike"><i class="fa-solid fa-bolt"></i> E-Bike +${ebikeMod} PSI</span>` : '',
+    inserts         ? `<span class="mod-pill mod-inserts"><i class="fa-solid fa-shield-halved"></i> Inserts −${Math.abs(insertsMod)} PSI</span>` : '',
   ].filter(Boolean).join('');
 
   return `
@@ -6568,11 +6781,14 @@ function calculateTyres() {
   const results = {};
   let calculated = false;
 
+  const bikeWeightKg = parseFloat(document.getElementById('bike-weight-input').value) || 14;
+  const isEBike      = document.getElementById('ebike-toggle').checked;
+
   ['front', 'rear'].forEach(wheel => {
     const card = document.getElementById(`tyre-${wheel}-result`);
     const sel  = selectedTyres[wheel];
     if (!sel) { card.innerHTML = ''; card.classList.remove('visible'); return; }
-    results[wheel] = computeTyrePSI(wheel, sel.model, weightKg);
+    results[wheel] = computeTyrePSI(wheel, sel.model, weightKg, bikeWeightKg, isEBike);
     card.innerHTML = buildTyreResultHTML(wheel, sel.brand, sel.model, results[wheel]);
     card.classList.add('visible');
     calculated = true;
