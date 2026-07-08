@@ -5114,30 +5114,57 @@ function barPct(psi, chart) {
 }
 
 async function renderSaves() {
-  if (!currentUser) return;
-  const { data: rows, error: fetchError } = await withTimeout(supabaseClient.from('saves').select('*').order('created_at'), 8000);
-  if (fetchError) {
-    console.error('renderSaves fetch error:', fetchError);
-    const list = document.getElementById('saved-list');
-    if (list) list.innerHTML = `<div class="saved-empty-state"><div class="saved-empty-title" style="color:#ff6b6b">Could not load saves</div><div class="saved-empty-sub">${fetchError.message}</div></div>`;
-    return;
-  }
+  const IS_DEV = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  if (!currentUser && !IS_DEV) return;
 
-  const saves = (rows || []).map(row => {
-    const forkModel  = row.fork_model  ? findModel(row.fork_brand,  row.fork_model,  'fork')  : null;
-    const shockModel = row.shock_model ? findModel(row.shock_brand, row.shock_model, 'shock') : null;
-    return {
-      id:        row.id,
-      name:      row.name,
-      weightKg:  row.weight_kg,
-      rideStyle: row.ride_style,
-      createdAt: row.created_at,
-      updatedAt: row.updated_at,
-      fork:    forkModel  ? { brand: row.fork_brand,  model: forkModel,  psi: row.damping_snapshot?.fork?.psi,  damping: row.damping_snapshot?.fork?.damping  } : null,
-      shock:   shockModel ? { brand: row.shock_brand, model: shockModel, psi: row.damping_snapshot?.shock?.psi, damping: row.damping_snapshot?.shock?.damping } : null,
-      history: Array.isArray(row.history) ? row.history : [],
-    };
-  });
+  let saves;
+  if (IS_DEV && !currentUser) {
+    const f1 = findModel('fox',        'Fox 38 Factory (2021-2024 / GRIP2)',     'fork');
+    const s1 = findModel('fox',        'Float X2 (2024-2026)',                   'shock');
+    const f2 = findModel('rockshox',   'Lyrik Ultimate (2023-2026 / Charger 3)', 'fork');
+    const s2 = findModel('cane_creek', 'DB Coil IL',                             'shock');
+    saves = [
+      {
+        id: 'dev-1', name: 'Enduro Race Day', weightKg: 85, rideStyle: 'enduro_dh',
+        createdAt: new Date(Date.now() - 2 * 86400000).toISOString(),
+        updatedAt: new Date(Date.now() - 2 * 86400000).toISOString(),
+        fork:  f1 ? { brand: 'fox',        model: f1, psi: 103, damping: { reboundLSR: 9, reboundHSR: 4, lsc: 9, hsc: 4 } } : null,
+        shock: s1 ? { brand: 'fox',        model: s1, psi: 208, damping: { reboundLSR: 8, reboundHSR: 3, lsc: 9, hsc: 4 } } : null,
+        history: [],
+      },
+      {
+        id: 'dev-2', name: 'Trail Mix', weightKg: 72, rideStyle: 'all_mountain',
+        createdAt: new Date(Date.now() - 6 * 86400000).toISOString(),
+        updatedAt: new Date(Date.now() - 6 * 86400000).toISOString(),
+        fork:  f2 ? { brand: 'rockshox',   model: f2, psi: 87,  damping: { rebound: 8, lsc: 6, hsc: 2 } } : null,
+        shock: s2 ? { brand: 'cane_creek', model: s2, psi: null, damping: { rebound: 9, lsc: 6, hsc: 2, compressionMode: 'Open / Climb / Lock' } } : null,
+        history: [],
+      },
+    ];
+  } else {
+    const { data: rows, error: fetchError } = await withTimeout(supabaseClient.from('saves').select('*').order('created_at'), 8000);
+    if (fetchError) {
+      console.error('renderSaves fetch error:', fetchError);
+      const list = document.getElementById('saved-list');
+      if (list) list.innerHTML = `<div class="saved-empty-state"><div class="saved-empty-title" style="color:#ff6b6b">Could not load saves</div><div class="saved-empty-sub">${fetchError.message}</div></div>`;
+      return;
+    }
+    saves = (rows || []).map(row => {
+      const forkModel  = row.fork_model  ? findModel(row.fork_brand,  row.fork_model,  'fork')  : null;
+      const shockModel = row.shock_model ? findModel(row.shock_brand, row.shock_model, 'shock') : null;
+      return {
+        id:        row.id,
+        name:      row.name,
+        weightKg:  row.weight_kg,
+        rideStyle: row.ride_style,
+        createdAt: row.created_at,
+        updatedAt: row.updated_at,
+        fork:    forkModel  ? { brand: row.fork_brand,  model: forkModel,  psi: row.damping_snapshot?.fork?.psi,  damping: row.damping_snapshot?.fork?.damping  } : null,
+        shock:   shockModel ? { brand: row.shock_brand, model: shockModel, psi: row.damping_snapshot?.shock?.psi, damping: row.damping_snapshot?.shock?.damping } : null,
+        history: Array.isArray(row.history) ? row.history : [],
+      };
+    });
+  }
   cachedSaves = saves;
 
   const list     = document.getElementById('saved-list');
@@ -5151,7 +5178,7 @@ async function renderSaves() {
   const savedTitle = document.querySelector('#tab-saved .saved-section-title');
   if (savedTitle) savedTitle.textContent = `Saved · ${saves.length}/${MAX_SAVES}`;
 
-  const BRAND = { rockshox: 'RockShox', fox: 'Fox', dvo: 'DVO', ohlins: 'Öhlins', manitou: 'Manitou' };
+  const BRAND = { rockshox: 'RockShox', fox: 'Fox', dvo: 'DVO', ohlins: 'Öhlins', manitou: 'Manitou', marzocchi: 'Marzocchi', cane_creek: 'Cane Creek' };
 
   const dampChips = (dampSnap) => {
     if (!dampSnap) return '';
@@ -5413,6 +5440,12 @@ supabaseClient.auth.onAuthStateChange(async (event, session) => {
         isGuest = true;
         overlay.style.display = 'none';
         appContent.style.display = '';
+        return;
+      }
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        overlay.style.display = 'none';
+        appContent.style.display = '';
+        await renderSaves();
         return;
       }
       overlay.style.display = 'flex';
@@ -5934,7 +5967,7 @@ function switchTab(tab) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
   if (tab === 'saved') {
     if (isGuest) renderGuestSavedMessage();
-    else if (currentUser) renderSaves();
+    else if (currentUser || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') renderSaves();
   }
   if (tab === 'settings') {
     const guestBanner    = document.getElementById('settings-guest-banner');
@@ -6740,6 +6773,30 @@ function switchSavedSubTab(tab) {
 
 // Init tyre dropdowns (called inline like populateDropdowns)
 populateTyreDropdowns();
+
+if ((window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && !loadTyreSaves().length) {
+  persistTyreSaves([
+    {
+      id: Date.now() - 7 * 86400000,
+      name: 'Enduro Mullet · Wet',
+      weightKg: 85,
+      wheelSize: 'mullet',
+      terrain: 'wet',
+      front: { brand: 'maxxis',      model: { model: 'Assegai'        }, width: 2.5, psi: 24 },
+      rear:  { brand: 'maxxis',      model: { model: 'Minion DHR II'  }, width: 2.4, psi: 27 },
+    },
+    {
+      id: Date.now() - 3 * 86400000,
+      name: 'Trail Day · 29"',
+      weightKg: 72,
+      wheelSize: '29',
+      terrain: 'mixed',
+      front: { brand: 'schwalbe',    model: { model: 'Magic Mary'      }, width: 2.4, psi: 25 },
+      rear:  { brand: 'continental', model: { model: 'Kryptotal Rear'  }, width: 2.4, psi: 28 },
+    },
+  ]);
+}
+
 renderTyreSaves();
 </script>
 
