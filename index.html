@@ -516,7 +516,10 @@
       font-weight: 700;
       letter-spacing: -0.02em;
       width: 0; /* flex will size it */
+      -moz-appearance: textfield;
     }
+    .weight-inner input::-webkit-outer-spin-button,
+    .weight-inner input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
     .weight-inner input::placeholder { color: var(--text-faint); }
     .weight-inner .kg-badge {
       background: var(--chip-bg);
@@ -539,9 +542,9 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      gap: 8px;
       flex-shrink: 0;
-      padding: 10px 14px;
+      padding: 8px 10px;
       background: var(--surface2);
       border: 1.5px solid var(--border);
       border-radius: var(--radius-sm);
@@ -549,7 +552,7 @@
       transition: border-color 0.15s;
     }
     .ebike-label {
-      font-size: 0.82rem;
+      font-size: 0.75rem;
       font-weight: 700;
       color: var(--text-secondary);
       white-space: nowrap;
@@ -585,7 +588,10 @@
       font-size: 1.4rem;
       font-weight: 700;
       text-align: right;
+      -moz-appearance: textfield;
     }
+    .bike-weight-inner input::-webkit-outer-spin-button,
+    .bike-weight-inner input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
     .bike-weight-inner input::placeholder { color: var(--text-faint); }
 
     /* Calculate button */
@@ -3315,7 +3321,7 @@
       <div class="panel-row-label">Rider Weight</div>
       <div class="weight-inner">
         <input type="number" id="weight-input" placeholder="75" min="20" max="200" step="0.5"
-          oninput="onWeightInput()" inputmode="decimal" />
+          oninput="onWeightInput()" inputmode="numeric" />
         <span class="kg-badge">KG</span>
         <button class="weight-pin-btn" id="weight-pin-btn" onclick="toggleSavedWeight()"
                 title="Remember my weight" aria-label="Remember my weight">
@@ -3337,7 +3343,7 @@
       <div class="bike-weight-inner">
         <label class="bike-weight-label" for="bike-weight-input">Bike Weight</label>
         <input type="number" id="bike-weight-input" value="14" min="5" max="60" step="0.5"
-               inputmode="decimal" aria-label="Bike weight in kilograms" />
+               inputmode="numeric" aria-label="Bike weight in kilograms" />
         <span class="kg-badge">KG</span>
         <button class="weight-pin-btn" id="bike-weight-pin-btn" onclick="toggleSavedBikeWeight()"
                 title="Remember bike weight" aria-label="Remember bike weight">
@@ -4019,7 +4025,7 @@ function buildResultHTML(brand, model, weightKg, type, opts = {}) {
 
     <div class="rc-psi" id="${type}-psi-display" data-psi="${psi}">
       <div class="psi-num ${colorClass}"><span id="${type}-psi-val">${psi}</span><span class="psi-unit" id="${type}-psi-unit">PSI</span></div>
-      <div class="psi-sub" id="${type}-psi-sub">Starting pressure · ${Math.round(weightKg * 2.2046)} lbs rider</div>
+      <div class="psi-sub" id="${type}-psi-sub">Starting pressure · ${Math.round(weightKg * 2.2046)} lbs rider${opts.psiAdjust > 0 ? ` · ⚡ +${opts.psiAdjust} PSI (${opts.bikeWeightKg}kg bike)` : ''}</div>
     </div>
 
     <div class="range-bar-wrap">
@@ -4204,13 +4210,13 @@ function calculate() {
 
   if (forkData) {
     forkCard.innerHTML = buildResultHTML(forkData.brand, forkData.model, weightKg, 'fork',
-      { psiAdjust: forkPsiAdj, isEBike });
+      { psiAdjust: forkPsiAdj, isEBike, bikeWeightKg });
     forkCard.classList.add('visible');
   }
 
   if (shockData) {
     shockCard.innerHTML = buildResultHTML(shockData.brand, shockData.model, weightKg, 'shock',
-      { psiAdjust: shockPsiAdj, isEBike });
+      { psiAdjust: shockPsiAdj, isEBike, bikeWeightKg });
     shockCard.classList.add('visible');
   }
 
