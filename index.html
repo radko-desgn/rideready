@@ -660,6 +660,36 @@
     }
     .result-card.visible { display: block; }
 
+    .rc-toggle-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      width: 100%;
+      padding: 9px 0 6px;
+      background: none;
+      border: none;
+      border-top: 1px solid var(--border);
+      margin-top: 16px;
+      cursor: pointer;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      transition: color 0.15s;
+    }
+    .rc-toggle-btn:hover { color: var(--orange); }
+    .rc-toggle-btn i { font-size: 0.6rem; transition: transform 0.25s ease; }
+    .rc-details {
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height 0.35s ease;
+    }
+    .rc-details.rc-expanded {
+      max-height: 3000px;
+    }
+
     /* Top row of result card */
     .rc-top {
       display: flex;
@@ -4046,6 +4076,10 @@ function buildResultHTML(brand, model, weightKg, type, opts = {}) {
       </div>
     </div>
 
+    <button class="rc-toggle-btn" onclick="toggleResultDetails(this)">
+      <i class="fa-solid fa-chevron-down"></i> Show full settings
+    </button>
+    <div class="rc-details">
     <div class="meta-chips">
       <div class="chip chip-sag">
         <div class="chip-label"><i class="fa-solid fa-percent"></i> Sag</div>
@@ -4072,6 +4106,7 @@ function buildResultHTML(brand, model, weightKg, type, opts = {}) {
 
     <div class="notes-box ${notesClass}">${model.setup_notes}</div>
   ${buildDampingHTML(model, weightKg, type, { isEBike: opts.isEBike })}
+    </div>
   `;
 }
 
@@ -4129,6 +4164,15 @@ function calcSagCorrection() {
     result.className = 'sag-corrector-result show adjust';
     result.textContent = `↓ Remove ${Math.abs(correction)} PSI (sag is too firm)`;
   }
+}
+
+function toggleResultDetails(btn) {
+  const card = btn.closest('.result-card');
+  const details = card.querySelector('.rc-details');
+  const isExpanded = details.classList.toggle('rc-expanded');
+  btn.innerHTML = isExpanded
+    ? '<i class="fa-solid fa-chevron-up"></i> Hide details'
+    : '<i class="fa-solid fa-chevron-down"></i> Show full settings';
 }
 
 function setUnit(type, unit, btn) {
