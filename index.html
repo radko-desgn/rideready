@@ -1461,7 +1461,7 @@
 
     .saved-card-results {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
       gap: 8px;
     }
     .sc-result-box {
@@ -1688,7 +1688,8 @@
     .sc-damp-chip {
       display: flex;
       flex-direction: column;
-      background: var(--sc-box-bg);
+      background: var(--chip-bg);
+      border: 1px solid var(--border);
       border-radius: var(--radius-xs);
       padding: 6px 10px;
       min-width: 52px;
@@ -1724,6 +1725,10 @@
       color: var(--orange-text);
       white-space: nowrap;
       align-self: center;
+    }
+    .sc-ride-style-row {
+      display: flex;
+      margin-top: 10px;
     }
 
     /* Save strip update mode */
@@ -2750,6 +2755,7 @@
     .subtab-btn.active {
       background: var(--surface3);
       color: var(--text);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.18);
     }
 
     /* ── Tyre result card accent colours ── */
@@ -5201,8 +5207,9 @@ async function renderSaves() {
 
     const rideStyleTag = s.rideStyle
       ? `<div class="sc-damp-style-tag">${RS_DISPLAY[s.rideStyle] || s.rideStyle}</div>` : '';
-    const forkDampRow  = s.fork  && s.fork.damping  ? `<div class="sc-damping-row">${dampChips(s.fork.damping)}${rideStyleTag}</div>`  : '';
+    const forkDampRow  = s.fork  && s.fork.damping  ? `<div class="sc-damping-row">${dampChips(s.fork.damping)}</div>`  : '';
     const shockDampRow = s.shock && s.shock.damping ? `<div class="sc-damping-row">${dampChips(s.shock.damping)}</div>` : '';
+    const rideStyleRow = rideStyleTag ? `<div class="sc-ride-style-row">${rideStyleTag}</div>` : '';
 
     return `<div class="saved-card${isActive ? ' is-active' : ''}" id="sc-${s.id}">
       <div class="saved-card-top">
@@ -5222,9 +5229,12 @@ async function renderSaves() {
         </div>
       </div>
       <div class="saved-card-results">
-        <div>${forkBox}${forkDampRow}</div>
-        <div>${shockBox}${shockDampRow}</div>
+        ${forkBox}
+        ${shockBox}
       </div>
+      ${forkDampRow}
+      ${shockDampRow}
+      ${rideStyleRow}
       <button class="sc-load-btn" onclick="loadSaveNoEdit('${s.id}')">
         ${isActive
           ? '<i class="fa-solid fa-circle-check"></i> Loaded'
